@@ -1,4 +1,4 @@
-import 'package:beautilly/screens/splash_screen.dart';
+import 'package:beautilly/screens/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "Beautilly",
       theme: ThemeData(fontFamily: "Poppins"),
-      home: const SplashScreen(),
+      home: const OnBoardingScreen(),
     );
   }
 }

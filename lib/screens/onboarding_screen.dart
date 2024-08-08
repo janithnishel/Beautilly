@@ -1,10 +1,12 @@
+import 'package:flutter/material.dart';
+
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+
 import 'package:beautilly/data/onboarding_data.dart';
 import 'package:beautilly/screens/join_page.dart';
 import 'package:beautilly/screens/onboarding/shared_onboarding.dart';
 import 'package:beautilly/utils/colors.dart';
 import 'package:beautilly/widget/custom_button.dart';
-import 'package:flutter/material.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnBoardingScreen extends StatefulWidget {
   const OnBoardingScreen({super.key});
@@ -91,7 +93,8 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                             },
                             child: const Padding(
                               padding: EdgeInsets.symmetric(horizontal: 15),
-                              child: CustomButton(title: 'Next'),
+                              child: CustomButton(
+                                  title: 'Next', isHasMultipleWidget: false),
                             ),
                           )
                         : GestureDetector(
@@ -107,6 +110,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 15),
                               child: CustomButton(
+                                  isHasMultipleWidget: false,
                                   title: isHasPage ? 'Get Started' : 'Next'),
                             ),
                           ),

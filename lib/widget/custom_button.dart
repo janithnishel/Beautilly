@@ -3,15 +3,21 @@ import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
   final String title;
-  final double? width;
-  final double? height;
+  final bool isHasMultipleWidget;
+
+  final Widget? widget;
+  final FontWeight? fontWeight;
   final Color? color;
   final Color? textColor;
   final Color? borderColor;
+  final double? height;
   final double? strokWidth;
   final double? fontSize;
   final double? radius;
-  final Widget? widget;
+  final double? width;
+  final Color? shadowColor;
+  final Offset? shadowOffset;
+  final double? shadowBlurRadius;
 
   const CustomButton({
     super.key,
@@ -25,6 +31,11 @@ class CustomButton extends StatelessWidget {
     this.fontSize,
     this.radius,
     this.widget,
+    required this.isHasMultipleWidget,
+    this.fontWeight,
+    this.shadowColor,
+    this.shadowOffset,
+    this.shadowBlurRadius,
   });
 
   @override
@@ -40,23 +51,40 @@ class CustomButton extends StatelessWidget {
           width: strokWidth ?? 1,
         ),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          widget ?? const Text(""),
-          const SizedBox(
-            width: 10,
-          ),
-          Text(
-            title,
-            style: TextStyle(
-              color: textColor ?? bWhite,
-              fontSize: fontSize ?? 16,
-              fontWeight: FontWeight.w400,
+      child: isHasMultipleWidget
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                widget ?? const Text(""),
+                const SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: textColor ?? bWhite,
+                    fontSize: fontSize ?? 16,
+                    fontWeight: fontWeight ?? FontWeight.w400,
+                    shadows: [
+                      Shadow(
+                          blurRadius: shadowBlurRadius ?? 0,
+                          color: shadowColor ?? Colors.transparent,
+                          offset: shadowOffset ?? const Offset(0, 0)),
+                    ],
+                  ),
+                ),
+              ],
+            )
+          : Center(
+              child: Text(
+                title,
+                style: TextStyle(
+                  color: textColor ?? bWhite,
+                  fontSize: fontSize ?? 16,
+                  fontWeight: fontWeight ?? FontWeight.w400,
+                ),
+              ),
             ),
-          ),
-        ],
-      ),
     );
   }
 }
