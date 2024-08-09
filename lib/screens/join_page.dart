@@ -1,4 +1,5 @@
 import 'package:beautilly/data/onboarding_data.dart';
+import 'package:beautilly/screens/customer_profile/choose_preference.dart';
 import 'package:beautilly/screens/customer_profile/findservice_page.dart';
 import 'package:beautilly/screens/onboarding/shared_onboarding.dart';
 import 'package:beautilly/utils/colors.dart';
@@ -56,7 +57,7 @@ class JoinPage extends StatelessWidget {
         // Navigate to FindService after successful sign-in
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => FindService()),
+          MaterialPageRoute(builder: (context) => ChoosePreference()),
         );
       }
 

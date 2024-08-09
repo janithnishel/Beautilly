@@ -1,3 +1,4 @@
+import 'package:beautilly/screens/join_page.dart';
 import 'package:beautilly/utils/colors.dart';
 import 'package:beautilly/widget/custom_button.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,6 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _pageconrol.dispose();
   }
@@ -44,8 +44,8 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(40),
-                        child: Image.asset(
-                          "assets/images/user.png",
+                        child: Image.network(
+                          GlobalUser.profileUrl ?? "assets/images/user.png",
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -56,9 +56,9 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          "Hello, Samantha",
-                          style: TextStyle(
+                        Text(
+                          "Hello, ${GlobalUser.firstName ?? 'User'}",
+                          style: const TextStyle(
                               color: Color(0xff111111),
                               fontSize: 24,
                               fontWeight: FontWeight.w600,
@@ -481,7 +481,7 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
                       PageView(
                         controller: _pageconrol,
                         children: [
-                          //load the relavant pages
+                          //load the relevant pages
                           const Center(
                               child: Text("Explore Our Recommendations")),
                           Container(
