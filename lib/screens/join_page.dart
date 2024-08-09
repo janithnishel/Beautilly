@@ -7,6 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+class GlobalUser {
+  static String? firstName;
+  static String? profileUrl;
+  static String? gender;
+  static String? age;
+}
 
 class JoinPage extends StatelessWidget {
   JoinPage({super.key});
@@ -38,7 +44,23 @@ class JoinPage extends StatelessWidget {
       final UserCredential userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
 
-      return userCredential.user;
+      final User? user = userCredential.user;
+
+      if (user != null) {
+        // Store user details in global variables
+        GlobalUser.firstName = user.displayName?.split(" ").first;
+        GlobalUser.profileUrl = user.photoURL;
+        GlobalUser.gender = "Unknown"; // Set this manually or fetch from an additional data source
+        GlobalUser.age = "Unknown";    // Set this manually or fetch from an additional data source
+
+        // Navigate to FindService after successful sign-in
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => FindService()),
+        );
+      }
+
+      return user;
     } catch (e) {
       print('Error signing in with Google: $e');
       return null;
@@ -66,13 +88,8 @@ class JoinPage extends StatelessWidget {
                 onTap: () async {
                   User? user = await _signInWithGoogle(context);
                   if (user != null) {
-                    // Navigate to FindService after successful sign-in
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => FindService()),
-                    );
+                    print('Google Sign-In successful: ${user.displayName}');
                   } else {
-                    // Handle sign-in failure
                     print('Google Sign-In failed');
                   }
                 },

@@ -1,5 +1,6 @@
 import 'package:beautilly/data/beauticians%20data.dart';
 import 'package:beautilly/data/service_data.dart';
+import 'package:beautilly/screens/join_page.dart';
 import 'package:beautilly/utils/colors.dart';
 import 'package:beautilly/widget/share_widget/share_custom_textield.dart';
 import 'package:flutter/material.dart';
@@ -12,10 +13,10 @@ class FindService extends StatefulWidget {
 }
 
 class _FindServiceState extends State<FindService> {
-  //fetch the service data from servicedata data class
+  //fetch the service data from ServiceData class
   final serviceData = ServiceData().serviceDataList;
 
-  //fetch thebeauticians data from  BeauticiansData class
+  //fetch the beauticians data from BeauticiansData class
   final beauticiansData = BeauticiansData().beauticiansDataList;
 
   @override
@@ -34,9 +35,9 @@ class _FindServiceState extends State<FindService> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          "Hello, Samantha",
-                          style: TextStyle(
+                        Text(
+                          "Hello, ${GlobalUser.firstName ?? 'User'}",  // Use the global variable
+                          style: const TextStyle(
                             color: Color(0xff111111),
                             fontSize: 24,
                             fontWeight: FontWeight.w600,
@@ -201,7 +202,7 @@ class _FindServiceState extends State<FindService> {
     );
   }
 
-//build the one sevice of salon
+  //build the one service of salon
   Widget _buildService(int index) {
     return Column(
       children: [
@@ -234,8 +235,7 @@ class _FindServiceState extends State<FindService> {
     );
   }
 
-  // build  single Beautician details card
-
+  // build single Beautician details card
   Widget _buildBeauticianCard(int index) {
     return Container(
       margin: const EdgeInsets.only(right: 8),
