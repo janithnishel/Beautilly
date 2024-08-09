@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "416064020527",
+    "project_id": "glowup-95ad5",
+    "storage_bucket": "glowup-95ad5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:416064020527:android:38ca363dcea28e8aec66da",
+        "android_client_info": {
+          "package_name": "com.example.beautilly"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6i3_X2gtHrNnagWtYI4SKxEmDuUPsDTQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
