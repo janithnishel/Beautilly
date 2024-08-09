@@ -4,3 +4,4 @@ String? firstName = GlobalUser.firstName;
 String? profileUrl = GlobalUser.profileUrl;
 String? gender = GlobalUser.gender;
 String? age = GlobalUser.age;
+int? customerId = GlobalUser.customerId; // Add customerId 

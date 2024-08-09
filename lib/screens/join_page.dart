@@ -15,6 +15,7 @@ class GlobalUser {
   static String? gender;
   static String? age;
   static String? email;
+  static int? customerId; // Add Customer_ID here
 }
 
 class JoinPage extends StatelessWidget {
@@ -66,18 +67,14 @@ class JoinPage extends StatelessWidget {
           password: "Pa\$\$w0rd", // Hardcoded password as per your requirement
         );
 
-        if (isRegistered) {
-          // Navigate to ChoosePreference if the email is already registered
+        if (isRegistered || GlobalUser.customerId != null) {
+          // Navigate to ChoosePreference if the email is already registered or newly registered
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => ChoosePreference()),
           );
         } else {
-          // Handle the case where the user is newly registered or handle other scenarios as needed
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => ChoosePreference()),
-          );
+          print('Failed to retrieve Customer_ID');
         }
       }
 
@@ -113,9 +110,11 @@ class JoinPage extends StatelessWidget {
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       print('User details sent successfully');
+      GlobalUser.customerId = jsonDecode(response.body)['Customer_ID'];
       return false; // Not registered before, successfully saved
     } else if (response.statusCode == 400 && response.body.contains('Email is already registered')) {
       print('Email is already registered');
+      GlobalUser.customerId = jsonDecode(response.body)['customer_id'];
       return true; // Email is already registered
     } else {
       print('Failed to send user details: ${response.statusCode}');
