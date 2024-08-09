@@ -1,22 +1,32 @@
+import 'dart:math';
+
 import 'package:beautilly/data/beauticians%20data.dart';
+import 'package:beautilly/data/get_offer_data.dart';
+import 'package:beautilly/data/nearby_beautician._data.dart';
 import 'package:beautilly/data/service_data.dart';
 import 'package:beautilly/utils/colors.dart';
-import 'package:beautilly/widget/share_widget/share_custom_textield.dart';
+import 'package:beautilly/widget/half_circle.dart';
 import 'package:flutter/material.dart';
 
-class FindService extends StatefulWidget {
-  const FindService({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
-  State<FindService> createState() => _FindServiceState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _FindServiceState extends State<FindService> {
+class _HomePageState extends State<HomePage> {
+  //feth offer card details
+  final offerData = GetOfferData().getOfferListData;
+
   //fetch the service data from servicedata data class
   final serviceData = ServiceData().serviceDataList;
 
-  //fetch thebeauticians data from  BeauticiansData class
+  //fetch the beauticians data from  BeauticiansData class
   final beauticiansData = BeauticiansData().beauticiansDataList;
+
+  //fetch the beauticians data from  BeauticiansData class
+  final beautician = NearbyBeauticianData().nearbyBeauticianDataList;
 
   @override
   Widget build(BuildContext context) {
@@ -67,8 +77,23 @@ class _FindServiceState extends State<FindService> {
                         ),
                       ),
                     ),
-                    
                   ],
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                SizedBox(
+                  height: 120,
+                  // width: MediaQuery.of(context).size.width*0.6,
+                  child: ListView.builder(
+                    itemCount: offerData.length,
+                    shrinkWrap: true,
+                    physics: AlwaysScrollableScrollPhysics(),
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      return _buildOfferCard(index);
+                    },
+                  ),
                 ),
                 const SizedBox(
                   height: 15,
@@ -84,10 +109,8 @@ class _FindServiceState extends State<FindService> {
                   height: 20,
                 ),
                 SizedBox(
-                  // height: MediaQuery.of(context).size.height * 0.34,
                   width: MediaQuery.of(context).size.width * 1,
                   height: 205,
-
                   child: GridView.builder(
                     shrinkWrap: true,
                     itemCount: serviceData.length,
@@ -109,42 +132,43 @@ class _FindServiceState extends State<FindService> {
                   height: 20,
                 ),
                 const Text(
-                  "Enter your Location ?",
+                  "Recommended Saloon For you",
                   style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xff111111)),
                 ),
                 const SizedBox(
-                  height: 10,
+                  height: 20,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const CustomTextField(
-                      isHasHintText: false,
-                      isHasPrefixIcon: false,
-                      isHasssuffixIcon: false,
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Container(
-                      height: 40,
-                      width: 40,
-                      decoration: BoxDecoration(
-                        color: bPrimaryColor,
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                      child: const Center(
-                        child: Icon(
-                          Icons.search_sharp,
-                          color: bWhite,
-                          size: 25,
+                SizedBox(
+                  height: 100,
+                  child: ListView.builder(
+                    itemCount: beautician.length,
+                    scrollDirection: Axis.horizontal,
+                    shrinkWrap: true,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return Container(
+                        margin: const EdgeInsets.only(right: 10),
+                        width: 100,
+                        height: 100,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: bPrimaryColor, width: 2)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(2.0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(100),
+                            child: Image.asset(
+                              beautician[index].inmageUrl,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                         ),
-                      ),
-                    )
-                  ],
+                      );
+                    },
+                  ),
                 ),
                 const SizedBox(
                   height: 20,
@@ -156,7 +180,7 @@ class _FindServiceState extends State<FindService> {
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.75,
                       child: const Text(
-                        "Recommended Nearby Beauticians",
+                        "Recommended Beautician for you",
                         style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
@@ -204,6 +228,7 @@ class _FindServiceState extends State<FindService> {
     return Column(
       children: [
         Container(
+          margin: const EdgeInsets.only(right: 10),
           width: 64,
           height: 64,
           decoration: BoxDecoration(
@@ -242,7 +267,7 @@ class _FindServiceState extends State<FindService> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
+          SizedBox(
             width: 200,
             height: 200,
             child: Expanded(
@@ -349,6 +374,133 @@ class _FindServiceState extends State<FindService> {
               ),
             ],
           )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOfferCard(int index) {
+    return Container(
+      margin: EdgeInsets.only(right: 10),
+      width: MediaQuery.of(context).size.width * 0.9,
+      height: 120,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: bWhite,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.asset(
+                    offerData[index].imageUrl,
+                    fit: BoxFit.cover,
+                    height: 120,
+                    // width: MediaQuery.of(context).size.width,
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(
+                    left: 20,
+                    bottom: 30,
+                    right: 20,
+                    top: 16,
+                  ),
+                  child: Text(
+                    "Look more beautiful and \nsave more discount",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16,
+                      color: bWhite,
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 10,
+                  right: 20,
+                  bottom: 10,
+                  child: Transform.rotate(
+                    angle: -10 * pi / 180,
+                    child: Container(
+                      width: 80,
+                      height: 80,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: bSecondaryColor,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            "Up to",
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: bWhite,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            offerData[index].discount,
+                            style: const TextStyle(
+                              fontSize: 24,
+                              color: bWhite,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const Positioned(
+                  top: 30,
+                  left: -20,
+                  bottom: 30,
+                  child: HalfCircle(
+                    rotatinDirection: pi,
+                  ),
+                ),
+                const Positioned(
+                  top: 30,
+                  right: -20,
+                  bottom: 30,
+                  child: HalfCircle(
+                    rotatinDirection: -pi,
+                  ),
+                ),
+                Positioned(
+                  left: 0,
+                  right: 150,
+                  top: 80,
+                  bottom: 10,
+                  child: Container(
+                    width: 150,
+                    height: 30,
+                    decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(20),
+                          bottomRight: Radius.circular(20),
+                        ),
+                        color: bSecondaryLightColor),
+                    child: const Center(
+                        child: Text(
+                      "Get offer now!",
+                      style: TextStyle(
+                        color: bSecondaryColor,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 18,
+                      ),
+                    )),
+                  ),
+                )
+              ],
+            ),
+          ),
         ],
       ),
     );

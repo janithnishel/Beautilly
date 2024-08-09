@@ -267,7 +267,7 @@ class _NearbyBeauticianSalonState extends State<NearbyBeauticianSalon> {
                   ),
                   child: Image.asset(
                     isTap
-                        ? saloonData[index].inmageUrl
+                        ? saloonData[index].imageUrl
                         : beauticianData[index].inmageUrl,
                     fit: BoxFit.cover,
                     height: 175,

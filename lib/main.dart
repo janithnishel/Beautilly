@@ -1,4 +1,11 @@
-import 'package:beautilly/screens/onboarding_screen.dart';
+import 'dart:math';
+
+import 'package:beautilly/screens/beautician_pages/service_prediction1_page.dart';
+import 'package:beautilly/screens/customer_profile/choose_preference.dart';
+import 'package:beautilly/screens/customer_profile/findservice_page.dart';
+import 'package:beautilly/screens/home_page.dart';
+import 'package:beautilly/screens/nearby_list.dart';
+import 'package:beautilly/widget/half_circle.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -14,7 +21,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "Beautilly",
       theme: ThemeData(fontFamily: "Poppins"),
-      home: const OnBoardingScreen(),
+      home: ChoosePreference(),
     );
   }
 }

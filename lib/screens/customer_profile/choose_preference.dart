@@ -14,6 +14,14 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
   double borderRadius = 5;
   double width = 0.14;
   double height = 0.06;
+  //handle submit button and reset color
+  int isSelected = 99;
+  //initializing initial value for all the button
+  int section1 = 99;
+  int section2 = 99;
+  int section3 = 99;
+  int section4 = 99;
+  int section5 = 99;
   final PageController _pageconrol = PageController();
 
   @override
@@ -93,38 +101,59 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CustomButton(
-                      isHasMultipleWidget: false,
-                      title: "Modern",
-                      width: MediaQuery.of(context).size.height * width,
-                      radius: borderRadius,
-                      height: MediaQuery.of(context).size.height * height,
-                      textColor: bBlackColor,
-                      color: bLowLightGrey,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          section1 = 0;
+                        });
+                      },
+                      child: CustomButton(
+                        isHasMultipleWidget: false,
+                        title: "Modern",
+                        width: MediaQuery.of(context).size.height * width,
+                        radius: borderRadius,
+                        height: MediaQuery.of(context).size.height * height,
+                        textColor: section1 == 0 ? bWhite : bBlackColor,
+                        color: section1 == 0 ? bPrimaryColor : bLowLightGrey,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                    CustomButton(
-                      isHasMultipleWidget: false,
-                      title: "Natural",
-                      radius: borderRadius,
-                      width: MediaQuery.of(context).size.height * width,
-                      height: MediaQuery.of(context).size.height * height,
-                      textColor: bBlackColor,
-                      color: bLowLightGrey,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          section1 = 1;
+                        });
+                      },
+                      child: CustomButton(
+                        isHasMultipleWidget: false,
+                        title: "Natural",
+                        radius: borderRadius,
+                        width: MediaQuery.of(context).size.height * width,
+                        height: MediaQuery.of(context).size.height * height,
+                        textColor: section1 == 1 ? bWhite : bBlackColor,
+                        color: section1 == 1 ? bPrimaryColor : bLowLightGrey,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                    CustomButton(
-                      isHasMultipleWidget: false,
-                      title: "Traditional",
-                      radius: borderRadius,
-                      width: MediaQuery.of(context).size.height * width,
-                      height: MediaQuery.of(context).size.height * height,
-                      textColor: bBlackColor,
-                      color: bLowLightGrey,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          section1 = 2;
+                        });
+                      },
+                      child: CustomButton(
+                        isHasMultipleWidget: false,
+                        title: "Traditional",
+                        radius: borderRadius,
+                        width: MediaQuery.of(context).size.height * width,
+                        height: MediaQuery.of(context).size.height * height,
+                        textColor: section1 == 2 ? bWhite : bBlackColor,
+                        color: section1 == 2 ? bPrimaryColor : bLowLightGrey,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
                     )
                   ],
                 ),
@@ -156,54 +185,82 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CustomButton(
-                      isHasMultipleWidget: false,
-                      title: "Conversational",
-                      width: MediaQuery.of(context).size.height * 0.18,
-                      radius: borderRadius,
-                      height: MediaQuery.of(context).size.height * height,
-                      textColor: bBlackColor,
-                      color: bLowLightGrey,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          section2 = 0;
+                        });
+                      },
+                      child: CustomButton(
+                        isHasMultipleWidget: false,
+                        title: "Conversational",
+                        width: MediaQuery.of(context).size.height * 0.18,
+                        radius: borderRadius,
+                        height: MediaQuery.of(context).size.height * height,
+                        textColor: section2 == 0 ? bWhite : bBlackColor,
+                        color: section2 == 0 ? bPrimaryColor : bLowLightGrey,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                    CustomButton(
-                      isHasMultipleWidget: false,
-                      title: "Quiet",
-                      radius: borderRadius,
-                      width: MediaQuery.of(context).size.height * 0.1,
-                      height: MediaQuery.of(context).size.height * height,
-                      textColor: bBlackColor,
-                      color: bLowLightGrey,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          section2 = 1;
+                        });
+                      },
+                      child: CustomButton(
+                        isHasMultipleWidget: false,
+                        title: "Quiet",
+                        radius: borderRadius,
+                        width: MediaQuery.of(context).size.height * 0.1,
+                        height: MediaQuery.of(context).size.height * height,
+                        textColor: section2 == 1 ? bWhite : bBlackColor,
+                        color: section2 == 1 ? bPrimaryColor : bLowLightGrey,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                    CustomButton(
-                      isHasMultipleWidget: false,
-                      title: "Informative",
-                      radius: borderRadius,
-                      width: MediaQuery.of(context).size.height * 0.14,
-                      height: MediaQuery.of(context).size.height * height,
-                      textColor: bBlackColor,
-                      color: bLowLightGrey,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          section2 = 2;
+                        });
+                      },
+                      child: CustomButton(
+                        isHasMultipleWidget: false,
+                        title: "Informative",
+                        radius: borderRadius,
+                        width: MediaQuery.of(context).size.height * 0.14,
+                        height: MediaQuery.of(context).size.height * height,
+                        textColor: section2 == 2 ? bWhite : bBlackColor,
+                        color: section2 == 2 ? bPrimaryColor : bLowLightGrey,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ],
                 ),
                 const SizedBox(
                   height: 9,
                 ),
-                CustomButton(
-                  isHasMultipleWidget: false,
-                  title: "Supportive",
-                  radius: borderRadius,
-                  width: MediaQuery.of(context).size.height * 0.14,
-                  height: MediaQuery.of(context).size.height * height,
-                  textColor: bBlackColor,
-                  color: bLowLightGrey,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      section2 = 3;
+                    });
+                  },
+                  child: CustomButton(
+                    isHasMultipleWidget: false,
+                    title: "Supportive",
+                    radius: borderRadius,
+                    width: MediaQuery.of(context).size.height * 0.14,
+                    height: MediaQuery.of(context).size.height * height,
+                    textColor: section2 == 3 ? bWhite : bBlackColor,
+                    color: section2 == 3 ? bPrimaryColor : bLowLightGrey,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
                 const SizedBox(
                   height: 4,
@@ -233,27 +290,41 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CustomButton(
-                      isHasMultipleWidget: false,
-                      title: "Quick",
-                      width: MediaQuery.of(context).size.height * 0.217,
-                      radius: borderRadius,
-                      height: MediaQuery.of(context).size.height * height,
-                      textColor: bBlackColor,
-                      color: bLowLightGrey,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          section3 = 0;
+                        });
+                      },
+                      child: CustomButton(
+                        isHasMultipleWidget: false,
+                        title: "Quick",
+                        width: MediaQuery.of(context).size.height * 0.217,
+                        radius: borderRadius,
+                        height: MediaQuery.of(context).size.height * height,
+                        textColor: section3 == 0 ? bWhite : bBlackColor,
+                        color: section3 == 0 ? bPrimaryColor : bLowLightGrey,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                    CustomButton(
-                      isHasMultipleWidget: false,
-                      title: "Thorough",
-                      radius: borderRadius,
-                      width: MediaQuery.of(context).size.height * 0.217,
-                      height: MediaQuery.of(context).size.height * height,
-                      textColor: bBlackColor,
-                      color: bLowLightGrey,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          section3 = 1;
+                        });
+                      },
+                      child: CustomButton(
+                        isHasMultipleWidget: false,
+                        title: "Thorough",
+                        radius: borderRadius,
+                        width: MediaQuery.of(context).size.height * 0.217,
+                        height: MediaQuery.of(context).size.height * height,
+                        textColor: section3 == 1 ? bWhite : bBlackColor,
+                        color: section3 == 1 ? bPrimaryColor : bLowLightGrey,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ],
                 ),
@@ -285,27 +356,41 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CustomButton(
-                      isHasMultipleWidget: false,
-                      title: "Cheerful",
-                      width: MediaQuery.of(context).size.height * 0.217,
-                      radius: borderRadius,
-                      height: MediaQuery.of(context).size.height * height,
-                      textColor: bBlackColor,
-                      color: bLowLightGrey,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
+                    GestureDetector(
+                        onTap: () {
+                        setState(() {
+                          section4 = 0;
+                        });
+                      },
+                      child: CustomButton(
+                        isHasMultipleWidget: false,
+                        title: "Cheerful",
+                        width: MediaQuery.of(context).size.height * 0.217,
+                        radius: borderRadius,
+                        height: MediaQuery.of(context).size.height * height,
+                        textColor:  section4==0?bWhite:bBlackColor,
+                        color: section4==0?bPrimaryColor:bLowLightGrey,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                    CustomButton(
-                      isHasMultipleWidget: false,
-                      title: "Professional",
-                      radius: borderRadius,
-                      width: MediaQuery.of(context).size.height * 0.217,
-                      height: MediaQuery.of(context).size.height * height,
-                      textColor: bBlackColor,
-                      color: bLowLightGrey,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
+                    GestureDetector(
+                        onTap: () {
+                        setState(() {
+                          section4 = 1;
+                        });
+                      },
+                      child: CustomButton(
+                        isHasMultipleWidget: false,
+                        title: "Professional",
+                        radius: borderRadius,
+                        width: MediaQuery.of(context).size.height * 0.217,
+                        height: MediaQuery.of(context).size.height * height,
+                        textColor:  section4==1?bWhite:bBlackColor,
+                        color:section4==1?bPrimaryColor:bLowLightGrey,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ],
                 ),
@@ -315,27 +400,41 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CustomButton(
-                      isHasMultipleWidget: false,
-                      title: "Friendly",
-                      width: MediaQuery.of(context).size.height * 0.217,
-                      radius: borderRadius,
-                      height: MediaQuery.of(context).size.height * height,
-                      textColor: bBlackColor,
-                      color: bLowLightGrey,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
+                    GestureDetector(
+                        onTap: () {
+                        setState(() {
+                          section4 = 2;
+                        });
+                      },
+                      child: CustomButton(
+                        isHasMultipleWidget: false,
+                        title: "Friendly",
+                        width: MediaQuery.of(context).size.height * 0.217,
+                        radius: borderRadius,
+                        height: MediaQuery.of(context).size.height * height,
+                        textColor:  section4==2?bWhite:bBlackColor,
+                        color: section4==2?bPrimaryColor:bLowLightGrey,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                    CustomButton(
-                      isHasMultipleWidget: false,
-                      title: "Disciplined",
-                      radius: borderRadius,
-                      width: MediaQuery.of(context).size.height * 0.217,
-                      height: MediaQuery.of(context).size.height * height,
-                      textColor: bBlackColor,
-                      color: bLowLightGrey,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
+                    GestureDetector(
+                        onTap: () {
+                        setState(() {
+                          section4 = 3;
+                        });
+                      },
+                      child: CustomButton(
+                        isHasMultipleWidget: false,
+                        title: "Disciplined",
+                        radius: borderRadius,
+                        width: MediaQuery.of(context).size.height * 0.217,
+                        height: MediaQuery.of(context).size.height * height,
+                        textColor:  section4==3?bWhite:bBlackColor,
+                        color: section4==3?bPrimaryColor:bLowLightGrey,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ],
                 ),
@@ -367,38 +466,59 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CustomButton(
-                      isHasMultipleWidget: false,
-                      title: "0 - 30 min",
-                      width: MediaQuery.of(context).size.height * width,
-                      radius: borderRadius,
-                      height: MediaQuery.of(context).size.height * height,
-                      textColor: bBlackColor,
-                      color: bLowLightGrey,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
+                    GestureDetector(
+                        onTap: () {
+                        setState(() {
+                          section5 = 0;
+                        });
+                      },
+                      child: CustomButton(
+                        isHasMultipleWidget: false,
+                        title: "0 - 30 min",
+                        width: MediaQuery.of(context).size.height * width,
+                        radius: borderRadius,
+                        height: MediaQuery.of(context).size.height * height,
+                        textColor:  section5==0?bWhite:bBlackColor,
+                        color: section5==0?bPrimaryColor:bLowLightGrey,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                    CustomButton(
-                      isHasMultipleWidget: false,
-                      title: "0 - 45 min",
-                      radius: borderRadius,
-                      width: MediaQuery.of(context).size.height * width,
-                      height: MediaQuery.of(context).size.height * height,
-                      textColor: bBlackColor,
-                      color: bLowLightGrey,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
+                    GestureDetector(
+                        onTap: () {
+                        setState(() {
+                          section5 = 1;
+                        });
+                      },
+                      child: CustomButton(
+                        isHasMultipleWidget: false,
+                        title: "0 - 45 min",
+                        radius: borderRadius,
+                        width: MediaQuery.of(context).size.height * width,
+                        height: MediaQuery.of(context).size.height * height,
+                        textColor:  section5==1?bWhite:bBlackColor,
+                        color:section5==1?bPrimaryColor:bLowLightGrey,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                    CustomButton(
-                      isHasMultipleWidget: false,
-                      title: "0 - 1 H",
-                      radius: borderRadius,
-                      width: MediaQuery.of(context).size.height * width,
-                      height: MediaQuery.of(context).size.height * height,
-                      textColor: bBlackColor,
-                      color: bLowLightGrey,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
+                    GestureDetector(
+                        onTap: () {
+                        setState(() {
+                          section5 = 2;
+                        });
+                      },
+                      child: CustomButton(
+                        isHasMultipleWidget: false,
+                        title: "0 - 1 H",
+                        radius: borderRadius,
+                        width: MediaQuery.of(context).size.height * width,
+                        height: MediaQuery.of(context).size.height * height,
+                        textColor: section5==2?bWhite:bBlackColor,
+                        color:section5==2?bPrimaryColor:bLowLightGrey,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ],
                 ),
@@ -429,17 +549,24 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
                           )
                         ],
                       ),
-                      child: CustomButton(
-                        isHasMultipleWidget: false,
-                        title: "Reset",
-                        width: MediaQuery.of(context).size.height * 0.217,
-                        radius: borderRadius,
-                        height: MediaQuery.of(context).size.height * height,
-                        textColor: bBlackColor,
-                        color: bWhite,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        borderColor: bBlackColor,
+                      child: GestureDetector(
+                          onTap: () {
+                        setState(() {
+                          isSelected =0;
+                        });
+                      },
+                        child: CustomButton(
+                          isHasMultipleWidget: false,
+                          title: "Reset",
+                          width: MediaQuery.of(context).size.height * 0.217,
+                          radius: borderRadius,
+                          height: MediaQuery.of(context).size.height * height,
+                          textColor:isSelected==0?bWhite:bBlackColor,
+                          color:   isSelected==0?bPrimaryColor:bWhite,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          borderColor: isSelected==0?null:bBlackColor,
+                        ),
                       ),
                     ),
                     Container(
@@ -452,16 +579,24 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
                           )
                         ],
                       ),
-                      child: CustomButton(
-                        isHasMultipleWidget: false,
-                        title: "Submit",
-                        radius: borderRadius,
-                        width: MediaQuery.of(context).size.height * 0.217,
-                        height: MediaQuery.of(context).size.height * height,
-                        textColor: bWhite,
-                        color: bPrimaryColor,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
+                      child: GestureDetector(
+                          onTap: () {
+                        setState(() {
+                          isSelected = 1;
+                        });
+                      },
+                        child: CustomButton(
+                          isHasMultipleWidget: false,
+                          title: "Submit",
+                          radius: borderRadius,
+                          width: MediaQuery.of(context).size.height * 0.217,
+                          height: MediaQuery.of(context).size.height * height,
+                          textColor:  isSelected ==1?bWhite:bBlackColor,
+                          color: isSelected==1?bPrimaryColor:bWhite,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          borderColor: isSelected==1?null:bBlackColor ,
+                        ),
                       ),
                     ),
                   ],
