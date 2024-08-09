@@ -1,18 +1,20 @@
+import 'dart:convert';
 import 'package:beautilly/data/onboarding_data.dart';
 import 'package:beautilly/screens/customer_profile/choose_preference.dart';
-import 'package:beautilly/screens/customer_profile/findservice_page.dart';
 import 'package:beautilly/screens/onboarding/shared_onboarding.dart';
 import 'package:beautilly/utils/colors.dart';
 import 'package:beautilly/widget/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart' as http;
 
 class GlobalUser {
   static String? firstName;
   static String? profileUrl;
   static String? gender;
   static String? age;
+  static String? email;
 }
 
 class JoinPage extends StatelessWidget {
@@ -52,19 +54,72 @@ class JoinPage extends StatelessWidget {
         GlobalUser.firstName = user.displayName?.split(" ").first;
         GlobalUser.profileUrl = user.photoURL;
         GlobalUser.gender = "Unknown"; // Set this manually or fetch from an additional data source
-        GlobalUser.age = "Unknown";    // Set this manually or fetch from an additional data source
+        GlobalUser.age = "0";           // Set this manually or fetch from an additional data source
+        GlobalUser.email = user.email;
 
-        // Navigate to FindService after successful sign-in
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => ChoosePreference()),
+        // Send user details to your API and handle the response
+        bool isRegistered = await _sendUserDetailsToApi(
+          name: GlobalUser.firstName!,
+          gender: GlobalUser.gender!,
+          age: GlobalUser.age!,
+          email: GlobalUser.email!,
+          password: "Pa\$\$w0rd", // Hardcoded password as per your requirement
         );
+
+        if (isRegistered) {
+          // Navigate to ChoosePreference if the email is already registered
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => ChoosePreference()),
+          );
+        } else {
+          // Handle the case where the user is newly registered or handle other scenarios as needed
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => ChoosePreference()),
+          );
+        }
       }
 
       return user;
     } catch (e) {
       print('Error signing in with Google: $e');
       return null;
+    }
+  }
+
+  // Method to send user details to the API
+  Future<bool> _sendUserDetailsToApi({
+    required String name,
+    required String gender,
+    required String age,
+    required String email,
+    required String password,
+  }) async {
+    final url = Uri.parse('http://10.0.2.2:8001/customers/');
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'Name': name,
+        'Gender': gender,
+        'Age': int.tryParse(age) ?? 0, // Convert age to integer if possible
+        'Email': email,
+        'Password': password,
+      }),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      print('User details sent successfully');
+      return false; // Not registered before, successfully saved
+    } else if (response.statusCode == 400 && response.body.contains('Email is already registered')) {
+      print('Email is already registered');
+      return true; // Email is already registered
+    } else {
+      print('Failed to send user details: ${response.statusCode}');
+      return false; // Handle other failure cases as necessary
     }
   }
 
