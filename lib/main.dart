@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "Beautilly",
       theme: ThemeData(fontFamily: "Poppins"),
-      home: JoinPage(),
+      home: const ChoosePreference(),
     );
   }
 }
