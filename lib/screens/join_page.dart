@@ -112,14 +112,17 @@ class JoinPage extends StatelessWidget {
       print('User details sent successfully');
       GlobalUser.customerId = jsonDecode(response.body)['Customer_ID'];
       return false; // Not registered before, successfully saved
-    } else if (response.statusCode == 400 && response.body.contains('Email is already registered')) {
-      print('Email is already registered');
-      GlobalUser.customerId = jsonDecode(response.body)['customer_id'];
-      return true; // Email is already registered
-    } else {
-      print('Failed to send user details: ${response.statusCode}');
-      return false; // Handle other failure cases as necessary
+    } else if (response.statusCode == 400) {
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+      if (responseBody['detail'] != null && responseBody['detail']['message'] == 'Email is already registered') {
+        print('Email is already registered');
+        GlobalUser.customerId = responseBody['detail']['customer_id'];
+        return true; // Email is already registered
+      }
     }
+
+    print('Failed to send user details: ${response.statusCode}');
+    return false; // Handle other failure cases as necessary
   }
 
   @override

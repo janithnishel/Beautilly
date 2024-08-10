@@ -1,8 +1,12 @@
+import 'dart:math';
+
+import 'package:beautilly/screens/beautician_pages/service_prediction1_page.dart';
 import 'package:beautilly/screens/customer_profile/choose_preference.dart';
 import 'package:beautilly/screens/customer_profile/findservice_page.dart';
-import 'package:beautilly/screens/customer_profile/nearby_beautician_salon.dart';
+import 'package:beautilly/screens/home_page.dart';
 import 'package:beautilly/screens/join_page.dart';
-import 'package:beautilly/screens/onboarding_screen.dart';
+import 'package:beautilly/screens/nearby_list.dart';
+import 'package:beautilly/widget/half_circle.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';  // Import Firebase Core
 
@@ -21,7 +25,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "Beautilly",
       theme: ThemeData(fontFamily: "Poppins"),
-      home: const ChoosePreference(),
+      home: JoinPage(),
     );
   }
 }

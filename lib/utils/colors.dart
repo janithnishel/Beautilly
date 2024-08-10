@@ -12,7 +12,7 @@ const bAccentLightColor = Color(0xffFEF1F2);
 const bWhite = Color(0xffffffff);
 
 const bBlackColor = Color(0xff000000);
-const bDarkGrey = Color(0xff50555C);
+const bDarkGrey = Color(0xff303030); // Darker shade for hover
 final bhightLightGrey = const Color(0xff000000).withOpacity(0.1);
 final bLowLightGrey = const Color(0xff000000).withOpacity(0.05);
 final bGrey = const Color(0xff000000).withOpacity(0.5);
