@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:beautilly/api/apiservice.dart';
 import 'package:beautilly/data/onboarding_data.dart';
 import 'package:beautilly/screens/customer_profile/choose_preference.dart';
@@ -21,8 +20,15 @@ class GlobalUser {
   static int? customerId;
 }
 
-class JoinPage extends StatelessWidget {
+class JoinPage extends StatefulWidget {
   JoinPage({super.key});
+
+  @override
+  _JoinPageState createState() => _JoinPageState();
+}
+
+class _JoinPageState extends State<JoinPage> {
+  bool _isLoading = false;  // State to manage loading
 
   final data = OnboardingData().onBoardingListData;
 
@@ -112,6 +118,10 @@ class JoinPage extends StatelessWidget {
     final url = ApiService.getPreferencesUrl(customerId);
     final response = await ApiService.getRequest(url);
 
+    setState(() {
+      _isLoading = false;  // Stop loading when done
+    });
+
     if (response.statusCode == 200) {
       final Map<String, dynamic> preferences = jsonDecode(response.body);
 
@@ -155,11 +165,17 @@ class JoinPage extends StatelessWidget {
               bottom: 170,
               child: GestureDetector(
                 onTap: () async {
+                  setState(() {
+                    _isLoading = true;  // Start loading
+                  });
                   User? user = await _signInWithGoogle(context);
                   if (user != null) {
                     print('Google Sign-In successful: ${user.displayName}');
                   } else {
                     print('Google Sign-In failed');
+                    setState(() {
+                      _isLoading = false;  // Stop loading if failed
+                    });
                   }
                 },
                 child: Padding(
@@ -201,6 +217,10 @@ class JoinPage extends StatelessWidget {
                 ),
               ),
             ),
+            if (_isLoading)  // Show circular progress indicator when loading
+              Center(
+                child: CircularProgressIndicator(),
+              ),
             Container(
               alignment: const Alignment(0, 0.85),
               child: const Row(
