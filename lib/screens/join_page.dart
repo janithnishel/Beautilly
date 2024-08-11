@@ -1,6 +1,9 @@
 import 'dart:convert';
+
+import 'package:beautilly/api/apiservice.dart';
 import 'package:beautilly/data/onboarding_data.dart';
 import 'package:beautilly/screens/customer_profile/choose_preference.dart';
+import 'package:beautilly/screens/customer_profile/findservice_page.dart';
 import 'package:beautilly/screens/onboarding/shared_onboarding.dart';
 import 'package:beautilly/utils/colors.dart';
 import 'package:beautilly/widget/custom_button.dart';
@@ -15,64 +18,50 @@ class GlobalUser {
   static String? gender;
   static String? age;
   static String? email;
-  static int? customerId; // Add Customer_ID here
+  static int? customerId;
 }
 
 class JoinPage extends StatelessWidget {
   JoinPage({super.key});
 
-  // Fetch data from OnBoardingData class
   final data = OnboardingData().onBoardingListData;
 
-  // Google Sign-In method
   Future<User?> _signInWithGoogle(BuildContext context) async {
     try {
-      // Trigger the authentication flow
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
       if (googleUser == null) {
-        // The user canceled the sign-in
         return null;
       }
 
-      // Obtain the auth details from the request
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-
-      // Create a new credential
       final OAuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
-      // Sign in to Firebase with the Google [UserCredential]
       final UserCredential userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
 
       final User? user = userCredential.user;
 
       if (user != null) {
-        // Store user details in global variables
         GlobalUser.firstName = user.displayName?.split(" ").first;
         GlobalUser.profileUrl = user.photoURL;
-        GlobalUser.gender = "Unknown"; // Set this manually or fetch from an additional data source
-        GlobalUser.age = "0";           // Set this manually or fetch from an additional data source
+        GlobalUser.gender = "Unknown";
+        GlobalUser.age = "0";
         GlobalUser.email = user.email;
 
-        // Send user details to your API and handle the response
         bool isRegistered = await _sendUserDetailsToApi(
           name: GlobalUser.firstName!,
           gender: GlobalUser.gender!,
           age: GlobalUser.age!,
           email: GlobalUser.email!,
-          password: "Pa\$\$w0rd", // Hardcoded password as per your requirement
+          password: "Pa\$\$w0rd",
         );
 
         if (isRegistered || GlobalUser.customerId != null) {
-          // Navigate to ChoosePreference if the email is already registered or newly registered
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => ChoosePreference()),
-          );
+          await _checkPreferences(context, GlobalUser.customerId!);
         } else {
           print('Failed to retrieve Customer_ID');
         }
@@ -85,7 +74,6 @@ class JoinPage extends StatelessWidget {
     }
   }
 
-  // Method to send user details to the API
   Future<bool> _sendUserDetailsToApi({
     required String name,
     required String gender,
@@ -93,36 +81,59 @@ class JoinPage extends StatelessWidget {
     required String email,
     required String password,
   }) async {
-    final url = Uri.parse('http://10.0.2.2:8001/customers/');
     final response = await http.post(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      Uri.parse(ApiService.getCustomersUrl()),
+      headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'Name': name,
         'Gender': gender,
-        'Age': int.tryParse(age) ?? 0, // Convert age to integer if possible
+        'Age': int.tryParse(age) ?? 0,
         'Email': email,
         'Password': password,
       }),
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) {
-      print('User details sent successfully');
       GlobalUser.customerId = jsonDecode(response.body)['Customer_ID'];
-      return false; // Not registered before, successfully saved
+      return false;
     } else if (response.statusCode == 400) {
       final Map<String, dynamic> responseBody = jsonDecode(response.body);
       if (responseBody['detail'] != null && responseBody['detail']['message'] == 'Email is already registered') {
-        print('Email is already registered');
         GlobalUser.customerId = responseBody['detail']['customer_id'];
-        return true; // Email is already registered
+        return true;
       }
     }
 
     print('Failed to send user details: ${response.statusCode}');
-    return false; // Handle other failure cases as necessary
+    return false;
+  }
+
+  Future<void> _checkPreferences(BuildContext context, int customerId) async {
+    final url = ApiService.getPreferencesUrl(customerId);
+    final response = await ApiService.getRequest(url);
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> preferences = jsonDecode(response.body);
+
+      if (preferences.containsKey('Style_Orientation')) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => FindService()),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => ChoosePreference()),
+        );
+      }
+    } else if (response.statusCode == 404) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => ChoosePreference()),
+      );
+    } else {
+      print('Failed to check preferences: ${response.statusCode}');
+    }
   }
 
   @override

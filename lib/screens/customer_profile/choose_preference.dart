@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'package:beautilly/screens/customer_profile/findservice_page.dart';
 import 'package:beautilly/screens/join_page.dart';
 import 'package:beautilly/utils/colors.dart';
 import 'package:beautilly/widget/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:fluttertoast/fluttertoast.dart'; // Import the fluttertoast package
 import 'package:http/http.dart' as http;
 
 class ChoosePreference extends StatefulWidget {
@@ -75,15 +77,41 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        print('Preferences submitted successfully');
-        // Handle success response (e.g., navigate to another screen)
+        // Show a success toast message
+        Fluttertoast.showToast(
+          msg: "Preferences submitted successfully",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+        );
+
+        // Navigate to FindService page
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => FindService()),
+        );
       } else {
         print('Failed to submit preferences: ${response.statusCode}');
-        // Handle failure response
+        // Show an error toast message
+        Fluttertoast.showToast(
+          msg: "Failed to submit preferences",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+        );
       }
     } catch (e) {
       print('Error submitting preferences: $e');
-      // Handle error (e.g., show an error message to the user)
+      // Show an error toast message
+      Fluttertoast.showToast(
+        msg: "Error submitting preferences",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+      );
     }
   }
 
