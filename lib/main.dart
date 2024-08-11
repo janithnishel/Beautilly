@@ -1,19 +1,53 @@
-import 'dart:math';
-
-import 'package:beautilly/screens/beautician_pages/service_prediction1_page.dart';
-import 'package:beautilly/screens/customer_profile/choose_preference.dart';
-import 'package:beautilly/screens/customer_profile/findservice_page.dart';
-import 'package:beautilly/screens/home_page.dart';
+import 'dart:convert';
+import 'package:beautilly/api/apiservice.dart';
 import 'package:beautilly/screens/join_page.dart';
-import 'package:beautilly/screens/nearby_list.dart';
-import 'package:beautilly/widget/half_circle.dart';
+import 'package:beautilly/utils/GlobalUser.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';  // Import Firebase Core
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();  // Initialize Firebase
+  await Firebase.initializeApp();
+
+  User? currentUser = FirebaseAuth.instance.currentUser;
+  if (currentUser != null) {
+    GlobalUser.firstName = currentUser.displayName?.split(" ").first;
+    GlobalUser.profileUrl = currentUser.photoURL;
+    GlobalUser.email = currentUser.email;
+
+    await fetchCustomerDetailsAndPreferences();
+  }
+
   runApp(const MyApp());
+}
+
+Future<void> fetchCustomerDetailsAndPreferences() async {
+  int? customerId = await getCustomerIdFromApi(GlobalUser.email);
+  if (customerId != null) {
+    GlobalUser.customerId = customerId;
+    await _checkPreferences(customerId);
+  }
+}
+
+Future<void> _checkPreferences(int customerId) async {
+  final url = ApiService.getPreferencesUrl(customerId);
+  final response = await ApiService.getRequest(url);
+
+  if (response.statusCode == 200) {
+    final Map<String, dynamic> preferences = ApiService.parseResponse(response);
+
+    GlobalUser.styleOrientation = preferences['Style_Orientation'];
+    GlobalUser.speedOfService = preferences['Speed_of_Service'];
+    GlobalUser.beauticianInteractionStyle = preferences['Beautician_Interaction_Style'];
+    GlobalUser.beauticianPersonalityType = preferences['Beautician_Personality_Type'];
+
+    // Additional logic based on preferences
+  } else if (response.statusCode == 404) {
+    print('Preferences not found for customer ID: $customerId');
+  } else {
+    print('Failed to check preferences: ${response.statusCode}');
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -27,5 +61,25 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(fontFamily: "Poppins"),
       home: JoinPage(),
     );
+  }
+}
+
+Future<int?> getCustomerIdFromApi(String? email) async {
+  if (email == null) return null;
+
+  final url = ApiService.getCustomersUrl();
+  final response = await ApiService.getRequest('$url?email=$email');
+
+  if (response.statusCode == 200) {
+    final List<dynamic> customers = jsonDecode(response.body);
+    if (customers.isNotEmpty) {
+      return customers[0]['Customer_ID'];
+    } else {
+      print('No customer found with the provided email');
+      return null;
+    }
+  } else {
+    print('Failed to fetch customer ID: ${response.statusCode}');
+    return null;
   }
 }

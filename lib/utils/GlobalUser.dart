@@ -1,7 +1,14 @@
-import 'package:beautilly/screens/join_page.dart';
+class GlobalUser {
+  static String? firstName;
+  static String? profileUrl;
+  static String? gender;
+  static String? age;
+  static String? email;
+  static int? customerId;
 
-String? firstName = GlobalUser.firstName;
-String? profileUrl = GlobalUser.profileUrl;
-String? gender = GlobalUser.gender;
-String? age = GlobalUser.age;
-int? customerId = GlobalUser.customerId; // Add customerId 
+  // Add fields to store preferences
+  static String? styleOrientation;
+  static String? speedOfService;
+  static String? beauticianInteractionStyle;
+  static String? beauticianPersonalityType;
+}

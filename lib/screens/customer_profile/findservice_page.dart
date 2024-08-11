@@ -1,6 +1,7 @@
 import 'package:beautilly/data/beauticians%20data.dart';
 import 'package:beautilly/data/service_data.dart';
 import 'package:beautilly/screens/join_page.dart';
+import 'package:beautilly/utils/GlobalUser.dart';
 import 'package:beautilly/utils/colors.dart';
 import 'package:beautilly/widget/share_widget/share_custom_textield.dart';
 import 'package:flutter/material.dart';

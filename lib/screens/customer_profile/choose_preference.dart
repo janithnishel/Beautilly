@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:beautilly/screens/customer_profile/findservice_page.dart';
 import 'package:beautilly/screens/join_page.dart';
+import 'package:beautilly/utils/GlobalUser.dart';
 import 'package:beautilly/utils/colors.dart';
 import 'package:beautilly/widget/custom_button.dart';
 import 'package:flutter/material.dart';

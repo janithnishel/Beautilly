@@ -4,21 +4,13 @@ import 'package:beautilly/data/onboarding_data.dart';
 import 'package:beautilly/screens/customer_profile/choose_preference.dart';
 import 'package:beautilly/screens/customer_profile/findservice_page.dart';
 import 'package:beautilly/screens/onboarding/shared_onboarding.dart';
+import 'package:beautilly/utils/GlobalUser.dart';
 import 'package:beautilly/utils/colors.dart';
 import 'package:beautilly/widget/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
-
-class GlobalUser {
-  static String? firstName;
-  static String? profileUrl;
-  static String? gender;
-  static String? age;
-  static String? email;
-  static int? customerId;
-}
 
 class JoinPage extends StatefulWidget {
   JoinPage({super.key});
@@ -28,7 +20,7 @@ class JoinPage extends StatefulWidget {
 }
 
 class _JoinPageState extends State<JoinPage> {
-  bool _isLoading = false;  // State to manage loading
+  bool _isLoading = false;
 
   final data = OnboardingData().onBoardingListData;
 
@@ -119,11 +111,16 @@ class _JoinPageState extends State<JoinPage> {
     final response = await ApiService.getRequest(url);
 
     setState(() {
-      _isLoading = false;  // Stop loading when done
+      _isLoading = false;
     });
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> preferences = jsonDecode(response.body);
+
+      GlobalUser.styleOrientation = preferences['Style_Orientation'];
+      GlobalUser.speedOfService = preferences['Speed_of_Service'];
+      GlobalUser.beauticianInteractionStyle = preferences['Beautician_Interaction_Style'];
+      GlobalUser.beauticianPersonalityType = preferences['Beautician_Personality_Type'];
 
       if (preferences.containsKey('Style_Orientation')) {
         Navigator.pushReplacement(
@@ -166,7 +163,7 @@ class _JoinPageState extends State<JoinPage> {
               child: GestureDetector(
                 onTap: () async {
                   setState(() {
-                    _isLoading = true;  // Start loading
+                    _isLoading = true;
                   });
                   User? user = await _signInWithGoogle(context);
                   if (user != null) {
@@ -174,7 +171,7 @@ class _JoinPageState extends State<JoinPage> {
                   } else {
                     print('Google Sign-In failed');
                     setState(() {
-                      _isLoading = false;  // Stop loading if failed
+                      _isLoading = false;
                     });
                   }
                 },
@@ -217,9 +214,9 @@ class _JoinPageState extends State<JoinPage> {
                 ),
               ),
             ),
-            if (_isLoading)  // Show circular progress indicator when loading
+            if (_isLoading)
               Center(
-                child: CircularProgressIndicator(),
+                child: const CircularProgressIndicator(),
               ),
             Container(
               alignment: const Alignment(0, 0.85),
