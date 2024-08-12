@@ -94,6 +94,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                             child: const Padding(
                               padding: EdgeInsets.symmetric(horizontal: 15),
                               child: CustomButton(
+                           
                                   title: 'Next', isHasMultipleWidget: false),
                             ),
                           )
@@ -110,6 +111,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 15),
                               child: CustomButton(
+                         
                                   isHasMultipleWidget: false,
                                   title: isHasPage ? 'Get Started' : 'Next'),
                             ),

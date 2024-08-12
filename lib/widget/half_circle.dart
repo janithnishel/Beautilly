@@ -5,7 +5,10 @@ import 'package:flutter/material.dart';
 
 class HalfCircle extends StatelessWidget {
   final double rotatinDirection;
-  const HalfCircle({super.key, required this.rotatinDirection});
+  const HalfCircle({
+    super.key,
+    required this.rotatinDirection,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +18,6 @@ class HalfCircle extends StatelessWidget {
         child: Container(
           width: 30,
           height: 40,
-        
           child: CustomPaint(
             painter: HalfCirclePainter(),
           ),
@@ -29,7 +31,7 @@ class HalfCirclePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color =bWhite
+      ..color = bWhite
       ..style = PaintingStyle.fill;
 
     // Define the rectangle that bounds the half circle

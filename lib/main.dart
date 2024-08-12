@@ -1,11 +1,8 @@
-import 'dart:math';
-
-import 'package:beautilly/screens/beautician_pages/service_prediction1_page.dart';
-import 'package:beautilly/screens/customer_profile/choose_preference.dart';
-import 'package:beautilly/screens/customer_profile/findservice_page.dart';
-import 'package:beautilly/screens/home_page.dart';
-import 'package:beautilly/screens/nearby_list.dart';
-import 'package:beautilly/widget/half_circle.dart';
+import 'package:beautilly/screens/Admin/add_preference.dart';
+import 'package:beautilly/screens/Admin/saloon_visual_home.dart';
+import 'package:beautilly/screens/Admin/shop_details.dart';
+import 'package:beautilly/screens/Admin/target_audience.dart';
+import 'package:beautilly/screens/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -21,7 +18,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "Beautilly",
       theme: ThemeData(fontFamily: "Poppins"),
-      home: ChoosePreference(),
+      home: SaloonVisualHome(),
     );
   }
 }

@@ -32,10 +32,11 @@ class JoinPage extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: CustomButton(isHasMultipleWidget: true,
+                
                     title: "Join with Google",
                     color: bWhite,
                     textColor: bPrimaryColor,
-                    widget: Image.asset(
+                    leftSideWidget: Image.asset(
                       "assets/images/googleIcon.png",
                       fit: BoxFit.cover,
                       width: 15,
@@ -54,11 +55,13 @@ class JoinPage extends StatelessWidget {
                 child: const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 15),
                   child: CustomButton(isHasMultipleWidget: true,
+               
                     title: "Join with Email",
-                    widget: Icon(
+                    leftSideWidget: Icon(
                       Icons.email,
                       color: bWhite,
                       size: 15,
+
                     ),
                   ),
                 ),
