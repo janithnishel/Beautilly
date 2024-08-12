@@ -121,16 +121,17 @@ class _JoinPageState extends State<JoinPage> {
       GlobalUser.speedOfService = preferences['Speed_of_Service'];
       GlobalUser.beauticianInteractionStyle = preferences['Beautician_Interaction_Style'];
       GlobalUser.beauticianPersonalityType = preferences['Beautician_Personality_Type'];
+      GlobalUser.averageTime = preferences['Average_Time']; // Save the new Average_Time
 
       if (preferences.containsKey('Style_Orientation')) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => FindService()),
+          MaterialPageRoute(builder: (context) => const FindService()),
         );
       } else {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => ChoosePreference()),
+          MaterialPageRoute(builder: (context) => const ChoosePreference()),
         );
       }
     } else if (response.statusCode == 404) {
@@ -215,8 +216,8 @@ class _JoinPageState extends State<JoinPage> {
               ),
             ),
             if (_isLoading)
-              Center(
-                child: const CircularProgressIndicator(),
+              const Center(
+                child: CircularProgressIndicator(),
               ),
             Container(
               alignment: const Alignment(0, 0.85),

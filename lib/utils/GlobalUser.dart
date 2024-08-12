@@ -11,4 +11,5 @@ class GlobalUser {
   static String? speedOfService;
   static String? beauticianInteractionStyle;
   static String? beauticianPersonalityType;
+  static String? averageTime; // Add averageTime to store the user's preference for average time
 }

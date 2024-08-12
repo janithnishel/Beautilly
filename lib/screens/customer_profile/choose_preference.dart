@@ -1,12 +1,11 @@
 import 'dart:convert';
 import 'package:beautilly/screens/customer_profile/findservice_page.dart';
-import 'package:beautilly/screens/join_page.dart';
 import 'package:beautilly/utils/GlobalUser.dart';
 import 'package:beautilly/utils/colors.dart';
 import 'package:beautilly/widget/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:fluttertoast/fluttertoast.dart'; // Import the fluttertoast package
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
 class ChoosePreference extends StatefulWidget {
@@ -73,6 +72,13 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
                   : section4 == 2
                       ? 'Friendly'
                       : 'Disciplined',
+          'Average_Time': section5 == 0
+              ? '0 - 30 min'
+              : section5 == 1
+                  ? '0 - 45 min'
+                  : section5 == 2
+                      ? '0 - 1 H'
+                      : 'Unknown',
           'Customer_ID': customerId,
         }),
       );
@@ -611,7 +617,7 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
                   height: 4,
                 ),
                 Text(
-                  "Choose your personality style",
+                  "Choose your average time",
                   style: TextStyle(
                     color: bGrey,
                     fontSize: 12,
