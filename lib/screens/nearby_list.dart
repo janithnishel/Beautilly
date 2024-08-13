@@ -26,59 +26,71 @@ class _NearbyListState extends State<NearbyList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                "Nearby Salon List",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xff111111),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Nearby Salon List",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xff111111),
+                  ),
                 ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              SizedBox(
-                height: 40,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: serviceData.length,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          indexNo = index;
-                          clickButton.add(indexNo);
-                          print(indexNo);
-                          print(clickButton);
-                        });
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 10),
-                        child: CustomButton(
-                          title: serviceData[index].title,
-                          isHasMultipleWidget: false,
-                          width: 100,
-                          borderColor: bPrimaryColor,
-                          color: bPrimaryLightColor,
-                          textColor: bPrimaryColor,
+                const SizedBox(
+                  height: 20,
+                ),
+                SizedBox(
+                  height: 40,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: serviceData.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            indexNo = index;
+                            clickButton.add(indexNo);
+                            print(indexNo);
+                            print(clickButton);
+                          });
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 10),
+                          child: CustomButton(
+                      
+                            title: serviceData[index].title,
+                            isHasMultipleWidget: false,
+                            width: 120,
+                            borderColor: bPrimaryColor,
+                            color: bPrimaryLightColor,
+                            textColor: bPrimaryColor,
+                          ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              //
-              _buildSaloonCard(0),
-            ],
+                const SizedBox(
+                  height: 20,
+                ),
+                //
+
+                ListView.builder(
+                  itemCount: nearbySaloonData.length,
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    return _buildSaloonCard(index);
+                  },
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -87,6 +99,7 @@ class _NearbyListState extends State<NearbyList> {
 
   Widget _buildSaloonCard(int index) {
     return Container(
+      margin: EdgeInsets.only(bottom: 10),
       width: MediaQuery.of(context).size.width,
       height: 150,
       decoration: BoxDecoration(
@@ -120,17 +133,25 @@ class _NearbyListState extends State<NearbyList> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 12, top: 12),
-                  child: Container(
-                    width: 35,
-                    height: 35,
-                    decoration: const BoxDecoration(
-                        shape: BoxShape.circle, color: bAccentLightColor),
-                    child: const Center(
-                        child: Icon(
-                      Icons.favorite,
-                      color: bAccentRedColor,
-                      size: 25,
-                    )),
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        indexNo = index;
+                        print(index);
+                      });
+                    },
+                    child: Container(
+                      width: 35,
+                      height: 35,
+                      decoration: const BoxDecoration(
+                          shape: BoxShape.circle, color: bAccentLightColor),
+                      child: const Center(
+                          child: Icon(
+                        Icons.favorite,
+                        color: bAccentRedColor,
+                        size: 25,
+                      )),
+                    ),
                   ),
                 ),
                 Padding(
@@ -148,7 +169,7 @@ class _NearbyListState extends State<NearbyList> {
                     child: Center(
                       child: Text(
                         nearbySaloonData[index].distance,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: bSecondaryColor,
                           fontSize: 12,
                           fontWeight: FontWeight.w700,
@@ -168,10 +189,17 @@ class _NearbyListState extends State<NearbyList> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text("Hair,Facial"),
+                    const Text(
+                      "Hair . Facial",
+                      style: TextStyle(
+                          color: bPrimaryColor,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400),
+                    ),
                     const SizedBox(height: 5),
                     Text(
                       nearbySaloonData[index].salonName,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         color: Color(0xff111111),
                         fontWeight: FontWeight.w700,
@@ -190,11 +218,11 @@ class _NearbyListState extends State<NearbyList> {
                           overflow: TextOverflow.ellipsis),
                     ),
                     const SizedBox(
-                      height: 20,
+                      height: 15,
                     ),
                     Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.star,
                           size: 16,
                           color: bSecondaryColor,
@@ -204,7 +232,7 @@ class _NearbyListState extends State<NearbyList> {
                         ),
                         Text(
                           nearbySaloonData[index].rateScore.toString(),
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
                             color: Color(
@@ -217,23 +245,23 @@ class _NearbyListState extends State<NearbyList> {
                         ),
                         Text(
                           "(${nearbySaloonData[index].ratedCount})",
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
                             color: bBlackColor,
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 20,
                         ),
                         Image.asset(
-                          "assets/images/Base.png",
+                          "assets/images/mask.png",
                           fit: BoxFit.cover,
                         ),
                         const SizedBox(
                           width: 5,
                         ),
-                        Text(
+                        const Text(
                           "-58%",
                           style: TextStyle(
                             fontSize: 12,

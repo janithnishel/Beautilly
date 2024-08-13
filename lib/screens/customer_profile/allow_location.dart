@@ -84,6 +84,7 @@ class _AllowLocationState extends State<AllowLocation> {
                                 shadowBlurRadius: 1,
                                 shadowOffset: Offset(0, 4),
                                 shadowColor: bBlackColor,
+                            
                               )
                             ],
                           ),

@@ -49,7 +49,7 @@ class _ServicePredictionState extends State<ServicePrediction> {
                         fontWeight: FontWeight.w500),
                   ),
                 ),
-                CustomButton(title: "view All", isHasMultipleWidget: true,widget:Icon(Icons.arrow_back_ios) ,)
+                CustomButton(title: "view All", isHasMultipleWidget: true,leftSideWidget:Icon(Icons.arrow_back_ios) ,)
               ],
             )
           ],

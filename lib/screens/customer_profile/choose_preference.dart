@@ -199,6 +199,7 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
                         });
                       },
                       child: CustomButton(
+                        
                         isHasMultipleWidget: false,
                         title: "Modern",
                         width: MediaQuery.of(context).size.height * width,
@@ -217,6 +218,7 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
                         });
                       },
                       child: CustomButton(
+                        
                         isHasMultipleWidget: false,
                         title: "Natural",
                         radius: borderRadius,
@@ -235,6 +237,7 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
                         });
                       },
                       child: CustomButton(
+                        
                         isHasMultipleWidget: false,
                         title: "Traditional",
                         radius: borderRadius,
@@ -283,6 +286,7 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
                         });
                       },
                       child: CustomButton(
+                        
                         isHasMultipleWidget: false,
                         title: "Conversational",
                         width: MediaQuery.of(context).size.height * 0.18,
@@ -301,6 +305,7 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
                         });
                       },
                       child: CustomButton(
+                        
                         isHasMultipleWidget: false,
                         title: "Quiet",
                         radius: borderRadius,
@@ -319,6 +324,7 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
                         });
                       },
                       child: CustomButton(
+                        
                         isHasMultipleWidget: false,
                         title: "Informative",
                         radius: borderRadius,
@@ -342,6 +348,7 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
                     });
                   },
                   child: CustomButton(
+                    
                     isHasMultipleWidget: false,
                     title: "Supportive",
                     radius: borderRadius,
@@ -388,6 +395,7 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
                         });
                       },
                       child: CustomButton(
+                        
                         isHasMultipleWidget: false,
                         title: "Quick",
                         width: MediaQuery.of(context).size.height * 0.217,
@@ -406,6 +414,7 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
                         });
                       },
                       child: CustomButton(
+                        
                         isHasMultipleWidget: false,
                         title: "Thorough",
                         radius: borderRadius,
@@ -454,6 +463,7 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
                         });
                       },
                       child: CustomButton(
+                        
                         isHasMultipleWidget: false,
                         title: "Cheerful",
                         width: MediaQuery.of(context).size.height * 0.217,
@@ -472,6 +482,7 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
                         });
                       },
                       child: CustomButton(
+                        
                         isHasMultipleWidget: false,
                         title: "Professional",
                         radius: borderRadius,
@@ -498,6 +509,7 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
                         });
                       },
                       child: CustomButton(
+                        
                         isHasMultipleWidget: false,
                         title: "Friendly",
                         width: MediaQuery.of(context).size.height * 0.217,
@@ -516,6 +528,7 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
                         });
                       },
                       child: CustomButton(
+                        
                         isHasMultipleWidget: false,
                         title: "Disciplined",
                         radius: borderRadius,
@@ -564,6 +577,7 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
                         });
                       },
                       child: CustomButton(
+                        
                         isHasMultipleWidget: false,
                         title: "0 - 30 min",
                         width: MediaQuery.of(context).size.height * width,
@@ -582,6 +596,7 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
                         });
                       },
                       child: CustomButton(
+                        
                         isHasMultipleWidget: false,
                         title: "0 - 45 min",
                         radius: borderRadius,
@@ -600,6 +615,7 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
                         });
                       },
                       child: CustomButton(
+                        
                         isHasMultipleWidget: false,
                         title: "0 - 1 H",
                         radius: borderRadius,
@@ -652,6 +668,7 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
                           });
                         },
                         child: CustomButton(
+                          
                           isHasMultipleWidget: false,
                           title: "Reset",
                           width: MediaQuery.of(context).size.height * 0.217,
@@ -683,6 +700,7 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
                           await _submitPreferences(); // Submit preferences to the API
                         },
                         child: CustomButton(
+                          
                           isHasMultipleWidget: false,
                           title: "Submit",
                           radius: borderRadius,

@@ -2,12 +2,10 @@ import 'package:beautilly/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
-  final String title;
   final bool isHasMultipleWidget;
-
-  final Widget? widget;
-  final FontWeight? fontWeight;
+  final bool? isCenter;
   final Color? color;
+  final Color? shadowColor;
   final Color? textColor;
   final Color? borderColor;
   final double? height;
@@ -15,9 +13,12 @@ class CustomButton extends StatelessWidget {
   final double? fontSize;
   final double? radius;
   final double? width;
-  final Color? shadowColor;
-  final Offset? shadowOffset;
   final double? shadowBlurRadius;
+  final Widget? leftSideWidget;
+  final String title;
+  final Offset? shadowOffset;
+  final Widget? rightSideImage;
+  final FontWeight? fontWeight;
 
   const CustomButton({
     super.key,
@@ -30,12 +31,14 @@ class CustomButton extends StatelessWidget {
     this.strokWidth,
     this.fontSize,
     this.radius,
-    this.widget,
+    this.leftSideWidget,
     required this.isHasMultipleWidget,
     this.fontWeight,
     this.shadowColor,
     this.shadowOffset,
     this.shadowBlurRadius,
+    this.rightSideImage,
+    this.isCenter,
   });
 
   @override
@@ -52,29 +55,56 @@ class CustomButton extends StatelessWidget {
         ),
       ),
       child: isHasMultipleWidget
-          ? Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                widget ?? const Text(""),
-                const SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  title,
-                  style: TextStyle(
-                    color: textColor ?? bWhite,
-                    fontSize: fontSize ?? 16,
-                    fontWeight: fontWeight ?? FontWeight.w400,
-                    shadows: [
-                      Shadow(
-                          blurRadius: shadowBlurRadius ?? 0,
-                          color: shadowColor ?? Colors.transparent,
-                          offset: shadowOffset ?? const Offset(0, 0)),
+          ? isCenter ?? true
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    leftSideWidget ?? const Text(""),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      title,
+                      style: TextStyle(
+                        color: textColor ?? bWhite,
+                        fontSize: fontSize ?? 16,
+                        fontWeight: fontWeight ?? FontWeight.w400,
+                        shadows: [
+                          Shadow(
+                            blurRadius: shadowBlurRadius ?? 0,
+                            color: shadowColor ?? Colors.transparent,
+                            offset: shadowOffset ?? const Offset(0, 0),
+                          ),
+                        ],
+                      ),
+                    ),
+                    rightSideImage ?? Text("")
+                  ],
+                )
+              : Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        title,
+                        style: TextStyle(
+                          color: textColor ?? bWhite,
+                          fontSize: fontSize ?? 16,
+                          fontWeight: fontWeight ?? FontWeight.w400,
+                          shadows: [
+                            Shadow(
+                              blurRadius: shadowBlurRadius ?? 0,
+                              color: shadowColor ?? Colors.transparent,
+                              offset: shadowOffset ?? const Offset(0, 0),
+                            ),
+                          ],
+                        ),
+                      ),
+                      rightSideImage ??Text("")
                     ],
                   ),
-                ),
-              ],
-            )
+                )
           : Center(
               child: Text(
                 title,

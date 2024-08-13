@@ -183,7 +183,7 @@ class _JoinPageState extends State<JoinPage> {
                     title: "Join with Google",
                     color: bWhite,
                     textColor: bPrimaryColor,
-                    widget: Image.asset(
+                    leftSideWidget: Image.asset(
                       "assets/images/googleIcon.png",
                       fit: BoxFit.cover,
                       width: 15,
@@ -206,10 +206,11 @@ class _JoinPageState extends State<JoinPage> {
                   child: CustomButton(
                     isHasMultipleWidget: true,
                     title: "Join with Email",
-                    widget: Icon(
+                    leftSideWidget: Icon(
                       Icons.email,
                       color: bWhite,
                       size: 15,
+
                     ),
                   ),
                 ),
