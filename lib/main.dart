@@ -5,6 +5,7 @@ import 'package:beautilly/utils/GlobalUser.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:http/http.dart' as http;  // Import the http package
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,20 +28,22 @@ Future<void> fetchCustomerDetailsAndPreferences() async {
   if (customerId != null) {
     GlobalUser.customerId = customerId;
     await _checkPreferences(customerId);
+   
   }
 }
 
 Future<void> _checkPreferences(int customerId) async {
   final url = ApiService.getPreferencesUrl(customerId);
-  final response = await ApiService.getRequest(url);
+  final response = await http.get(Uri.parse(url));
 
   if (response.statusCode == 200) {
-    final Map<String, dynamic> preferences = ApiService.parseResponse(response);
+    final Map<String, dynamic> preferences = jsonDecode(response.body);
 
     GlobalUser.styleOrientation = preferences['Style_Orientation'];
     GlobalUser.speedOfService = preferences['Speed_of_Service'];
     GlobalUser.beauticianInteractionStyle = preferences['Beautician_Interaction_Style'];
     GlobalUser.beauticianPersonalityType = preferences['Beautician_Personality_Type'];
+    GlobalUser.averageTime = preferences['Average_Time'];
 
     // Additional logic based on preferences
   } else if (response.statusCode == 404) {
@@ -49,6 +52,7 @@ Future<void> _checkPreferences(int customerId) async {
     print('Failed to check preferences: ${response.statusCode}');
   }
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -59,7 +63,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "Beautilly",
       theme: ThemeData(fontFamily: "Poppins"),
-      home: JoinPage(),
+      home:  JoinPage(),
     );
   }
 }
@@ -68,7 +72,7 @@ Future<int?> getCustomerIdFromApi(String? email) async {
   if (email == null) return null;
 
   final url = ApiService.getCustomersUrl();
-  final response = await ApiService.getRequest('$url?email=$email');
+  final response = await http.get(Uri.parse('$url?email=$email'));
 
   if (response.statusCode == 200) {
     final List<dynamic> customers = jsonDecode(response.body);
