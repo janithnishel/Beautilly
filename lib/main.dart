@@ -1,8 +1,11 @@
-import 'package:beautilly/screens/Admin/add_preference.dart';
-import 'package:beautilly/screens/Admin/saloon_visual_home.dart';
-import 'package:beautilly/screens/Admin/shop_details.dart';
-import 'package:beautilly/screens/Admin/target_audience.dart';
-import 'package:beautilly/screens/onboarding_screen.dart';
+import 'package:beautilly/screens/face_pages/face_shop_details.dart';
+import 'package:beautilly/screens/face_pages/face_treatment.dart';
+import 'package:beautilly/screens/face_pages/face_treatment/image_uplad_page.dart';
+import 'package:beautilly/screens/face_pages/face_treatment/makeup_image.dart';
+import 'package:beautilly/screens/face_pages/iamge_uploader.dart';
+import 'package:beautilly/screens/face_pages/makeup/image_uplad_page.dart';
+import 'package:beautilly/screens/face_pages/makeup/makeup_image.dart';
+import 'package:beautilly/screens/face_pages/makeup/makeup_selection.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -18,7 +21,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "Beautilly",
       theme: ThemeData(fontFamily: "Poppins"),
-      home: SaloonVisualHome(),
+      home:FaceTreatmentImage(),
     );
   }
 }

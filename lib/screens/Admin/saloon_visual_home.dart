@@ -1,4 +1,3 @@
-import 'package:beautilly/screens/Admin/add_preference.dart';
 import 'package:beautilly/screens/page_with_bottom_navigation.dart';
 import 'package:beautilly/widget/custom_button.dart';
 import 'package:flutter/material.dart';
