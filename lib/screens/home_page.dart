@@ -8,6 +8,7 @@ import 'package:beautilly/widget/half_circle.dart';
 import 'package:flutter/material.dart';
 import 'package:beautilly/utils/GlobalUser.dart';
 
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -20,15 +21,15 @@ class _HomePageState extends State<HomePage> {
   final serviceData = ServiceData().serviceDataList;
   final beautician = NearbyBeauticianData().nearbyBeauticianDataList;
 
-  Map<String, dynamic>? recommendedBeautician;
+  List<Map<String, dynamic>> recommendedBeauticians = [];
 
   @override
   void initState() {
     super.initState();
-    _fetchAndRecommendBeautician();
+    _fetchAndRecommendBeauticians();
   }
 
-  Future<void> _fetchAndRecommendBeautician() async {
+ Future<void> _fetchAndRecommendBeauticians() async {
     try {
       // Get customer ID from GlobalUser
       int? customerId = GlobalUser.customerId;
@@ -41,16 +42,17 @@ class _HomePageState extends State<HomePage> {
       Map<String, dynamic> preferences = await ApiService.getPreferences(customerId);
 
       // Send recommendation request
-      Map<String, dynamic> recommendation = await ApiService.getRecommendation(preferences);
+      List<Map<String, dynamic>> recommendations = await ApiService.getRecommendation(preferences);
 
-      // Update the state with the recommended beautician data
+      // Update the state with the first three recommended beauticians
       setState(() {
-        recommendedBeautician = recommendation;
+        recommendedBeauticians = recommendations.take(3).toList(); // Take only the first three recommendations
       });
     } catch (e) {
-      print('Error fetching and recommending beautician: $e');
+      print('Error fetching and recommending beauticians: $e');
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +82,12 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(height: 20),
                 _buildNearbySalons(),
                 const SizedBox(height: 20),
-                _buildBeauticianRecommendation(),
+                const Text(
+                  "Recommended Beauticians for You",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Color(0xff111111)),
+                ),
+                const SizedBox(height: 20),
+                _buildBeauticianRecommendations(),
               ],
             ),
           ),
@@ -188,85 +195,64 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildBeauticianRecommendation() {
-    if (recommendedBeautician == null) {
+  Widget _buildBeauticianRecommendations() {
+    if (recommendedBeauticians.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     } else {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            "Recommended Beautician for you",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Color(0xff111111)),
-          ),
-          const SizedBox(height: 20),
-          _buildBeauticianCard(),
-        ],
+      return SizedBox(
+        height: 300, // Adjust the height as needed
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: recommendedBeauticians.length,
+          itemBuilder: (context, index) {
+            return _buildBeauticianCard(recommendedBeauticians[index]);
+          },
+        ),
       );
     }
   }
 
-  Widget _buildBeauticianCard() {
+  Widget _buildBeauticianCard(Map<String, dynamic> beauticianData) {
     return Container(
-      margin: const EdgeInsets.only(right: 8),
+      margin: const EdgeInsets.only(right: 16),
       width: 200,
-      height: 400,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: 200,
-            height: 200,
-            child: Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.network(
-                    recommendedBeautician?['Image'] ?? '',
-                    fit: BoxFit.cover,
-                    height: 200,
-                    width: 200,
-                  ),
-                ),
-                Container(
-                  alignment: const Alignment(0.95, -0.95),
-                  child: Container(
-                    width: 30,
-                    height: 30,
-                    decoration: BoxDecoration(
-                      color: bAccentLightColor,
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    child: const Icon(
-                      Icons.favorite_border,
-                      color: bAccentRedColor,
-                    ),
-                  ),
-                ),
-              ],
+          // Image
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.network(
+              beauticianData['Image'] ?? '',
+              fit: BoxFit.cover,
+              height: 150,
+              width: 200,
             ),
           ),
           const SizedBox(height: 10),
+          // Name
           Text(
-            recommendedBeautician?['Name'] ?? '',
-            style: const TextStyle(fontSize: 16, color: bBlackColor, fontWeight: FontWeight.w600),
+            beauticianData['Name'] ?? '',
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
+          // Gender
           Text(
-            "Gender: ${recommendedBeautician?['Gender'] ?? ''}",
-            style: TextStyle(fontSize: 14, color: bGrey, fontWeight: FontWeight.w500),
+            "Gender: ${beauticianData['Gender'] ?? ''}",
+            style: const TextStyle(fontSize: 14, color: Colors.grey),
           ),
+          // Salon Name
           Text(
-            "Salon: ${recommendedBeautician?['Salon_Name'] ?? ''}",
-            style: TextStyle(fontSize: 14, color: bGrey, fontWeight: FontWeight.w500),
+            "Salon: ${beauticianData['Salon_Name'] ?? ''}",
+            style: const TextStyle(fontSize: 14, color: Colors.grey),
           ),
-          const SizedBox(height: 5),
+          // Score
           Row(
             children: [
-              const Icon(Icons.star, color: bSecondaryColor, size: 15),
-              const SizedBox(width: 5),
+              const Icon(Icons.star, color: Colors.amber, size: 16),
+              const SizedBox(width: 4),
               Text(
-                recommendedBeautician?['score']?.toString() ?? '',
-                style: const TextStyle(color: Color(0xff111111), fontWeight: FontWeight.w600, fontSize: 12),
+                beauticianData['score']?.toString() ?? 'N/A',
+                style: const TextStyle(fontSize: 14),
               ),
             ],
           ),

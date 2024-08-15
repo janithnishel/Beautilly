@@ -63,8 +63,8 @@ class ApiService {
     }
   }
 
- // Method to send recommendation request with the correct format
-  static Future<dynamic> getRecommendation(Map<String, dynamic> preferences) async {
+ // Method to send recommendation request and handle both List and Map response types
+  static Future<List<Map<String, dynamic>>> getRecommendation(Map<String, dynamic> preferences) async {
     final formattedPreferences = {
       "styleOrientation": [preferences['Style_Orientation']],
       "speedOfService": [preferences['Speed_of_Service']],
@@ -82,10 +82,11 @@ class ApiService {
 
     if (response.statusCode == 200) {
       final decodedResponse = jsonDecode(response.body);
+      
       if (decodedResponse is List) {
-        return decodedResponse.isNotEmpty ? decodedResponse[0] : null; // Handle the first item in the list if it's a list
+        return decodedResponse.cast<Map<String, dynamic>>();
       } else if (decodedResponse is Map<String, dynamic>) {
-        return decodedResponse;
+        return [decodedResponse];  // Wrap the single object in a list
       } else {
         throw Exception('Unexpected response format');
       }

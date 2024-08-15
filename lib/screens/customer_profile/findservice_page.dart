@@ -16,16 +16,16 @@ class FindService extends StatefulWidget {
 class _FindServiceState extends State<FindService> {
   final serviceData = ServiceData().serviceDataList;
 
-  // Placeholder for the beautician recommendation data
-  Map<String, dynamic>? recommendedBeautician;
+  // Placeholder for the beautician recommendations data
+  List<Map<String, dynamic>> recommendedBeauticians = [];
 
   @override
   void initState() {
     super.initState();
-    _fetchAndRecommendBeautician();
+    _fetchAndRecommendBeauticians();
   }
 
-  Future<void> _fetchAndRecommendBeautician() async {
+  Future<void> _fetchAndRecommendBeauticians() async {
     try {
       // Get customer ID from GlobalUser
       int? customerId = GlobalUser.customerId;
@@ -38,14 +38,14 @@ class _FindServiceState extends State<FindService> {
       Map<String, dynamic> preferences = await ApiService.getPreferences(customerId);
 
       // Send recommendation request
-      Map<String, dynamic> recommendation = await ApiService.getRecommendation(preferences);
+      List<Map<String, dynamic>> recommendations = await ApiService.getRecommendation(preferences);
 
-      // Update the state with the recommended beautician data
+      // Update the state with the first three recommended beauticians
       setState(() {
-        recommendedBeautician = recommendation;
+        recommendedBeauticians = recommendations.take(3).toList(); // Take only the first three recommendations
       });
     } catch (e) {
-      print('Error fetching and recommending beautician: $e');
+      print('Error fetching and recommending beauticians: $e');
     }
   }
 
@@ -68,7 +68,7 @@ class _FindServiceState extends State<FindService> {
                 const SizedBox(height: 20),
                 _buildServiceGrid(),
                 const SizedBox(height: 20),
-                _buildBeauticianRecommendation(),
+                _buildBeauticianRecommendations(),
               ],
             ),
           ),
@@ -128,29 +128,37 @@ class _FindServiceState extends State<FindService> {
     );
   }
 
-  Widget _buildBeauticianRecommendation() {
-    if (recommendedBeautician == null) {
+  Widget _buildBeauticianRecommendations() {
+    if (recommendedBeauticians.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     } else {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            "Recommended Beautician for you",
+            "Recommended Beauticians for You",
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Color(0xff111111)),
           ),
           const SizedBox(height: 20),
-          _buildBeauticianCard(),
+          SizedBox(
+            height: 300, // Adjust the height as needed
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: recommendedBeauticians.length,
+              itemBuilder: (context, index) {
+                return _buildBeauticianCard(recommendedBeauticians[index]);
+              },
+            ),
+          ),
         ],
       );
     }
   }
 
-  Widget _buildBeauticianCard() {
+  Widget _buildBeauticianCard(Map<String, dynamic> beauticianData) {
     return Container(
-      margin: const EdgeInsets.only(right: 8),
+      margin: const EdgeInsets.only(right: 16),
       width: 200,
-      height: 400,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -162,7 +170,7 @@ class _FindServiceState extends State<FindService> {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Image.network(
-                    recommendedBeautician?['Image'] ?? '',
+                    beauticianData['Image'] ?? '',
                     fit: BoxFit.cover,
                     height: 200,
                     width: 200,
@@ -188,15 +196,15 @@ class _FindServiceState extends State<FindService> {
           ),
           const SizedBox(height: 10),
           Text(
-            recommendedBeautician?['Name'] ?? '',
+            beauticianData['Name'] ?? '',
             style: const TextStyle(fontSize: 16, color: bBlackColor, fontWeight: FontWeight.w600),
           ),
           Text(
-            "Gender: ${recommendedBeautician?['Gender'] ?? ''}",
+            "Gender: ${beauticianData['Gender'] ?? ''}",
             style: TextStyle(fontSize: 14, color: bGrey, fontWeight: FontWeight.w500),
           ),
           Text(
-            "Salon: ${recommendedBeautician?['Salon_Name'] ?? ''}",
+            "Salon: ${beauticianData['Salon_Name'] ?? ''}",
             style: TextStyle(fontSize: 14, color: bGrey, fontWeight: FontWeight.w500),
           ),
           const SizedBox(height: 5),
@@ -205,7 +213,7 @@ class _FindServiceState extends State<FindService> {
               const Icon(Icons.star, color: bSecondaryColor, size: 15),
               const SizedBox(width: 5),
               Text(
-                recommendedBeautician?['score']?.toString() ?? '',
+                beauticianData['score']?.toString() ?? '',
                 style: const TextStyle(color: Color(0xff111111), fontWeight: FontWeight.w600, fontSize: 12),
               ),
             ],
