@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:beautilly/api/apiservice.dart';
+import 'package:beautilly/screens/Admin/add_preference.dart';
+import 'package:beautilly/screens/Admin/saloon_visual_home.dart';
 import 'package:beautilly/screens/join_page.dart';
 import 'package:beautilly/utils/GlobalUser.dart';
 import 'package:flutter/material.dart';
@@ -67,7 +69,7 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
+//  JoinPage(),
 Future<int?> getCustomerIdFromApi(String? email) async {
   if (email == null) return null;
 

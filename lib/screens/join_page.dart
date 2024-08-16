@@ -42,18 +42,18 @@ class _JoinPageState extends State<JoinPage> {
           await FirebaseAuth.instance.signInWithCredential(credential);
 
       final User? user = userCredential.user;
-
-      if (user != null) {
+ if (user != null) {
         GlobalUser.firstName = user.displayName?.split(" ").first;
         GlobalUser.profileUrl = user.photoURL;
-        GlobalUser.gender = "Unknown";
-        GlobalUser.age = "0";
+        GlobalUser.gender = "Unknown"; // Default value
+        GlobalUser.age = "00-00"; // Default value for age
         GlobalUser.email = user.email;
 
         bool isRegistered = await _sendUserDetailsToApi(
           name: GlobalUser.firstName!,
           gender: GlobalUser.gender!,
           age: GlobalUser.age!,
+          incomeLevel: "unkown", // Include income level
           email: GlobalUser.email!,
           password: "Pa\$\$w0rd",
         );
@@ -76,6 +76,7 @@ class _JoinPageState extends State<JoinPage> {
     required String name,
     required String gender,
     required String age,
+    required String incomeLevel, // New parameter for income level
     required String email,
     required String password,
   }) async {
@@ -85,7 +86,8 @@ class _JoinPageState extends State<JoinPage> {
       body: jsonEncode({
         'Name': name,
         'Gender': gender,
-        'Age': int.tryParse(age) ?? 0,
+        'Age': age, // Age as a string
+        'IncomeLevel': incomeLevel, // Send income level
         'Email': email,
         'Password': password,
       }),

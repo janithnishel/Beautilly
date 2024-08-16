@@ -37,7 +37,7 @@ class SaloonVisualHome extends StatelessWidget {
                   ),
                 );
               },
-              child: CustomButton(
+              child: const CustomButton(
                 title: "NEXT",
                 isHasMultipleWidget: false,
                 fontWeight: FontWeight.w600,

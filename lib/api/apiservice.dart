@@ -12,6 +12,10 @@ class ApiService {
     return '$baseUrl/customers/';
   }
 
+   static String getVisualsUrl() {
+    return '$baseUrl/visuals/';
+  }
+
   // General GET request method with error handling
   static Future<http.Response> getRequest(String url) async {
     try {
@@ -93,5 +97,12 @@ class ApiService {
     } else {
       throw Exception('Failed to get recommendation');
     }
+  }
+
+
+    // Method to submit visual preferences including image URLs
+  static Future<http.Response> submitVisualPreferences(Map<String, dynamic> preferences) async {
+    final url = getVisualsUrl();
+    return await postRequest(url, preferences);
   }
 }
