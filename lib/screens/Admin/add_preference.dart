@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:beautilly/api/apiservice.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class AddPreference extends StatefulWidget {
   const AddPreference({super.key});
@@ -24,6 +25,12 @@ class _AddPreferenceState extends State<AddPreference> {
   File? _selectedStylingStationImage;
   File? _selectedWashingStationImage;
   File? _selectedWaitingAreaImage;
+
+  String _selectedAge = '18-24'; // Default age
+  String _selectedGender = 'Male'; // Default gender
+  String _selectedIncomeLevel = 'Low'; // Default income level
+
+  bool isSubmitting = false; // State for submission
 
   Future<void> _pickImage(Function(File) onImageSelected) async {
     final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -44,10 +51,39 @@ class _AddPreferenceState extends State<AddPreference> {
       throw Exception("Error uploading image: $e");
     }
   }
+Future<void> _submitPreferences() async {
+  setState(() {
+    isSubmitting = true;
+  });
 
-  Future<void> _submitPreferences() async {
-    try {
-      // Upload images to Firebase and get their URLs
+  try {
+    final customerId = 1; // Replace with actual customer ID
+
+    // Fetch the current customer details
+    final currentCustomerDetails = await ApiService.getCustomer(customerId);
+
+    // Update the customer details with the selected dropdown values
+    Map<String, dynamic> customerDetails = {
+      "Customer_ID": customerId,
+      "Name": currentCustomerDetails['Name'], // Keep existing Name
+      "Gender": _selectedGender.isNotEmpty ? _selectedGender : currentCustomerDetails['Gender'],
+      "Age": _selectedAge.isNotEmpty ? _selectedAge : currentCustomerDetails['Age'],
+      "IncomeLevel": _selectedIncomeLevel.isNotEmpty ? _selectedIncomeLevel : currentCustomerDetails['IncomeLevel'],
+      "Email": currentCustomerDetails['Email'], // Keep existing Email
+      "Password": currentCustomerDetails['Password'], // Keep existing Password
+    };
+
+    // Log the request payload to inspect it before sending
+    print("Sending customer details: $customerDetails");
+
+    // API call to update customer preferences
+    final updateResponse = await ApiService.updateCustomer(customerDetails);
+
+    // Check the response status code
+    if (updateResponse.statusCode == 200) {
+      print("Customer preferences updated successfully.");
+
+      // Proceed with uploading images only after successful update
       String colorUrl = _selectedColorSchemeImage != null
           ? await _uploadImageToFirebase(_selectedColorSchemeImage!, "preferences/color_scheme")
           : '';
@@ -76,7 +112,7 @@ class _AddPreferenceState extends State<AddPreference> {
           ? await _uploadImageToFirebase(_selectedWaitingAreaImage!, "preferences/waiting_area")
           : '';
 
-      // Construct the request body
+      // Construct the request body for visual preferences
       Map<String, dynamic> requestBody = {
         "Color": colorUrl,
         "Decor": decorUrl,
@@ -85,23 +121,52 @@ class _AddPreferenceState extends State<AddPreference> {
         "WashingStation": washingStationUrl,
         "StylingStation": stylingStationUrl,
         "WaitingArea": waitingAreaUrl,
-        "CustomerID": 1, // Replace with actual customer ID
+        "CustomerID": customerId, // Replace with actual customer ID
       };
 
-      // Use ApiService to submit visual preferences
+      // Log the request body for visual preferences
+      print("Sending visual preferences: $requestBody");
+
+      // API call to submit visual preferences
       final response = await ApiService.submitVisualPreferences(requestBody);
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        // Handle success
-        print("Preferences submitted successfully");
+      if (response.statusCode == 200) {
+        Fluttertoast.showToast(
+          msg: "Preferences and photos updated successfully",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+        );
+        print("Visual preferences updated successfully.");
       } else {
-        // Handle failure
-        print("Failed to submit preferences");
+        Fluttertoast.showToast(
+          msg: "Failed to upload photos",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+        );
+        print("Failed to upload photos. Status code: ${response.statusCode}");
       }
-    } catch (e) {
-      print("Error submitting preferences: $e");
+    } else {
+      Fluttertoast.showToast(
+        msg: "Failed to update preferences",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+      );
+      print("Failed to update preferences. Status code: ${updateResponse.statusCode}");
     }
+  } catch (e) {
+    print("Error submitting preferences: $e");
+    Fluttertoast.showToast(
+      msg: "Error submitting preferences",
+      toastLength: Toast.LENGTH_LONG,
+      gravity: ToastGravity.BOTTOM,
+    );
+  } finally {
+    setState(() {
+      isSubmitting = false;
+    });
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -148,6 +213,8 @@ class _AddPreferenceState extends State<AddPreference> {
                       isHasMultipleWidget: true,
                       rightSideImage: CustomDropdownButton(
                         dropdownItems: ["18-24", "25-34", "35-44", "45-54"],
+                        value: _selectedAge,
+                        onChanged: (val) => setState(() => _selectedAge = val),
                       ),
                       color: bWhite,
                       fontWeight: FontWeight.w600,
@@ -163,6 +230,8 @@ class _AddPreferenceState extends State<AddPreference> {
                       isHasMultipleWidget: true,
                       rightSideImage: CustomDropdownButton(
                         dropdownItems: ["Male", "Female"],
+                        value: _selectedGender,
+                        onChanged: (val) => setState(() => _selectedGender = val),
                       ),
                       color: bWhite,
                       fontWeight: FontWeight.w600,
@@ -178,6 +247,8 @@ class _AddPreferenceState extends State<AddPreference> {
                       isHasMultipleWidget: true,
                       rightSideImage: CustomDropdownButton(
                         dropdownItems: ["Low", "Middle", "High"],
+                        value: _selectedIncomeLevel,
+                        onChanged: (val) => setState(() => _selectedIncomeLevel = val),
                       ),
                       color: bWhite,
                       fontWeight: FontWeight.w600,
@@ -384,47 +455,49 @@ class _AddPreferenceState extends State<AddPreference> {
                     const SizedBox(
                       height: 20,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              isSelected = 0;
-                            });
-                          },
-                          child: CustomButton(
-                            title: "Cancel",
-                            isHasMultipleWidget: false,
-                            width: 150,
-                            fontWeight: FontWeight.w600,
-                            color: isSelected == 0 ? bPrimaryColor : bWhite,
-                            textColor: isSelected == 0 ? bWhite : bBlackColor,
-                            borderColor: isSelected == 0 ? null : bPrimaryColor,
+                    isSubmitting
+                        ? CircularProgressIndicator()
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    isSelected = 0;
+                                  });
+                                },
+                                child: CustomButton(
+                                  title: "Cancel",
+                                  isHasMultipleWidget: false,
+                                  width: 150,
+                                  fontWeight: FontWeight.w600,
+                                  color: isSelected == 0 ? bPrimaryColor : bWhite,
+                                  textColor: isSelected == 0 ? bWhite : bBlackColor,
+                                  borderColor: isSelected == 0 ? null : bPrimaryColor,
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    isSelected = 1;
+                                  });
+                                  _submitPreferences();
+                                },
+                                child: CustomButton(
+                                  title: "Submit",
+                                  isHasMultipleWidget: false,
+                                  width: 150,
+                                  fontWeight: FontWeight.w600,
+                                  color: isSelected == 1 ? bPrimaryColor : bWhite,
+                                  textColor: isSelected == 1 ? bWhite : bBlackColor,
+                                  borderColor: isSelected == 1 ? null : bPrimaryColor,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              isSelected = 1;
-                            });
-                            _submitPreferences(); // Handle submit logic here.
-                          },
-                          child: CustomButton(
-                            title: "Submit",
-                            isHasMultipleWidget: false,
-                            width: 150,
-                            fontWeight: FontWeight.w600,
-                            color: isSelected == 1 ? bPrimaryColor : bWhite,
-                            textColor: isSelected == 1 ? bWhite : bBlackColor,
-                            borderColor: isSelected == 1 ? null : bPrimaryColor,
-                          ),
-                        ),
-                      ],
-                    ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class CustomDropdownButton extends StatefulWidget {
   List<String> dropdownItems = [];
 
-  CustomDropdownButton({super.key, required this.dropdownItems});
+  CustomDropdownButton({super.key, required this.dropdownItems, required void Function(dynamic val) onChanged, required String value});
 
   @override
   State<CustomDropdownButton> createState() => _CustomDropdownButtonState();

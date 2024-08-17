@@ -16,6 +16,14 @@ class ApiService {
     return '$baseUrl/visuals/';
   }
 
+   static String getCustomerUrl(int customerId) {
+    return '$baseUrl/customers/$customerId';
+  }
+
+    static String getUpdateCustomerUrl() {
+    return '$baseUrl/customers/update_customer';
+  }
+
   // General GET request method with error handling
   static Future<http.Response> getRequest(String url) async {
     try {
@@ -106,11 +114,11 @@ class ApiService {
     return await postRequest(url, preferences);
   }
 
- // Method to update customer data via PUT request
-  static Future<http.Response> putRequest(String url, Map<String, dynamic> body) async {
+
+  static Future<http.Response> putRequest(Uri url, Map<String, dynamic> body) async {
     try {
       final response = await http.put(
-        Uri.parse(url),
+        url,
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(body),
       );
@@ -124,5 +132,18 @@ class ApiService {
       throw Exception('Failed to make request: $e');
     }
   }
+
+  // Method to fetch customer details
+  static Future<Map<String, dynamic>> getCustomer(int customerId) async {
+    final url = getCustomerUrl(customerId);
+    final response = await getRequest(url);
+    return parseResponse(response);
+  }
+
+static Future<http.Response> updateCustomer(Map<String, dynamic> customerDetails) async {
+  final url = Uri.parse(getUpdateCustomerUrl());  // Convert the String URL to a Uri
+  return await putRequest(url, customerDetails);  // Use PUT instead of POST
+}
+
 
 }
