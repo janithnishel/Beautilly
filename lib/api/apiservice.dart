@@ -105,4 +105,24 @@ class ApiService {
     final url = getVisualsUrl();
     return await postRequest(url, preferences);
   }
+
+ // Method to update customer data via PUT request
+  static Future<http.Response> putRequest(String url, Map<String, dynamic> body) async {
+    try {
+      final response = await http.put(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(body),
+      );
+
+      if (response.statusCode == 200) {
+        return response;
+      } else {
+        throw Exception('Failed to update data: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to make request: $e');
+    }
+  }
+
 }

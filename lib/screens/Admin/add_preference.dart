@@ -2,8 +2,10 @@ import 'dart:io';
 import 'package:beautilly/utils/colors.dart';
 import 'package:beautilly/widget/custom_button.dart';
 import 'package:beautilly/widget/custom_dropdown_button.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:beautilly/api/apiservice.dart';
 
 class AddPreference extends StatefulWidget {
   const AddPreference({super.key});
@@ -29,6 +31,75 @@ class _AddPreferenceState extends State<AddPreference> {
       setState(() {
         onImageSelected(File(pickedFile.path));
       });
+    }
+  }
+
+  Future<String> _uploadImageToFirebase(File imageFile, String path) async {
+    try {
+      final storageReference = FirebaseStorage.instance.ref().child(path);
+      final uploadTask = storageReference.putFile(imageFile);
+      await uploadTask.whenComplete(() {});
+      return await storageReference.getDownloadURL();
+    } catch (e) {
+      throw Exception("Error uploading image: $e");
+    }
+  }
+
+  Future<void> _submitPreferences() async {
+    try {
+      // Upload images to Firebase and get their URLs
+      String colorUrl = _selectedColorSchemeImage != null
+          ? await _uploadImageToFirebase(_selectedColorSchemeImage!, "preferences/color_scheme")
+          : '';
+
+      String decorUrl = _selectedDecorStyleImage != null
+          ? await _uploadImageToFirebase(_selectedDecorStyleImage!, "preferences/decor_style")
+          : '';
+
+      String lightingUrl = _selectedLightingImage != null
+          ? await _uploadImageToFirebase(_selectedLightingImage!, "preferences/lighting")
+          : '';
+
+      String furnitureUrl = _selectedFurnitureImage != null
+          ? await _uploadImageToFirebase(_selectedFurnitureImage!, "preferences/furniture")
+          : '';
+
+      String washingStationUrl = _selectedWashingStationImage != null
+          ? await _uploadImageToFirebase(_selectedWashingStationImage!, "preferences/washing_station")
+          : '';
+
+      String stylingStationUrl = _selectedStylingStationImage != null
+          ? await _uploadImageToFirebase(_selectedStylingStationImage!, "preferences/styling_station")
+          : '';
+
+      String waitingAreaUrl = _selectedWaitingAreaImage != null
+          ? await _uploadImageToFirebase(_selectedWaitingAreaImage!, "preferences/waiting_area")
+          : '';
+
+      // Construct the request body
+      Map<String, dynamic> requestBody = {
+        "Color": colorUrl,
+        "Decor": decorUrl,
+        "Lighting": lightingUrl,
+        "Furniture": furnitureUrl,
+        "WashingStation": washingStationUrl,
+        "StylingStation": stylingStationUrl,
+        "WaitingArea": waitingAreaUrl,
+        "CustomerID": 1, // Replace with actual customer ID
+      };
+
+      // Use ApiService to submit visual preferences
+      final response = await ApiService.submitVisualPreferences(requestBody);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // Handle success
+        print("Preferences submitted successfully");
+      } else {
+        // Handle failure
+        print("Failed to submit preferences");
+      }
+    } catch (e) {
+      print("Error submitting preferences: $e");
     }
   }
 
@@ -337,7 +408,7 @@ class _AddPreferenceState extends State<AddPreference> {
                             setState(() {
                               isSelected = 1;
                             });
-                            // Handle submit logic here.
+                            _submitPreferences(); // Handle submit logic here.
                           },
                           child: CustomButton(
                             title: "Submit",

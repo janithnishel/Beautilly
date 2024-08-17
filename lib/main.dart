@@ -4,6 +4,7 @@ import 'package:beautilly/screens/Admin/add_preference.dart';
 import 'package:beautilly/screens/Admin/saloon_visual_home.dart';
 import 'package:beautilly/screens/join_page.dart';
 import 'package:beautilly/utils/GlobalUser.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,6 +13,11 @@ import 'package:http/http.dart' as http;  // Import the http package
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+ await FirebaseAppCheck.instance.activate(
+  androidProvider: AndroidProvider.playIntegrity,
+);
+
 
   User? currentUser = FirebaseAuth.instance.currentUser;
   if (currentUser != null) {
@@ -65,7 +71,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "Beautilly",
       theme: ThemeData(fontFamily: "Poppins"),
-      home:  JoinPage(),
+      home:  SaloonVisualHome(),
     );
   }
 }

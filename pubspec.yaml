@@ -41,6 +41,8 @@ dependencies:
   google_sign_in: ^6.0.2
   fluttertoast: ^8.0.9
   image_picker: ^0.8.4+4
+  firebase_storage: ^11.6.0
+  firebase_app_check: ^0.2.0
 
 dev_dependencies:
   flutter_test:
