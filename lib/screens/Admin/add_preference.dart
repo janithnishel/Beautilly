@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:beautilly/utils/colors.dart';
 import 'package:beautilly/widget/custom_button.dart';
@@ -7,6 +8,42 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:beautilly/api/apiservice.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
+
+// Move these to top-level outside of any class
+double? preprocessAge(dynamic age) {
+  if (age == null) {
+    return null;
+  } else if (age is String) {
+    try {
+      var ageSplit = age.split('-');
+      var startAge = double.parse(ageSplit[0].trim());
+      var endAge = double.parse(ageSplit[1].trim());
+      return (startAge + endAge) / 2;
+    } catch (e) {
+      print('Error processing age "$age": $e');
+      return null;
+    }
+  } else if (age is int || age is double) {
+    return age.toDouble();
+  } else {
+    print('Unhandled type for age: ${age.runtimeType}');
+    return null;
+  }
+}
+
+class CategoricalEncoder {
+  final Map<String, int> _genderEncoder = {'male': 0, 'female': 1};
+  final Map<String, int> _incomeLevelEncoder = {'low': 0, 'middle': 1, 'high': 2};
+
+  int encodeGender(String gender) {
+    return _genderEncoder[gender.toLowerCase()] ?? 0; // Default to 0 if not found
+  }
+
+  int encodeIncomeLevel(String incomeLevel) {
+    return _incomeLevelEncoder[incomeLevel.toLowerCase()] ?? 0; // Default to 0 if not found
+  }
+}
 
 class AddPreference extends StatefulWidget {
   const AddPreference({super.key});
@@ -51,6 +88,7 @@ class _AddPreferenceState extends State<AddPreference> {
       throw Exception("Error uploading image: $e");
     }
   }
+
 Future<void> _submitPreferences() async {
   setState(() {
     isSubmitting = true;
@@ -73,7 +111,6 @@ Future<void> _submitPreferences() async {
       "Password": currentCustomerDetails['Password'], // Keep existing Password
     };
 
-
     // Log the request payload to inspect it before sending
     print("Sending customer details: $customerDetails");
 
@@ -84,67 +121,113 @@ Future<void> _submitPreferences() async {
     if (updateResponse.statusCode == 200) {
       print("Customer preferences updated successfully.");
 
-      // Proceed with uploading images only after successful update
-      String colorUrl = _selectedColorSchemeImage != null
-          ? await _uploadImageToFirebase(_selectedColorSchemeImage!, "preferences/color_scheme")
-          : '';
+      // Prepare data for cluster prediction
+      CategoricalEncoder encoder = CategoricalEncoder();
+      int genderEncoded = encoder.encodeGender(_selectedGender);
+      int incomeLevelEncoded = encoder.encodeIncomeLevel(_selectedIncomeLevel);
+      double? ageProcessed = preprocessAge(_selectedAge);
 
-      String decorUrl = _selectedDecorStyleImage != null
-          ? await _uploadImageToFirebase(_selectedDecorStyleImage!, "preferences/decor_style")
-          : '';
+      // Construct the full URL for the cluster prediction endpoint
+      final clusterUrl = '${ApiService.baseUrl}/cluster/predict/';
 
-      String lightingUrl = _selectedLightingImage != null
-          ? await _uploadImageToFirebase(_selectedLightingImage!, "preferences/lighting")
-          : '';
+      // Construct the request body for prediction using MultipartRequest
+      var request = http.MultipartRequest('POST', Uri.parse(clusterUrl))
+        ..fields['Age'] = ageProcessed.toString()
+        ..fields['Gender'] = genderEncoded.toString()
+        ..fields['IncomeLevel'] = incomeLevelEncoded.toString();
 
-      String furnitureUrl = _selectedFurnitureImage != null
-          ? await _uploadImageToFirebase(_selectedFurnitureImage!, "preferences/furniture")
-          : '';
+      // Add image files to the request
+      if (_selectedColorSchemeImage != null) {
+        request.files.add(await http.MultipartFile.fromPath('Color', _selectedColorSchemeImage!.path));
+      }
+      if (_selectedDecorStyleImage != null) {
+        request.files.add(await http.MultipartFile.fromPath('Decor', _selectedDecorStyleImage!.path));
+      }
+      if (_selectedLightingImage != null) {
+        request.files.add(await http.MultipartFile.fromPath('Lightning', _selectedLightingImage!.path));
+      }
+      if (_selectedFurnitureImage != null) {
+        request.files.add(await http.MultipartFile.fromPath('Furniture', _selectedFurnitureImage!.path));
+      }
+      if (_selectedStylingStationImage != null) {
+        request.files.add(await http.MultipartFile.fromPath('StylingStation', _selectedStylingStationImage!.path));
+      }
+      if (_selectedWashingStationImage != null) {
+        request.files.add(await http.MultipartFile.fromPath('WashingStation', _selectedWashingStationImage!.path));
+      }
+      if (_selectedWaitingAreaImage != null) {
+        request.files.add(await http.MultipartFile.fromPath('WaitingArea', _selectedWaitingAreaImage!.path));
+      }
 
-      String washingStationUrl = _selectedWashingStationImage != null
-          ? await _uploadImageToFirebase(_selectedWashingStationImage!, "preferences/washing_station")
-          : '';
+      // Send the request for cluster prediction
+      final streamedResponse = await request.send();
+      final clusterResponse = await http.Response.fromStream(streamedResponse);
 
-      String stylingStationUrl = _selectedStylingStationImage != null
-          ? await _uploadImageToFirebase(_selectedStylingStationImage!, "preferences/styling_station")
-          : '';
+      if (clusterResponse.statusCode == 200) {
+        final clusterData = jsonDecode(clusterResponse.body);
+        int predictedCluster = clusterData['predicted_cluster'];
 
-      String waitingAreaUrl = _selectedWaitingAreaImage != null
-          ? await _uploadImageToFirebase(_selectedWaitingAreaImage!, "preferences/waiting_area")
-          : '';
+        // Store the Firebase URLs after prediction
+        String colorUrl = _selectedColorSchemeImage != null
+            ? await _uploadImageToFirebase(_selectedColorSchemeImage!, "preferences/color_scheme")
+            : '';
+        String decorUrl = _selectedDecorStyleImage != null
+            ? await _uploadImageToFirebase(_selectedDecorStyleImage!, "preferences/decor_style")
+            : '';
+        String lightingUrl = _selectedLightingImage != null
+            ? await _uploadImageToFirebase(_selectedLightingImage!, "preferences/lighting")
+            : '';
+        String furnitureUrl = _selectedFurnitureImage != null
+            ? await _uploadImageToFirebase(_selectedFurnitureImage!, "preferences/furniture")
+            : '';
+        String washingStationUrl = _selectedWashingStationImage != null
+            ? await _uploadImageToFirebase(_selectedWashingStationImage!, "preferences/washing_station")
+            : '';
+        String stylingStationUrl = _selectedStylingStationImage != null
+            ? await _uploadImageToFirebase(_selectedStylingStationImage!, "preferences/styling_station")
+            : '';
+        String waitingAreaUrl = _selectedWaitingAreaImage != null
+            ? await _uploadImageToFirebase(_selectedWaitingAreaImage!, "preferences/waiting_area")
+            : '';
 
-      // Construct the request body for visual preferences
-      Map<String, dynamic> requestBody = {
-        "Color": colorUrl,
-        "Decor": decorUrl,
-        "Lighting": lightingUrl,
-        "Furniture": furnitureUrl,
-        "WashingStation": washingStationUrl,
-        "StylingStation": stylingStationUrl,
-        "WaitingArea": waitingAreaUrl,
-        "CustomerID": customerId, // Replace with actual customer ID
-      };
+        // Prepare data for the final submission to /visuals/
+        Map<String, dynamic> finalRequestBody = {
+          "Color": colorUrl,
+          "Decor": decorUrl,
+          "Lighting": lightingUrl,
+          "Furniture": furnitureUrl,
+          "WashingStation": washingStationUrl,
+          "StylingStation": stylingStationUrl,
+          "WaitingArea": waitingAreaUrl,
+          "Cluster": predictedCluster.toString(),
+          "CustomerID": customerId,
+        };
 
-      // Log the request body for visual preferences
-      print("Sending visual preferences: $requestBody");
+        // Send the final request to /visuals/
+        final visualsResponse = await ApiService.submitVisualPreferences(finalRequestBody);
 
-      // API call to submit visual preferences
-      final response = await ApiService.submitVisualPreferences(requestBody);
-
-      if (response.statusCode == 200) {
-        Fluttertoast.showToast(
-          msg: "Preferences and photos updated successfully",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-        );
-        print("Visual preferences updated successfully.");
+        if (visualsResponse.statusCode == 200) {
+          Fluttertoast.showToast(
+            msg: "Preferences and photos updated successfully",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+          );
+          print("Visual preferences updated successfully.");
+        } else {
+          Fluttertoast.showToast(
+            msg: "Failed to upload photos",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+          );
+          print("Failed to upload photos. Status code: ${visualsResponse.statusCode}");
+        }
       } else {
         Fluttertoast.showToast(
-          msg: "Failed to upload photos",
+          msg: "Failed to predict cluster",
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.BOTTOM,
         );
-        print("Failed to upload photos. Status code: ${response.statusCode}");
+        print("Failed to predict cluster. Status code: ${clusterResponse.statusCode}");
       }
     } else {
       Fluttertoast.showToast(

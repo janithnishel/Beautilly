@@ -24,6 +24,11 @@ class ApiService {
     return '$baseUrl/customers/update_customer';
   }
 
+
+ static String getClusterPredictUrl() {
+    return '$baseUrl/cluster/predict/';
+  }
+
   // General GET request method with error handling
   static Future<http.Response> getRequest(String url) async {
     try {
@@ -145,5 +150,10 @@ static Future<http.Response> updateCustomer(Map<String, dynamic> customerDetails
   return await putRequest(url, customerDetails);  // Use PUT instead of POST
 }
 
+// Method to submit data for cluster prediction
+  static Future<http.Response> submitClusterPrediction(Map<String, dynamic> predictionData) async {
+    final url = getClusterPredictUrl();
+    return await postRequest(url, predictionData);
+  }
 
 }
