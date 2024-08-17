@@ -73,6 +73,7 @@ Future<void> _submitPreferences() async {
       "Password": currentCustomerDetails['Password'], // Keep existing Password
     };
 
+
     // Log the request payload to inspect it before sending
     print("Sending customer details: $customerDetails");
 
