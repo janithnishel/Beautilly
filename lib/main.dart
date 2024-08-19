@@ -1,11 +1,9 @@
-import 'package:beautilly/screens/face_pages/face_shop_details.dart';
-import 'package:beautilly/screens/face_pages/face_treatment.dart';
-import 'package:beautilly/screens/face_pages/face_treatment/image_uplad_page.dart';
-import 'package:beautilly/screens/face_pages/face_treatment/makeup_image.dart';
-import 'package:beautilly/screens/face_pages/iamge_uploader.dart';
-import 'package:beautilly/screens/face_pages/makeup/image_uplad_page.dart';
-import 'package:beautilly/screens/face_pages/makeup/makeup_image.dart';
-import 'package:beautilly/screens/face_pages/makeup/makeup_selection.dart';
+import 'package:beautilly/screens/beautician_pages/filter_page.dart';
+import 'package:beautilly/screens/beautician_pages/serach_page.dart';
+import 'package:beautilly/screens/beautician_pages/service_prediction1_page.dart';
+import 'package:beautilly/screens/beautician_pages/staff_member_profile.dart';
+import 'package:beautilly/screens/customer_profile/nearby_beautician_salon.dart';
+import 'package:beautilly/screens/nearby_list.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -21,7 +19,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "Beautilly",
       theme: ThemeData(fontFamily: "Poppins"),
-      home:FaceTreatmentImage(),
+      home:StaffMemberProfile(),
     );
   }
 }

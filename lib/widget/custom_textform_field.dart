@@ -5,7 +5,7 @@ class CustomTextFormField extends StatelessWidget {
   final Widget suffix;
   final String title;
 
-  const CustomTextFormField({
+  CustomTextFormField({
     super.key,
     required this.suffix,
     required this.title,
