@@ -35,6 +35,10 @@ class ApiService {
     return '$baseUrl/skin_deseases/detect_acne';
   }
 
+    static String getVisualsByCustomerAttributesUrl(String gender, String age, String incomeLevel) {
+    return '$baseUrl/visuals/visuals_by_customer_attributes?gender=$gender&age=$age&income_level=$incomeLevel';
+  }
+
   // General GET request method with error handling
   static Future<http.Response> getRequest(String url) async {
     try {
@@ -182,6 +186,35 @@ static Future<Map<String, dynamic>> uploadImageForAcneDetection(File imageFile) 
         throw Exception('Failed to detect acne');
     }
 }
+
+// static Future<List<Map<String, dynamic>>> getVisualsByCustomerAttributes(String gender, String age, String incomeLevel) async {
+//     final url = Uri.parse(getVisualsByCustomerAttributesUrl(gender, age, incomeLevel));
+//     final response = await getRequest(url.toString());
+
+//     if (response.statusCode == 200) {
+//       final List<dynamic> visuals = jsonDecode(response.body);
+//       return visuals.cast<Map<String, dynamic>>();
+//     } else {
+//       throw Exception('Failed to load visuals');
+//     }
+//   }
+static Future<Map<String, dynamic>> getVisualsByCustomerAttributes(
+    String gender, String age, String incomeLevel) async {
+  final url = Uri.parse(getVisualsByCustomerAttributesUrl(gender, age, incomeLevel));
+  final response = await getRequest(url.toString());
+
+  if (response.statusCode == 200) {
+    final List<dynamic> visuals = jsonDecode(response.body);
+    if (visuals.isNotEmpty) {
+      return visuals[0]; // Return the first visual if the list is not empty
+    } else {
+      throw Exception('No visuals found');
+    }
+  } else {
+    throw Exception('Failed to load visuals');
+  }
+}
+
 
 
 }

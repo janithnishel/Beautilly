@@ -77,7 +77,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "Beautilly",
       theme: ThemeData(fontFamily: "Poppins"),
-      home:  FaceTreatmentImage(),
+      home:  SaloonVisualHome(),
       //SaloonVisualHome
     );
   }

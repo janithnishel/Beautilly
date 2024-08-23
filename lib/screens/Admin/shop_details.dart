@@ -3,7 +3,9 @@ import 'package:beautilly/widget/custom_button.dart';
 import 'package:flutter/material.dart';
 
 class ShopDetails extends StatelessWidget {
-  const ShopDetails({super.key});
+  final Map<String, dynamic> visuals;
+
+  const ShopDetails({super.key, required this.visuals});
 
   @override
   Widget build(BuildContext context) {
@@ -42,60 +44,51 @@ class ShopDetails extends StatelessWidget {
                 children: [
                   Expanded(
                     flex: 1,
-                    child: Image.asset(
-                      "assets/images/Monocromatic.png",
+                    child: Image.network(
+                      visuals["Color"] ?? '',
                       fit: BoxFit.cover,
                     ),
                   ),
-                  SizedBox(
-                    width: 40,
-                  ),
+                  SizedBox(width: 40),
                   Expanded(
                     flex: 1,
-                    child: Image.asset(
-                      "assets/images/Accent.png",
+                    child: Image.network(
+                      visuals["Decor"] ?? '',
                       fit: BoxFit.cover,
                     ),
-                  )
+                  ),
                 ],
               ),
-              SizedBox(
-                    height: 75,
-                  ),
+              SizedBox(height: 75),
               Row(
                 children: [
                   Expanded(
                     flex: 1,
-                    child: Image.asset(
-                      "assets/images/Artwork.png",
+                    child: Image.network(
+                      visuals["Lighting"] ?? '',
                       fit: BoxFit.cover,
                     ),
                   ),
-                  SizedBox(
-                    width:40,
-                  ),
+                  SizedBox(width: 40),
                   Expanded(
                     flex: 1,
-                    child: Image.asset(
-                      "assets/images/MR.png",
+                    child: Image.network(
+                      visuals["Furniture"] ?? '',
                       fit: BoxFit.cover,
                     ),
-                  )
+                  ),
                 ],
-                
               ),
-              SizedBox(
-                    height:100,
-                  ),
+              SizedBox(height: 100),
               CustomButton(
-                  title: "Similar prefer groups", isHasMultipleWidget: false),
-                  SizedBox(
-                    height:40,
-                  ),
+                title: "Similar prefer groups",
+                isHasMultipleWidget: false,
+              ),
+              SizedBox(height: 40),
               CustomButton(
                 title: "Build Your Ideal Salon Destination",
                 isHasMultipleWidget: false,
-              )
+              ),
             ],
           ),
         ),
