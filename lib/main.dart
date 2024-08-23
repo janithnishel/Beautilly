@@ -2,6 +2,12 @@ import 'dart:convert';
 import 'package:beautilly/api/apiservice.dart';
 import 'package:beautilly/screens/Admin/add_preference.dart';
 import 'package:beautilly/screens/Admin/saloon_visual_home.dart';
+import 'package:beautilly/screens/face_pages/face_shop_details.dart';
+import 'package:beautilly/screens/face_pages/face_treatment.dart';
+import 'package:beautilly/screens/face_pages/face_treatment/image_uplad_page.dart';
+import 'package:beautilly/screens/face_pages/face_treatment/makeup_image.dart';
+import 'package:beautilly/screens/face_pages/image_uplad_page.dart';
+import 'package:beautilly/screens/face_pages/makeup/makeup_selection.dart';
 import 'package:beautilly/screens/join_page.dart';
 import 'package:beautilly/utils/GlobalUser.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
@@ -71,7 +77,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "Beautilly",
       theme: ThemeData(fontFamily: "Poppins"),
-      home:  SaloonVisualHome(),
+      home:  FaceTreatmentImage(),
+      //SaloonVisualHome
     );
   }
 }

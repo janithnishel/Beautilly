@@ -12,6 +12,8 @@ class CustomTextField extends StatelessWidget {
   final String? hintText;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
+  final FontWeight? hintTextFw;
+ 
 
   const CustomTextField({
     super.key,
@@ -25,35 +27,39 @@ class CustomTextField extends StatelessWidget {
     this.hintText,
     this.prefixIcon,
     this.suffixIcon,
+    this.hintTextFw,
+
   });
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: TextField(
-        cursorColor: bPrimaryColor,
-        style: const TextStyle(fontSize: 14,fontWeight: FontWeight.w400),
-        decoration: InputDecoration(
-          isDense: true,
-          hintText: isHasHintText ? hintText : null,
-          hintStyle: TextStyle(color: bLowLightGrey, fontSize: 14),
-          prefixIcon: isHasPrefixIcon ? prefixIcon : null,
-          suffixIcon: isHasssuffixIcon ? suffixIcon : null,
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 12, horizontal: 5),
-          fillColor: fillColor ?? bLowLightGrey,
-          filled: true,
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(foccusBorderRadius ?? 5),
-            borderSide: const BorderSide(
-              color: Colors.transparent,
-            ),
+    return TextField(
+      cursorColor: bPrimaryColor,
+      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+      decoration: InputDecoration(
+        isDense: true,
+        hintText:isHasHintText ? hintText : null,
+        hintStyle: TextStyle(
+          color: hintTextColor ?? bLowLightGrey,
+          fontSize: 14,
+          fontWeight: hintTextFw,
+        ),
+        prefixIcon: isHasPrefixIcon ? prefixIcon : null,
+        suffixIcon: isHasssuffixIcon ? suffixIcon : null,
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 12, horizontal: 5),
+        fillColor: fillColor ?? bLowLightGrey,
+        filled: true,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(foccusBorderRadius ?? 5),
+          borderSide: const BorderSide(
+            color: Colors.transparent,
           ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(foccusBorderRadius ?? 5),
-            borderSide: const BorderSide(
-              color: Colors.transparent,
-            ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(foccusBorderRadius ?? 5),
+          borderSide: const BorderSide(
+            color: Colors.transparent,
           ),
         ),
       ),

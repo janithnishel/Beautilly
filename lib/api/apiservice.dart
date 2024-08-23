@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 
 class ApiService {
@@ -27,6 +28,11 @@ class ApiService {
 
  static String getClusterPredictUrl() {
     return '$baseUrl/cluster/predict/';
+  }
+
+   // URL for the acne detection API
+  static String getDetectAcneUrl() {
+    return '$baseUrl/skin_deseases/detect_acne';
   }
 
   // General GET request method with error handling
@@ -155,5 +161,27 @@ static Future<http.Response> updateCustomer(Map<String, dynamic> customerDetails
     final url = getClusterPredictUrl();
     return await postRequest(url, predictionData);
   }
+
+static Future<Map<String, dynamic>> uploadImageForAcneDetection(File imageFile) async {
+    print('Uploading image: ${imageFile.path}'); // Add this line
+    final url = Uri.parse(getDetectAcneUrl());
+    final request = http.MultipartRequest('POST', url);
+
+    // Add the file to the request
+    request.files.add(await http.MultipartFile.fromPath('file', imageFile.path));
+
+    final streamedResponse = await request.send();
+    final response = await http.Response.fromStream(streamedResponse);
+
+    print('Response status: ${response.statusCode}'); // Add this line
+    print('Response body: ${response.body}'); // Add this line
+
+    if (response.statusCode == 200) {
+        return jsonDecode(response.body) as Map<String, dynamic>;
+    } else {
+        throw Exception('Failed to detect acne');
+    }
+}
+
 
 }

@@ -308,6 +308,7 @@ class _NearbyBeauticianSalonState extends State<NearbyBeauticianSalon> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
+                
                   isTap
                       ? saloonData[index].salonName
                       : beauticianData[index].beauticianName,
@@ -315,6 +316,7 @@ class _NearbyBeauticianSalonState extends State<NearbyBeauticianSalon> {
                     color: bBlackColor,
                     fontSize: 14,
                     fontWeight: FontWeight.w400,
+                    overflow: TextOverflow.ellipsis
                   ),
                 ),
                 const SizedBox(

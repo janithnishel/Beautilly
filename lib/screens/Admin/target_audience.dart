@@ -27,7 +27,9 @@ class _TargetAudienceState extends State<TargetAudience> {
         child: SingleChildScrollView(
           child: Stack(
             children: [
-              Positioned.fill(
+              Container(
+                width:MediaQuery.of(context).size.width,
+                height:MediaQuery.of(context).size.height,
                 child: Image.asset(
                   "assets/images/targetAudience.png",
                   fit: BoxFit.cover,
@@ -67,6 +69,7 @@ class _TargetAudienceState extends State<TargetAudience> {
                       height: 20,
                     ),
                     CustomBox(
+                      isHaSBorder: true,
                       widget: Padding(
                         padding: const EdgeInsets.only(
                             left: 40, right: 40, top: 24, bottom: 16),
@@ -114,6 +117,7 @@ class _TargetAudienceState extends State<TargetAudience> {
                       height: 10,
                     ),
                     CustomBox(
+                      isHaSBorder: true,
                       widget: Padding(
                         padding: const EdgeInsets.only(
                             left: 40, right: 40, top: 24, bottom: 16),
@@ -162,6 +166,7 @@ class _TargetAudienceState extends State<TargetAudience> {
                       height: 10,
                     ),
                     CustomBox(
+                      isHaSBorder: true,
                       widget: Padding(
                         padding: const EdgeInsets.only(
                             left: 40, right: 40, top: 24, bottom: 16),
@@ -212,7 +217,7 @@ class _TargetAudienceState extends State<TargetAudience> {
                     GestureDetector(
                       onTap: () {
                         Navigator.push(context, MaterialPageRoute(builder:(context) => ShopDetails(),));
-
+          
                       },child: CustomButton(title: "NEXT", isHasMultipleWidget: false))
                   ],
                 ),
