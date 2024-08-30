@@ -68,6 +68,7 @@ class _FindServiceState extends State<FindService> {
                 const SizedBox(height: 20),
                 _buildServiceGrid(),
                 const SizedBox(height: 20),
+                const SizedBox(height: 20),
                 _buildBeauticianRecommendations(),
               ],
             ),
@@ -223,8 +224,22 @@ class _FindServiceState extends State<FindService> {
     );
   }
 
-  Widget _buildService(int index) {
-    return Column(
+Widget _buildService(int index) {
+  return GestureDetector(
+    onTap: () {
+      if (serviceData[index].destinationPage != null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => serviceData[index].destinationPage),
+        );
+      } else {
+        // Optionally, show an error message or fallback widget
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Page not available")),
+        );
+      }
+    },
+    child: Column(
       children: [
         Container(
           width: 64,
@@ -246,6 +261,8 @@ class _FindServiceState extends State<FindService> {
           style: const TextStyle(fontSize: 14, color: bPrimaryColor, fontWeight: FontWeight.w500),
         ),
       ],
-    );
-  }
+    ),
+  );
+}
+
 }

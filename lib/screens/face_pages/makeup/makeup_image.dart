@@ -11,7 +11,9 @@ import 'package:flutter/foundation.dart'; // For compute function
 import 'package:image/image.dart' as img;
 
 class MakeupImage extends StatefulWidget {
-  const MakeupImage({super.key});
+    final Widget? destinationPage;
+
+  const MakeupImage({Key? key, this.destinationPage}) : super(key: key);
 
   @override
   _MakeupImageState createState() => _MakeupImageState();

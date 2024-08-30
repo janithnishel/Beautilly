@@ -78,11 +78,12 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "Beautilly",
       theme: ThemeData(fontFamily: "Poppins"),
-      home:  MakeupImage(),
+      home:  JoinPage(),
       //SaloonVisualHome
       // MakeupImage
       //MakeupSelection
       //FaceTreatmentImage
+      //JoinPage
     );
   }
 }
