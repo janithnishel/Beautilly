@@ -11,11 +11,13 @@ import 'package:flutter/material.dart';
 class MakeupSelection extends StatefulWidget {
   final String skinTone;
   final List<Map<String, String>> makeupSuggestions;
+  final String imagePath;  // Add this parameter to receive the image path
 
   const MakeupSelection({
     Key? key,
     required this.skinTone,
     required this.makeupSuggestions,
+    required this.imagePath,  // Initialize it in the constructor
   }) : super(key: key);
 
   @override
@@ -110,11 +112,14 @@ class _MakeupSelectionState extends State<MakeupSelection> {
                     children: [
                       CustomBox(
                         widget: ClipRRect(
-                            borderRadius: BorderRadius.circular(50),
-                            child: Image.asset(
-                              "assets/images/makeupImage.png",
-                              fit: BoxFit.cover,
-                            )),
+                          borderRadius: BorderRadius.circular(50),
+                          child: Image.file(
+                            File(widget.imagePath),  // Use the image file path here
+                            fit: BoxFit.cover,
+                            width: 80,
+                            height: 80,
+                          ),
+                        ),
                         isHaSBorder: false,
                         borderRadius: 50,
                         color: bPrimaryColor,

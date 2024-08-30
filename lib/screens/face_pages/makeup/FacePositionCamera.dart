@@ -90,7 +90,7 @@ class _FacePositionCameraState extends State<FacePositionCamera> {
             MaterialPageRoute(
               builder: (context) => MakeupSelection(
                 skinTone: response['skin_tone'],
-                makeupSuggestions: response['makeup_suggestions'],
+                makeupSuggestions: response['makeup_suggestions'], imagePath: '',
               ),
             ),
           );

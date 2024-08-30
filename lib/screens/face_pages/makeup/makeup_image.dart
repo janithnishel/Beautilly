@@ -230,6 +230,7 @@ class _MakeupImageState extends State<MakeupImage> {
             builder: (context) => MakeupSelection(
               skinTone: response['skin_tone'],
               makeupSuggestions: response['makeup_suggestions'],
+              imagePath: imageFile.path,  // Pass the image file path to MakeupSelection
             ),
           ),
         );
