@@ -82,6 +82,7 @@ class MyApp extends StatelessWidget {
       //SaloonVisualHome
       // MakeupImage
       //MakeupSelection
+      //FaceTreatmentImage
     );
   }
 }

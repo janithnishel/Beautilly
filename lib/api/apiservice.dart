@@ -209,34 +209,39 @@ static Future<Map<String, dynamic>> getVisualsByCustomerAttributes(
   }
 }
 
- // Method to upload an image for skin color detection and parse the response
-  static Future<Map<String, dynamic>> uploadSkinColorImage(File imageFile) async {
-    print('Uploading image for skin color detection: ${imageFile.path}');
-    final url = Uri.parse(getSkinColorUploadUrl());
-    final request = http.MultipartRequest('POST', url);
+ static Future<Map<String, dynamic>> uploadSkinColorImage(File imageFile) async {
+  print('Uploading image for skin color detection: ${imageFile.path}');
+  final url = Uri.parse(getSkinColorUploadUrl());
+  final request = http.MultipartRequest('POST', url);
 
-    request.files.add(await http.MultipartFile.fromPath('file', imageFile.path));
+  request.files.add(await http.MultipartFile.fromPath('file', imageFile.path));
 
-    final streamedResponse = await request.send();
-    final response = await http.Response.fromStream(streamedResponse);
+  final streamedResponse = await request.send();
+  final response = await http.Response.fromStream(streamedResponse);
 
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
+  print('Response status: ${response.statusCode}');
+  print('Response body: ${response.body}');
 
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> responseData = jsonDecode(response.body);
+  if (response.statusCode == 200) {
+    final Map<String, dynamic> responseData = jsonDecode(response.body);
 
-      final String skinTone = responseData['skin_tone'];
-      final List<dynamic> makeupSuggestions = responseData['makeup_suggestions'];
+    final String skinTone = responseData['skin_tone'];
+    final List<dynamic> makeupSuggestions = responseData['makeup_suggestions'];
 
-      return {
-        'skin_tone': skinTone,
-        'makeup_suggestions': makeupSuggestions,
-      };
-    } else {
-      throw Exception('Failed to upload image for skin color detection');
-    }
+    // Convert List<dynamic> to List<Map<String, String>>
+    final List<Map<String, String>> typedMakeupSuggestions = makeupSuggestions
+        .map((item) => Map<String, String>.from(item))
+        .toList();
+
+    return {
+      'skin_tone': skinTone,
+      'makeup_suggestions': typedMakeupSuggestions,
+    };
+  } else {
+    throw Exception('Failed to upload image for skin color detection');
   }
+}
+
   
 
 
