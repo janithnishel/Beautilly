@@ -7,6 +7,7 @@ import 'package:beautilly/screens/face_pages/face_treatment.dart';
 import 'package:beautilly/screens/face_pages/face_treatment/image_uplad_page.dart';
 import 'package:beautilly/screens/face_pages/face_treatment/makeup_image.dart';
 import 'package:beautilly/screens/face_pages/image_uplad_page.dart';
+import 'package:beautilly/screens/face_pages/makeup/makeup_image.dart';
 import 'package:beautilly/screens/face_pages/makeup/makeup_selection.dart';
 import 'package:beautilly/screens/join_page.dart';
 import 'package:beautilly/utils/GlobalUser.dart';
@@ -77,8 +78,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "Beautilly",
       theme: ThemeData(fontFamily: "Poppins"),
-      home:  SaloonVisualHome(),
+      home:  MakeupImage(),
       //SaloonVisualHome
+      // MakeupImage
+      //MakeupSelection
     );
   }
 }

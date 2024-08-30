@@ -39,6 +39,10 @@ class ApiService {
     return '$baseUrl/visuals/visuals_by_customer_attributes?gender=$gender&age=$age&income_level=$incomeLevel';
   }
 
+    static String getSkinColorUploadUrl() {
+    return '$baseUrl/skin_color/upload/';
+  }
+
   // General GET request method with error handling
   static Future<http.Response> getRequest(String url) async {
     try {
@@ -187,17 +191,7 @@ static Future<Map<String, dynamic>> uploadImageForAcneDetection(File imageFile) 
     }
 }
 
-// static Future<List<Map<String, dynamic>>> getVisualsByCustomerAttributes(String gender, String age, String incomeLevel) async {
-//     final url = Uri.parse(getVisualsByCustomerAttributesUrl(gender, age, incomeLevel));
-//     final response = await getRequest(url.toString());
 
-//     if (response.statusCode == 200) {
-//       final List<dynamic> visuals = jsonDecode(response.body);
-//       return visuals.cast<Map<String, dynamic>>();
-//     } else {
-//       throw Exception('Failed to load visuals');
-//     }
-//   }
 static Future<Map<String, dynamic>> getVisualsByCustomerAttributes(
     String gender, String age, String incomeLevel) async {
   final url = Uri.parse(getVisualsByCustomerAttributesUrl(gender, age, incomeLevel));
@@ -214,6 +208,36 @@ static Future<Map<String, dynamic>> getVisualsByCustomerAttributes(
     throw Exception('Failed to load visuals');
   }
 }
+
+ // Method to upload an image for skin color detection and parse the response
+  static Future<Map<String, dynamic>> uploadSkinColorImage(File imageFile) async {
+    print('Uploading image for skin color detection: ${imageFile.path}');
+    final url = Uri.parse(getSkinColorUploadUrl());
+    final request = http.MultipartRequest('POST', url);
+
+    request.files.add(await http.MultipartFile.fromPath('file', imageFile.path));
+
+    final streamedResponse = await request.send();
+    final response = await http.Response.fromStream(streamedResponse);
+
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseData = jsonDecode(response.body);
+
+      final String skinTone = responseData['skin_tone'];
+      final List<dynamic> makeupSuggestions = responseData['makeup_suggestions'];
+
+      return {
+        'skin_tone': skinTone,
+        'makeup_suggestions': makeupSuggestions,
+      };
+    } else {
+      throw Exception('Failed to upload image for skin color detection');
+    }
+  }
+  
 
 
 

@@ -1,26 +1,23 @@
-import 'dart:ffi';
-import 'dart:io';
-
-import 'package:beautilly/data/recommended_color_data.dart';
+import 'package:flutter/material.dart';
 import 'package:beautilly/utils/colors.dart';
 import 'package:beautilly/widget/custom_box.dart';
-import 'package:beautilly/widget/custom_button.dart';
-import 'package:flutter/material.dart';
+import 'package:beautilly/models/recomended_color_model.dart';
 
 class MakeupSelection extends StatefulWidget {
-  const MakeupSelection({super.key});
+  final String skinTone;
+  final List<Map<String, String>> makeupSuggestions;
+
+  const MakeupSelection({
+    Key? key,
+    required this.skinTone,
+    required this.makeupSuggestions,
+  }) : super(key: key);
 
   @override
   State<MakeupSelection> createState() => _MakeupSelectionState();
 }
 
 class _MakeupSelectionState extends State<MakeupSelection> {
-//create the instance to fetch the data from Recommendedcolor class
-
-  final colorData = RecomendedColorData();
-
-  bool isClick = true;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,206 +34,50 @@ class _MakeupSelectionState extends State<MakeupSelection> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        isClick = true;
-                      });
-                    },
-                    child: CustomButton(
-                      title: "Bridal Makeup",
-                      isHasMultipleWidget: true,
-                      width: 160,
-                      height: 50,
-                      borderColor: isClick ? null : bPrimaryColor,
-                      color: isClick ? bPrimaryLightColor : bWhite,
-                      textColor: bPrimaryColor,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      leftSideWidget: Image.asset(
-                        "assets/images/facial.png",
-                        color: bPrimaryColor,
-                        width: 20,
-                        height: 20,
-                      ),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        isClick = !true;
-                      });
-                    },
-                    child: CustomButton(
-                      title: "Normal Makeup",
-                      width: 160,
-                      height: 50,
-                      borderColor: isClick ? bPrimaryColor : null,
-                      isHasMultipleWidget: true,
-                      color: isClick ? bWhite : bPrimaryLightColor,
-                      textColor: bPrimaryColor,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      leftSideWidget: Image.asset(
-                        "assets/images/facial.png",
-                        color: bPrimaryColor,
-                        width: 20,
-                        height: 20,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              CustomBox(
-                width: MediaQuery.of(context).size.width,
-                widget: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      CustomBox(
-                        widget: ClipRRect(
-                            borderRadius: BorderRadius.circular(50),
-                            child: Image.asset(
-                              "assets/images/makeupImage.png",
-                              fit: BoxFit.cover,
-                            )),
-                        isHaSBorder: false,
-                        borderRadius: 50,
-                        color: bPrimaryColor,
-                        height: 80,
-                        width: 80,
-                      ),
-                      SizedBox(width: MediaQuery.of(context).size.width * 0.1),
-                      const Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Normal Makeup",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w700,
-                                fontSize: 14,
-                                color: Color(0xff111111)),
-                          ),
-                          Text(
-                            "Skin Tone : Fare",
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: bDarkGrey,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          Text(
-                            "Skin Type : Oily",
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: bDarkGrey,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          Text(
-                            "Lip Colour : Light pink",
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: bDarkGrey,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-                isHaSBorder: false,
-              ),
-              SizedBox(
-                height: 20,
-              ),
               Text(
-                "Recommended Foundation colours",
+                'Skin Tone: ${widget.skinTone}',
                 style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: bPrimaryColor,
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              SizedBox(
-                height: 95,
-                child: ListView.builder(
-                  itemCount: colorData.foundationColorDataList.length,
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  physics: AlwaysScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    final foundationColor = colorData.foundationColorDataList;
-                    return _buildColorShape(index, foundationColor, true);
-                  },
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Text(
-                "Recommended Face Powder colours",
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: bPrimaryColor,
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              SizedBox(
-                height: 95,
-                child: ListView.builder(
-                  itemCount: colorData.facePowderColorDataList.length,
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  physics: AlwaysScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    final powderColor = colorData.facePowderColorDataList;
-                    return _buildColorShape(index, powderColor, true);
-                  },
-                ),
-              ),
-              SizedBox(height: 20),
-              Text(
-                "Recommended Face Powder colours",
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
                   color: bPrimaryColor,
                 ),
               ),
               SizedBox(height: 20),
-              GridView.builder(
-                itemCount: colorData.lipColorDataList.length,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    childAspectRatio:3.6 / 2),
-                itemBuilder: (context, index) {
-                  final lipColor = colorData.lipColorDataList;
-                  return _buildColorShape(index, lipColor, false);
-                },
-              )
+              Text(
+                'Makeup Recommendations',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: bPrimaryColor,
+                ),
+              ),
+              SizedBox(height: 20),
+              ...widget.makeupSuggestions.map((suggestion) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildMakeupSuggestionRow(
+                      'Foundation',
+                      suggestion['Foundation']!,
+                    ),
+                    _buildMakeupSuggestionRow(
+                      'Concealer',
+                      suggestion['Concealer']!,
+                    ),
+                    _buildMakeupSuggestionRow(
+                      'Blush',
+                      suggestion['Blush']!,
+                    ),
+                    _buildMakeupSuggestionRow(
+                      'Lipstick',
+                      suggestion['Lipstick']!,
+                    ),
+                    SizedBox(height: 20),
+                  ],
+                );
+              }).toList(),
             ],
           ),
         ),
@@ -244,39 +85,46 @@ class _MakeupSelectionState extends State<MakeupSelection> {
     );
   }
 
-  Widget _buildColorShape(int index, final recommandData, bool isCircle) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 20),
-      child: Column(
-        children: [
-          isCircle
-              ? Container(
-                  width: 60,
-                  height: 60,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50),
-                      color: recommandData[index].color),
-                )
-              : Container(
-                  width: 70,
-                  height: 25,
-                  color: recommandData[index].color,
-                ),
-          SizedBox(
-            height: 10,
+  Widget _buildMakeupSuggestionRow(String label, String colorName) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          '$label: $colorName',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: bDarkGrey,
           ),
-          isCircle
-              ? Text(
-                  colorData.foundationColorDataList[index].title!,
-                  style: TextStyle(
-                    color: bPrimaryColor,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
-                )
-              : Text("")
-        ],
-      ),
+        ),
+        _buildColorSample(colorName),
+      ],
     );
+  }
+
+  // Assuming colorData contains the map of color names to actual colors
+  Widget _buildColorSample(String colorName) {
+    // You need to have a map or method to get color by its name
+    final color = _getColorByName(colorName);
+
+    return Container(
+      width: 50,
+      height: 20,
+      color: color,
+    );
+  }
+
+  // This method should return the Color object based on the color name
+  Color _getColorByName(String colorName) {
+    // This should match with the colors you want to show
+    switch (colorName.toLowerCase()) {
+      case 'mocha':
+        return Color(0XFFA52A2A);
+      case 'deep chestnut':
+        return Color(0XFFCD5C5C);
+      // Add other colors here
+      default:
+        return bPrimaryColor; // Fallback color
+    }
   }
 }
