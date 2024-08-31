@@ -1,7 +1,6 @@
 import 'package:beautilly/screens/Admin/add_preference.dart';
 import 'package:beautilly/screens/Admin/target_audience.dart';
 import 'package:beautilly/utils/colors.dart';
-import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 
 class PageWithBottomNavigation extends StatefulWidget {

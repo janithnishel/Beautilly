@@ -1,5 +1,6 @@
-import 'package:beautilly/models/nearby_beautician_model.dart';
 
+
+import 'package:beautilly/models/nearby_beautician_model.dart';
 
 class NearbyBeauticianData {
   final List<NearbyBeauticianModel> nearbyBeauticianDataList = [

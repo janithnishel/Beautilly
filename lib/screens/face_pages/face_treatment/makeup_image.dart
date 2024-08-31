@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:beautilly/utils/colors.dart';
 import 'package:beautilly/widget/custom_box.dart';
 import 'package:beautilly/widget/share_widget/face_page.dart';

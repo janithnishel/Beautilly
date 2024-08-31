@@ -35,6 +35,7 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: bWhite,
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),

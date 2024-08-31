@@ -1,6 +1,3 @@
-import 'dart:ffi';
-import 'dart:io';
-
 import 'package:beautilly/data/recommended_color_data.dart';
 import 'package:beautilly/utils/colors.dart';
 import 'package:beautilly/widget/custom_box.dart';

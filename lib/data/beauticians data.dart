@@ -1,3 +1,4 @@
+
 import 'package:beautilly/models/beauticians%20_model.dart';
 
 class BeauticiansData {

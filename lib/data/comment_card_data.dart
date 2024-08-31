@@ -1,3 +1,4 @@
+
 import 'package:beautilly/models/comment_card.dart';
 
 class CommentCardData {
@@ -5,13 +6,13 @@ class CommentCardData {
     CommentCardModel(
       imageUrl: "assets/images/user.png",
       customerName: "Isuru Umanga",
-      comment: "Great service!",
+      comment: "Amazing service! Highly recommended.",
       starCount: 2,
     ),
     CommentCardModel(
       imageUrl: "assets/images/user.png",
       customerName: "Sachin Harshana",
-      comment: "Amazing results!",
+      comment: "Great experience, will visit again.",
       starCount: 5,
     ),
     CommentCardModel(

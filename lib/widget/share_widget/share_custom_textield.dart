@@ -13,6 +13,9 @@ class CustomTextField extends StatelessWidget {
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final FontWeight? hintTextFw;
+  final Color? enableBorderColor;
+  final Color? foccusBorderColor;
+  final double? horizontalPadding;
  
 
   const CustomTextField({
@@ -27,7 +30,7 @@ class CustomTextField extends StatelessWidget {
     this.hintText,
     this.prefixIcon,
     this.suffixIcon,
-    this.hintTextFw,
+    this.hintTextFw, this.enableBorderColor, this.foccusBorderColor, this.horizontalPadding, 
 
   });
 
@@ -47,19 +50,20 @@ class CustomTextField extends StatelessWidget {
         prefixIcon: isHasPrefixIcon ? prefixIcon : null,
         suffixIcon: isHasssuffixIcon ? suffixIcon : null,
         contentPadding:
-            const EdgeInsets.symmetric(vertical: 12, horizontal: 5),
+          EdgeInsets.symmetric(vertical: 12, horizontal: horizontalPadding??5),
         fillColor: fillColor ?? bLowLightGrey,
         filled: true,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(foccusBorderRadius ?? 5),
-          borderSide: const BorderSide(
-            color: Colors.transparent,
+          borderSide:  BorderSide(
+            color:enableBorderColor ??Colors.transparent,
+            
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(foccusBorderRadius ?? 5),
-          borderSide: const BorderSide(
-            color: Colors.transparent,
+          borderSide:  BorderSide(
+            color:foccusBorderColor?? Colors.transparent,
           ),
         ),
       ),

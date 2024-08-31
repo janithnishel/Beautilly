@@ -1,3 +1,4 @@
+
 import 'package:beautilly/models/nearby_saloon_model.dart';
 
 class NearbySaloonData {

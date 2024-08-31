@@ -1,7 +1,8 @@
+import 'package:beautilly/screens/beautician_pages/appbar.dart/appbar.dart';
+import 'package:beautilly/screens/beautician_pages/staff_member_profile.dart';
 import 'package:beautilly/utils/colors.dart';
 import 'package:beautilly/widget/custom_box.dart';
 import 'package:beautilly/widget/custom_button.dart';
-import 'package:beautilly/widget/custom_dropdown_button.dart';
 import 'package:flutter/material.dart';
 
 class ServicePrediction extends StatefulWidget {
@@ -17,23 +18,7 @@ class _ServicePredictionState extends State<ServicePrediction> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: bWhite,
-        titleSpacing: -15,
-        elevation: 0.5,
-        title: const Text(
-          "Service Prediction Results",
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
-            color: bBlackColor,
-          ),
-        ),
-        leading: const Icon(
-          Icons.arrow_back_ios,
-          color: bBlackColor,
-        ),
-      ),
+      appBar: appBar("Service Prediction Results",context),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),

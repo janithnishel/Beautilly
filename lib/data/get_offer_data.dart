@@ -1,3 +1,4 @@
+
 import 'package:beautilly/models/get_offer_model.dart';
 
 class GetOfferData{

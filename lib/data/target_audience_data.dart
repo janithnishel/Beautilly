@@ -1,3 +1,4 @@
+
 import 'package:beautilly/models/target_audience_model.dart';
 
 class TargetAudienceData {
