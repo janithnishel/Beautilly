@@ -46,7 +46,9 @@ class ApiService {
   static String getAppointmentUrl() {
     return '$baseUrl/appointments/';
   }
-
+static String getDeleteAppointmentUrl(int appointmentId) {
+    return '$baseUrl/appointments/$appointmentId';
+  }
 
    // Method to submit an appointment
   static Future<void> postAppointment(Map<String, dynamic> appointmentData) async {
@@ -58,6 +60,37 @@ class ApiService {
     }
   }
 
+   // New method to get appointments by customer ID
+  static Future<List<Map<String, dynamic>>> getAppointmentsByCustomer(int customerId) async {
+    final url = '$baseUrl/appointments/customer/$customerId';
+    final response = await getRequest(url);
+
+    if (response.statusCode == 200) {
+      final List<dynamic> decodedResponse = jsonDecode(response.body);
+
+      // Map the response to a List of Maps with the correct data structure
+      return decodedResponse.map((appointment) {
+        return {
+          "Date": appointment['Date'],
+          "Time": appointment['Time'],
+          "Status": appointment['Status'],
+          "Appointment_ID": appointment['Appointment_ID'],
+        };
+      }).toList();
+    } else {
+      throw Exception('Failed to load appointments for customer ID: $customerId');
+    }
+  }
+
+  
+static Future<void> deleteAppointment(int appointmentId) async {
+    final url = getDeleteAppointmentUrl(appointmentId);
+    final response = await http.delete(Uri.parse(url));
+
+    if (response.statusCode != 204) {
+      throw Exception('Failed to delete appointment');
+    }
+  }
   // General GET request method with error handling
   static Future<http.Response> getRequest(String url) async {
     try {

@@ -246,11 +246,11 @@ class _StaffMemberProfileState extends State<StaffMemberProfile> {
                         });
 
                         if (_onClick == 0) {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ScheduleAppointment(),
-                              ));
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //       builder: (context) => ScheduleAppointment(),
+                          //     ));
                         } else if (_onClick == 1) {
                           Navigator.push(
                             context,

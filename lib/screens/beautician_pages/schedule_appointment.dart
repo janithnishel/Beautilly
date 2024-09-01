@@ -27,6 +27,42 @@ class _ScheduleAppointmentState extends State<ScheduleAppointment> {
   String? selectedDate;
   String? selectedTime;
 
+  // Appointments list for the current customer
+  List<Map<String, dynamic>> appointments = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchAppointments(); // Fetch appointments when the widget initializes
+  }
+
+  Future<void> _fetchAppointments() async {
+    try {
+      int? customerId = GlobalUser.customerId;
+      if (customerId == null) {
+        throw Exception("Customer ID is null");
+      }
+
+      // Fetch the list of appointments for the current customer
+      List<Map<String, dynamic>> fetchedAppointments = await ApiService.getAppointmentsByCustomer(customerId);
+
+      setState(() {
+        appointments = fetchedAppointments;
+      });
+    } catch (e) {
+      print('Error fetching appointments: $e');
+      Fluttertoast.showToast(
+        msg: "Failed to fetch appointments.",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+    }
+  }
+
   Future<void> _submitAppointment() async {
     try {
       // Get customer ID from GlobalUser
@@ -60,12 +96,45 @@ class _ScheduleAppointmentState extends State<ScheduleAppointment> {
         fontSize: 16.0,
       );
 
+      // Refresh the list of appointments
+      await _fetchAppointments();
+
       // Navigate back or to another page after submission
       Navigator.pop(context);
     } catch (e) {
       print('Error submitting appointment: $e');
       Fluttertoast.showToast(
         msg: "Failed to submit appointment.",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+    }
+  }
+
+  Future<void> _deleteAppointment(int appointmentId) async {
+    try {
+      await ApiService.deleteAppointment(appointmentId);
+
+      Fluttertoast.showToast(
+        msg: "Appointment deleted successfully!",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+
+      // Refresh the list of appointments
+      await _fetchAppointments();
+    } catch (e) {
+      print('Error deleting appointment: $e');
+      Fluttertoast.showToast(
+        msg: "Failed to delete appointment.",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -207,16 +276,24 @@ class _ScheduleAppointmentState extends State<ScheduleAppointment> {
               ),
             ),
             const SizedBox(height: 10),
-            // Removed the ListView.builder that was using the undefined appointmentTimes variable
-            Center(
-              child: const Text(
-                "No scheduled appointments to show.",
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  color: bBlackColor,
-                ),
-              ),
+            Expanded(
+              child: appointments.isEmpty
+                  ? const Center(
+                      child: Text(
+                        "No scheduled appointments to show.",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: bBlackColor,
+                        ),
+                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: appointments.length,
+                      itemBuilder: (context, index) {
+                        return _appointmentCard(appointments[index]);
+                      },
+                    ),
             ),
           ],
         ),
@@ -224,5 +301,72 @@ class _ScheduleAppointmentState extends State<ScheduleAppointment> {
     );
   }
 
-  // Removed the _appointmentCard method as it was not being used.
+  Widget _appointmentCard(Map<String, dynamic> appointment) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: CustomBox(
+        blurRadius: 1,
+        shadowOfset: const Offset(0, 2),
+        shadowColor: bhightLightGrey,
+        height: 80, // Adjusted height
+        borderRadius: 5,
+        color: bWhite,
+        width: MediaQuery.of(context).size.width,
+        widget: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.date_range_sharp,
+                size: 30,
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Appointment #${appointment['Appointment_ID']}",
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: bBlackColor,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      "Date: ${appointment['Date']}",
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        color: bBlackColor,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      "Time: ${appointment['Time']}",
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        color: bBlackColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.delete, color: Colors.red),
+                onPressed: () {
+                  _deleteAppointment(appointment['Appointment_ID']);
+                },
+              ),
+            ],
+          ),
+        ),
+        isHaSBorder: false,
+      ),
+    );
+  }
 }
