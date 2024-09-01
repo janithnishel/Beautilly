@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:beautilly/api/apiservice.dart';
+import 'package:beautilly/screens/Admin/SimilarGroup.dart';
 import 'package:beautilly/screens/Admin/add_preference.dart';
 import 'package:beautilly/screens/Admin/saloon_visual_home.dart';
 import 'package:beautilly/screens/face_pages/face_shop_details.dart';
@@ -78,7 +79,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "Beautilly",
       theme: ThemeData(fontFamily: "Poppins"),
-      home:  JoinPage(),
+      home:  SaloonVisualHome(),
+      //SimilarGroup
       //SaloonVisualHome
       // MakeupImage
       //MakeupSelection

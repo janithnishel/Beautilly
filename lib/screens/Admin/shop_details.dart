@@ -1,6 +1,8 @@
+import 'package:beautilly/screens/Admin/SimilarGroup.dart';
 import 'package:beautilly/utils/colors.dart';
 import 'package:beautilly/widget/custom_button.dart';
 import 'package:flutter/material.dart';
+
 
 class ShopDetails extends StatelessWidget {
   final Map<String, dynamic> visuals;
@@ -80,14 +82,26 @@ class ShopDetails extends StatelessWidget {
                 ],
               ),
               SizedBox(height: 100),
-              CustomButton(
-                title: "Similar prefer groups",
-                isHasMultipleWidget: false,
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SimilarGroup(),
+                    ),
+                  );
+                },
+                child: const CustomButton(
+                  title: "Similar prefer groups",
+                  isHasMultipleWidget: false,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               SizedBox(height: 40),
-              CustomButton(
+              const CustomButton(
                 title: "Build Your Ideal Salon Destination",
                 isHasMultipleWidget: false,
+                fontWeight: FontWeight.w600,
               ),
             ],
           ),
