@@ -3,6 +3,7 @@ import 'package:beautilly/api/apiservice.dart';
 import 'package:beautilly/screens/Admin/SimilarGroup.dart';
 import 'package:beautilly/screens/Admin/add_preference.dart';
 import 'package:beautilly/screens/Admin/saloon_visual_home.dart';
+import 'package:beautilly/screens/beautician_pages/schedule_appointment.dart';
 import 'package:beautilly/screens/face_pages/face_shop_details.dart';
 import 'package:beautilly/screens/face_pages/face_treatment.dart';
 import 'package:beautilly/screens/face_pages/face_treatment/image_uplad_page.dart';
@@ -79,7 +80,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "Beautilly",
       theme: ThemeData(fontFamily: "Poppins"),
-      home:  SaloonVisualHome(),
+      home:  JoinPage(),
       //SimilarGroup
       //SaloonVisualHome
       // MakeupImage

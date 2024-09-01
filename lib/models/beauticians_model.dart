@@ -7,7 +7,8 @@ class BeauticianModel {
   final double ratingScore;
   final String characteristics;
   final String imageUrl;
-  final String salonName; // Added field for Salon Name
+  final String salonName; // Field for Salon Name
+  final int salonId; // Added field for Salon ID
   final double score;
 
   BeauticianModel({
@@ -19,7 +20,8 @@ class BeauticianModel {
     required this.ratingScore,
     required this.characteristics,
     required this.imageUrl,
-    required this.salonName, // Added constructor parameter for Salon Name
+    required this.salonName, // Constructor parameter for Salon Name
+    required this.salonId, // Constructor parameter for Salon ID
     required this.score,
   });
 
@@ -33,7 +35,8 @@ class BeauticianModel {
       ratingScore: (json['Rating_Score'] as num).toDouble(),
       characteristics: json['Characteristics'],
       imageUrl: json['Image'],
-      salonName: json['Salon_Name'], // Added field mapping for Salon Name
+      salonName: json['Salon_Name'], // Field mapping for Salon Name
+      salonId: json['Salon_ID'], // Field mapping for Salon ID
       score: (json['score'] as num).toDouble(),
     );
   }

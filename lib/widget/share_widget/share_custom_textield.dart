@@ -13,7 +13,9 @@ class CustomTextField extends StatelessWidget {
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final FontWeight? hintTextFw;
- 
+  final Color? enableBorderColor;
+  final Color? foccusBorderColor;
+  final double? horizontalPadding;
 
   const CustomTextField({
     super.key,
@@ -28,7 +30,9 @@ class CustomTextField extends StatelessWidget {
     this.prefixIcon,
     this.suffixIcon,
     this.hintTextFw,
-
+    this.enableBorderColor,
+    this.foccusBorderColor,
+    this.horizontalPadding,
   });
 
   @override
@@ -38,7 +42,7 @@ class CustomTextField extends StatelessWidget {
       style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
       decoration: InputDecoration(
         isDense: true,
-        hintText:isHasHintText ? hintText : null,
+        hintText: isHasHintText ? hintText : null,
         hintStyle: TextStyle(
           color: hintTextColor ?? bLowLightGrey,
           fontSize: 14,
@@ -46,20 +50,20 @@ class CustomTextField extends StatelessWidget {
         ),
         prefixIcon: isHasPrefixIcon ? prefixIcon : null,
         suffixIcon: isHasssuffixIcon ? suffixIcon : null,
-        contentPadding:
-            const EdgeInsets.symmetric(vertical: 12, horizontal: 5),
+        contentPadding: EdgeInsets.symmetric(
+            vertical: 12, horizontal: horizontalPadding ?? 5),
         fillColor: fillColor ?? bLowLightGrey,
         filled: true,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(foccusBorderRadius ?? 5),
-          borderSide: const BorderSide(
-            color: Colors.transparent,
+          borderSide: BorderSide(
+            color: enableBorderColor ?? Colors.transparent,
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(foccusBorderRadius ?? 5),
-          borderSide: const BorderSide(
-            color: Colors.transparent,
+          borderSide: BorderSide(
+            color: foccusBorderColor ?? Colors.transparent,
           ),
         ),
       ),

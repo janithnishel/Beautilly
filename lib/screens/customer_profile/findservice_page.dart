@@ -1,10 +1,11 @@
 import 'package:beautilly/api/apiservice.dart';
 import 'package:beautilly/data/service_data.dart';
-import 'package:beautilly/screens/join_page.dart';
+import 'package:beautilly/models/beauticians_model.dart';
+import 'package:beautilly/screens/beautician_pages/schedule_appointment.dart';
 import 'package:beautilly/utils/GlobalUser.dart';
 import 'package:beautilly/utils/colors.dart';
-import 'package:beautilly/widget/share_widget/share_custom_textield.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class FindService extends StatefulWidget {
   const FindService({super.key});
@@ -17,7 +18,7 @@ class _FindServiceState extends State<FindService> {
   final serviceData = ServiceData().serviceDataList;
 
   // Placeholder for the beautician recommendations data
-  List<Map<String, dynamic>> recommendedBeauticians = [];
+  List<BeauticianModel> recommendedBeauticians = [];
 
   @override
   void initState() {
@@ -40,12 +41,21 @@ class _FindServiceState extends State<FindService> {
       // Send recommendation request
       List<Map<String, dynamic>> recommendations = await ApiService.getRecommendation(preferences);
 
-      // Update the state with the first three recommended beauticians
+      // Convert the recommendations into a list of BeauticianModel
       setState(() {
-        recommendedBeauticians = recommendations.take(3).toList(); // Take only the first three recommendations
+        recommendedBeauticians = recommendations.map((json) => BeauticianModel.fromJson(json)).take(3).toList(); // Take only the first three recommendations
       });
     } catch (e) {
       print('Error fetching and recommending beauticians: $e');
+      Fluttertoast.showToast(
+        msg: "Failed to fetch recommendations.",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
     }
   }
 
@@ -156,113 +166,125 @@ class _FindServiceState extends State<FindService> {
     }
   }
 
-  Widget _buildBeauticianCard(Map<String, dynamic> beauticianData) {
-    return Container(
-      margin: const EdgeInsets.only(right: 16),
-      width: 200,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 200,
-            height: 200,
-            child: Stack(
+  Widget _buildBeauticianCard(BeauticianModel beautician) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ScheduleAppointment(
+              beauticianId: beautician.beauticianId,
+              salonId: beautician.salonId,
+            ),
+          ),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.only(right: 16),
+        width: 200,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: 200,
+              height: 200,
+              child: Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.network(
+                      beautician.imageUrl,
+                      fit: BoxFit.cover,
+                      height: 200,
+                      width: 200,
+                    ),
+                  ),
+                  Container(
+                    alignment: const Alignment(0.95, -0.95),
+                    child: Container(
+                      width: 30,
+                      height: 30,
+                      decoration: BoxDecoration(
+                        color: bAccentLightColor,
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      child: const Icon(
+                        Icons.favorite_border,
+                        color: bAccentRedColor,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              beautician.name,
+              style: const TextStyle(fontSize: 16, color: bBlackColor, fontWeight: FontWeight.w600),
+            ),
+            Text(
+              "Gender: ${beautician.gender}",
+              style: TextStyle(fontSize: 14, color: bGrey, fontWeight: FontWeight.w500),
+            ),
+            Text(
+              "Salon: ${beautician.salonName}",
+              style: TextStyle(fontSize: 14, color: bGrey, fontWeight: FontWeight.w500),
+            ),
+            const SizedBox(height: 5),
+            Row(
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.network(
-                    beauticianData['Image'] ?? '',
-                    fit: BoxFit.cover,
-                    height: 200,
-                    width: 200,
-                  ),
-                ),
-                Container(
-                  alignment: const Alignment(0.95, -0.95),
-                  child: Container(
-                    width: 30,
-                    height: 30,
-                    decoration: BoxDecoration(
-                      color: bAccentLightColor,
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    child: const Icon(
-                      Icons.favorite_border,
-                      color: bAccentRedColor,
-                    ),
-                  ),
+                const Icon(Icons.star, color: bSecondaryColor, size: 15),
+                const SizedBox(width: 5),
+                Text(
+                  beautician.score.toString(),
+                  style: const TextStyle(color: Color(0xff111111), fontWeight: FontWeight.w600, fontSize: 12),
                 ),
               ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildService(int index) {
+    return GestureDetector(
+      onTap: () {
+        if (serviceData[index].destinationPage != null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => serviceData[index].destinationPage),
+          );
+        } else {
+          // Optionally, show an error message or fallback widget
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Page not available")),
+          );
+        }
+      },
+      child: Column(
+        children: [
+          Container(
+            width: 64,
+            height: 64,
+            decoration: BoxDecoration(
+              color: bPrimaryLightColor,
+              borderRadius: BorderRadius.circular(50),
+            ),
+            child: Center(
+              child: Image.asset(
+                serviceData[index].imageUrl,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           const SizedBox(height: 10),
           Text(
-            beauticianData['Name'] ?? '',
-            style: const TextStyle(fontSize: 16, color: bBlackColor, fontWeight: FontWeight.w600),
-          ),
-          Text(
-            "Gender: ${beauticianData['Gender'] ?? ''}",
-            style: TextStyle(fontSize: 14, color: bGrey, fontWeight: FontWeight.w500),
-          ),
-          Text(
-            "Salon: ${beauticianData['Salon_Name'] ?? ''}",
-            style: TextStyle(fontSize: 14, color: bGrey, fontWeight: FontWeight.w500),
-          ),
-          const SizedBox(height: 5),
-          Row(
-            children: [
-              const Icon(Icons.star, color: bSecondaryColor, size: 15),
-              const SizedBox(width: 5),
-              Text(
-                beauticianData['score']?.toString() ?? '',
-                style: const TextStyle(color: Color(0xff111111), fontWeight: FontWeight.w600, fontSize: 12),
-              ),
-            ],
+            serviceData[index].title,
+            style: const TextStyle(fontSize: 14, color: bPrimaryColor, fontWeight: FontWeight.w500),
           ),
         ],
       ),
     );
   }
-
-Widget _buildService(int index) {
-  return GestureDetector(
-    onTap: () {
-      if (serviceData[index].destinationPage != null) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => serviceData[index].destinationPage),
-        );
-      } else {
-        // Optionally, show an error message or fallback widget
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Page not available")),
-        );
-      }
-    },
-    child: Column(
-      children: [
-        Container(
-          width: 64,
-          height: 64,
-          decoration: BoxDecoration(
-            color: bPrimaryLightColor,
-            borderRadius: BorderRadius.circular(50),
-          ),
-          child: Center(
-            child: Image.asset(
-              serviceData[index].imageUrl,
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-        const SizedBox(height: 10),
-        Text(
-          serviceData[index].title,
-          style: const TextStyle(fontSize: 14, color: bPrimaryColor, fontWeight: FontWeight.w500),
-        ),
-      ],
-    ),
-  );
-}
-
 }

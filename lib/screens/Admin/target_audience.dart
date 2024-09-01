@@ -2,9 +2,11 @@ import 'package:beautilly/data/target_audience_data.dart';
 import 'package:beautilly/screens/Admin/shop_details.dart';
 import 'package:beautilly/api/apiservice.dart';
 import 'package:beautilly/utils/colors.dart';
+import 'package:beautilly/utils/global_state.dart';
 import 'package:beautilly/widget/custom_box.dart';
 import 'package:beautilly/widget/custom_button.dart';
 import 'package:flutter/material.dart';
+
 
 class TargetAudience extends StatefulWidget {
   const TargetAudience({super.key});
@@ -20,7 +22,7 @@ class _TargetAudienceState extends State<TargetAudience> {
   int _indexGender = 99;
   int _indexIncome = 99;
 
-  bool _isLoading = false; // Add a state to track loading status
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +86,9 @@ class _TargetAudienceState extends State<TargetAudience> {
                                   onTap: () {
                                     setState(() {
                                       _indexAge = index;
+                                      // Update the global variable
+                                      GlobalState.selectedAgeGroup = _audienceData
+                                          .TargetAudienceAgeList[index].title;
                                     });
                                   },
                                   child: CustomButton(
@@ -130,6 +135,9 @@ class _TargetAudienceState extends State<TargetAudience> {
                                   onTap: () {
                                     setState(() {
                                       _indexGender = index;
+                                      // Update the global variable
+                                      GlobalState.selectedGender = _audienceData
+                                          .TargetAudienceGenderList[index].title;
                                     });
                                   },
                                   child: CustomButton(
@@ -176,6 +184,9 @@ class _TargetAudienceState extends State<TargetAudience> {
                                   onTap: () {
                                     setState(() {
                                       _indexIncome = index;
+                                      // Update the global variable
+                                      GlobalState.selectedIncome = _audienceData
+                                          .TargetAudienceIncomeList[index].title;
                                     });
                                   },
                                   child: CustomButton(
@@ -229,9 +240,9 @@ class _TargetAudienceState extends State<TargetAudience> {
     try {
       // Fetch visuals data based on selected target audience
       final visuals = await ApiService.getVisualsByCustomerAttributes(
-        _audienceData.TargetAudienceGenderList[_indexGender].title,
-        _audienceData.TargetAudienceAgeList[_indexAge].title,
-        _audienceData.TargetAudienceIncomeList[_indexIncome].title,
+        GlobalState.selectedGender,
+        GlobalState.selectedAgeGroup,
+        GlobalState.selectedIncome,
       );
 
       // Navigate to ShopDetails with visuals data

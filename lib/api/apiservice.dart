@@ -42,6 +42,21 @@ class ApiService {
     static String getSkinColorUploadUrl() {
     return '$baseUrl/skin_color/upload/';
   }
+   // URL for handling appointments
+  static String getAppointmentUrl() {
+    return '$baseUrl/appointments/';
+  }
+
+
+   // Method to submit an appointment
+  static Future<void> postAppointment(Map<String, dynamic> appointmentData) async {
+    final url = getAppointmentUrl();
+    final response = await postRequest(url, appointmentData);
+
+    if (response.statusCode != 201 && response.statusCode != 200) {
+      throw Exception('Failed to submit appointment');
+    }
+  }
 
   // General GET request method with error handling
   static Future<http.Response> getRequest(String url) async {

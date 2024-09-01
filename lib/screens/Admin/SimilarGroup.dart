@@ -1,6 +1,8 @@
 import 'package:beautilly/utils/colors.dart';
+import 'package:beautilly/utils/global_state.dart';
 import 'package:beautilly/widget/custom_button.dart';
 import 'package:flutter/material.dart';
+
 
 class SimilarGroup extends StatelessWidget {
   const SimilarGroup({super.key});
@@ -53,7 +55,7 @@ class SimilarGroup extends StatelessWidget {
                   ),
                   SizedBox(width: 20),
                   Text(
-                    "18-24",
+                    GlobalState.selectedAgeGroup, // Display the selected age group
                     style: TextStyle(fontSize: 16, color: Colors.black),
                   ),
                 ],
@@ -69,7 +71,7 @@ class SimilarGroup extends StatelessWidget {
                   ),
                   SizedBox(width: 20),
                   Text(
-                    "Female",
+                    GlobalState.selectedGender, // Display the selected gender
                     style: TextStyle(fontSize: 16, color: Colors.black),
                   ),
                 ],
@@ -85,7 +87,7 @@ class SimilarGroup extends StatelessWidget {
                   ),
                   SizedBox(width: 20),
                   Text(
-                    "High",
+                    GlobalState.selectedIncome, // Display the selected income
                     style: TextStyle(fontSize: 16, color: Colors.black),
                   ),
                 ],
@@ -117,7 +119,6 @@ class SimilarGroup extends StatelessWidget {
           ),
         ),
       ),
-    
     );
   }
 }
