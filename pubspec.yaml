@@ -48,6 +48,8 @@ dependencies:
   path_provider: ^2.0.11
   image: ^3.0.1
   intl: ^0.17.0  # Add this line for the intl package
+  geolocator: ^9.0.2
+  permission_handler: ^10.0.0
 
 dev_dependencies:
   flutter_test:

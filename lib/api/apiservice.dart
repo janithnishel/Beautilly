@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:geolocator/geolocator.dart';
 
 class ApiService {
   static const String baseUrl = 'http://10.0.2.2:8001';
@@ -64,23 +65,56 @@ static String getDeleteAppointmentUrl(int appointmentId) {
     return '$baseUrl/reviews/beautician/$beauticianId';
   }
 
-   // New: Method to fetch all salon details
+  // Utility method to get the base URL for salon services
   static String getSalonsUrl() {
     return '$baseUrl/salons/';
   }
 
-  static Future<List<Map<String, dynamic>>> getAllSalons() async {
-    final url = Uri.parse(getSalonsUrl());
-    final response = await getRequest(url.toString());
+  // Method to fetch current location
+  static Future<Position> getCurrentLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
 
-    if (response.statusCode == 200) {
-      final List<dynamic> salons = jsonDecode(response.body);
-      return salons.cast<Map<String, dynamic>>();
-    } else {
-      throw Exception('Failed to load salons');
+    // Check if location services are enabled
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
     }
+
+    // Check location permission
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error('Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    // Permissions are granted, continue accessing the position of the device
+    return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
   }
 
+  // Method to fetch all salons based on the current location
+  static Future<List<Map<String, dynamic>>> getNearbySalons() async {
+    try {
+      final position = await getCurrentLocation();
+      final url = Uri.parse('${getSalonsUrl()}?lat=${position.latitude}&lng=${position.longitude}');
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        List<dynamic> salons = jsonDecode(response.body);
+        return salons.cast<Map<String, dynamic>>();
+      } else {
+        throw Exception('Failed to load salons: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error fetching salons: $e');
+    }
+  }
 
   // New: Method to fetch reviews by beautician ID
   static Future<List<Map<String, dynamic>>> getReviewsByBeautician(int beauticianId) async {

@@ -1,6 +1,7 @@
 import 'package:beautilly/screens/beautician_pages/staff_member_profile.dart';
 import 'package:beautilly/screens/customer_profile/choose_preference.dart';
 import 'package:beautilly/screens/customer_profile/findservice_page.dart';
+import 'package:beautilly/screens/customer_profile/nearby_beautician_salon.dart';
 import 'package:flutter/material.dart';
 import 'package:beautilly/screens/join_page.dart';
 
@@ -67,7 +68,7 @@ class SideMenu extends StatelessWidget {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => NearbyList()),
+                  MaterialPageRoute(builder: (context) => NearbyBeauticianSalon()),
                 );
               },
             ),
