@@ -19,6 +19,7 @@ class CustomButton extends StatelessWidget {
   final Offset? shadowOffset;
   final Widget? rightSideImage;
   final FontWeight? fontWeight;
+  final VoidCallback? onTap; // Added onTap parameter
 
   const CustomButton({
     super.key,
@@ -39,53 +40,33 @@ class CustomButton extends StatelessWidget {
     this.shadowBlurRadius,
     this.rightSideImage,
     this.isCenter,
+    this.onTap, // Initialize onTap
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: width ?? double.infinity,
-      height: height ?? 54,
-      decoration: BoxDecoration(
-        color: color ?? bPrimaryColor,
-        borderRadius: BorderRadius.circular(radius ?? 50),
-        border: Border.all(
-          color: borderColor ?? Colors.transparent,
-          width: strokWidth ?? 1,
+    return GestureDetector( // Wrapped the Container with GestureDetector
+      onTap: onTap,
+      child: Container(
+        width: width ?? double.infinity,
+        height: height ?? 54,
+        decoration: BoxDecoration(
+          color: color ?? bPrimaryColor,
+          borderRadius: BorderRadius.circular(radius ?? 50),
+          border: Border.all(
+            color: borderColor ?? Colors.transparent,
+            width: strokWidth ?? 1,
+          ),
         ),
-      ),
-      child: isHasMultipleWidget
-          ? isCenter ?? true
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    leftSideWidget ?? const Text(""),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      title,
-                      style: TextStyle(
-                        color: textColor ?? bWhite,
-                        fontSize: fontSize ?? 16,
-                        fontWeight: fontWeight ?? FontWeight.w400,
-                        shadows: [
-                          Shadow(
-                            blurRadius: shadowBlurRadius ?? 0,
-                            color: shadowColor ?? Colors.transparent,
-                            offset: shadowOffset ?? const Offset(0, 0),
-                          ),
-                        ],
-                      ),
-                    ),
-                    rightSideImage ?? Text("")
-                  ],
-                )
-              : Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: isHasMultipleWidget
+            ? isCenter ?? true
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      leftSideWidget ?? const Text(""),
+                      const SizedBox(
+                        width: 10,
+                      ),
                       Text(
                         title,
                         style: TextStyle(
@@ -101,20 +82,44 @@ class CustomButton extends StatelessWidget {
                           ],
                         ),
                       ),
-                      rightSideImage ??Text("")
+                      rightSideImage ?? const Text("")
                     ],
+                  )
+                : Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          title,
+                          style: TextStyle(
+                            color: textColor ?? bWhite,
+                            fontSize: fontSize ?? 16,
+                            fontWeight: fontWeight ?? FontWeight.w400,
+                            shadows: [
+                              Shadow(
+                                blurRadius: shadowBlurRadius ?? 0,
+                                color: shadowColor ?? Colors.transparent,
+                                offset: shadowOffset ?? const Offset(0, 0),
+                              ),
+                            ],
+                          ),
+                        ),
+                        rightSideImage ?? const Text("")
+                      ],
+                    ),
+                  )
+            : Center(
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    color: textColor ?? bWhite,
+                    fontSize: fontSize ?? 16,
+                    fontWeight: fontWeight ?? FontWeight.w400,
                   ),
-                )
-          : Center(
-              child: Text(
-                title,
-                style: TextStyle(
-                  color: textColor ?? bWhite,
-                  fontSize: fontSize ?? 16,
-                  fontWeight: fontWeight ?? FontWeight.w400,
                 ),
               ),
-            ),
+      ),
     );
   }
 }

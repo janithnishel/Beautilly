@@ -70,6 +70,47 @@ static String getDeleteAppointmentUrl(int appointmentId) {
     return '$baseUrl/salons/';
   }
 
+   static String getReviewsUrl() {
+    return '$baseUrl/reviews/';
+  }
+
+
+
+ // Method to post a review
+  static Future<void> postReview(Map<String, dynamic> reviewData) async {
+    final url = getReviewsUrl();
+    final response = await postRequest(url, reviewData);
+
+    if (response.statusCode != 201 && response.statusCode != 200) {
+      throw Exception('Failed to post review: ${response.statusCode}');
+    }
+  }
+
+
+
+
+  // Method to get all beauticians
+  static Future<List<Map<String, dynamic>>?> getAllBeauticians() async {
+    final String url = '$baseUrl/beauticians/';
+
+    try {
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        // Parse the JSON response into a List of Maps
+        List<dynamic> jsonData = json.decode(response.body);
+        return jsonData.map((beautician) => beautician as Map<String, dynamic>).toList();
+      } else {
+        // Handle errors or return null
+        print('Failed to load beauticians');
+        return null;
+      }
+    } catch (e) {
+      print('Error: $e');
+      return null;
+    }
+  }
+
   // Method to fetch current location
   static Future<Position> getCurrentLocation() async {
     bool serviceEnabled;
@@ -98,24 +139,19 @@ static String getDeleteAppointmentUrl(int appointmentId) {
     return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
   }
 
-  // Method to fetch all salons based on the current location
-  static Future<List<Map<String, dynamic>>> getNearbySalons() async {
-    try {
-      final position = await getCurrentLocation();
-      final url = Uri.parse('${getSalonsUrl()}?lat=${position.latitude}&lng=${position.longitude}');
-      final response = await http.get(url);
+ static Future<List<Map<String, dynamic>>> getNearbySalons() async {
+    final position = await getCurrentLocation();
+    // Include the radius in the API request
+    final url = Uri.parse('${getSalonsUrl()}?lat=${position.latitude}&lng=${position.longitude}&radius=10');
+    final response = await http.get(url);
 
-      if (response.statusCode == 200) {
-        List<dynamic> salons = jsonDecode(response.body);
-        return salons.cast<Map<String, dynamic>>();
-      } else {
-        throw Exception('Failed to load salons: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Error fetching salons: $e');
+    if (response.statusCode == 200) {
+      List<dynamic> salons = jsonDecode(response.body);
+      return salons.cast<Map<String, dynamic>>();
+    } else {
+      throw Exception('Failed to load salons: ${response.statusCode}');
     }
   }
-
   // New: Method to fetch reviews by beautician ID
   static Future<List<Map<String, dynamic>>> getReviewsByBeautician(int beauticianId) async {
     final url = Uri.parse(getReviewsByBeauticianUrl(beauticianId));

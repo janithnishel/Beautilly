@@ -1,10 +1,10 @@
+import 'package:beautilly/screens/beautician_pages/Beauticians.dart';
 import 'package:beautilly/screens/beautician_pages/staff_member_profile.dart';
 import 'package:beautilly/screens/customer_profile/choose_preference.dart';
 import 'package:beautilly/screens/customer_profile/findservice_page.dart';
 import 'package:beautilly/screens/customer_profile/nearby_beautician_salon.dart';
 import 'package:flutter/material.dart';
 import 'package:beautilly/screens/join_page.dart';
-
 import 'package:beautilly/screens/nearby_list.dart';
 import 'package:beautilly/utils/colors.dart';
 
@@ -69,6 +69,17 @@ class SideMenu extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => NearbyBeauticianSalon()),
+                );
+              },
+            ),
+            _createDrawerItem(
+              icon: Icons.content_cut, // Example icon for Beauticians
+              text: 'Beauticians',
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Beauticians()),
                 );
               },
             ),
