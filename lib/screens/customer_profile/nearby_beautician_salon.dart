@@ -13,18 +13,25 @@ class NearbyBeauticianSalon extends StatefulWidget {
 
 class _NearbyBeauticianSalonState extends State<NearbyBeauticianSalon> {
   Future<List<Map<String, dynamic>>>? nearbySalons;
+  String errorMessage = '';
 
   @override
   void initState() {
     super.initState();
-    requestLocationPermission().then((_) {
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    try {
+      await requestLocationPermission();
       setState(() {
-        nearbySalons = ApiService.getNearbySalons(); // Initialize after permissions are granted
+        nearbySalons = ApiService.getNearbySalons();
       });
-    }).catchError((error) {
-      // Handle error if permissions are denied or another error occurs
-      print('Error obtaining permission: $error');
-    });
+    } catch (error) {
+      setState(() {
+        errorMessage = 'Error obtaining permission: $error';
+      });
+    }
   }
 
   // Location permissions request method
@@ -34,7 +41,9 @@ class _NearbyBeauticianSalonState extends State<NearbyBeauticianSalon> {
       Map<Permission, PermissionStatus> statuses = await [
         Permission.location,
       ].request();
-      print(statuses[Permission.location]);
+      if (statuses[Permission.location] != PermissionStatus.granted) {
+        throw Exception('Location permissions are denied');
+      }
     }
   }
 
@@ -78,33 +87,38 @@ class _NearbyBeauticianSalonState extends State<NearbyBeauticianSalon> {
                 style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
               ),
               const SizedBox(height: 20),
-              FutureBuilder<List<Map<String, dynamic>>>(
-                future: nearbySalons,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting || !snapshot.hasData) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  } else if (snapshot.data!.isEmpty) {
-                    return const Center(child: Text('No nearby salons found'));
-                  }
-                  return GridView.builder(
-                    itemCount: snapshot.data!.length,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
-                      crossAxisCount: 2,
-                      childAspectRatio: 0.8,
-                    ),
-                    itemBuilder: (context, index) {
-                      final salon = snapshot.data![index];
-                      return _buildSalonCard(salon);
-                    },
-                  );
-                },
-              ),
+              if (errorMessage.isNotEmpty)
+                Center(
+                  child: Text(errorMessage, style: const TextStyle(color: Colors.red)),
+                )
+              else
+                FutureBuilder<List<Map<String, dynamic>>>(
+                  future: nearbySalons,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Center(child: Text('No nearby salons found'));
+                    }
+                    return GridView.builder(
+                      itemCount: snapshot.data!.length,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                        crossAxisCount: 2,
+                        childAspectRatio: 0.8,
+                      ),
+                      itemBuilder: (context, index) {
+                        final salon = snapshot.data![index];
+                        return _buildSalonCard(salon);
+                      },
+                    );
+                  },
+                ),
             ],
           ),
         ),
@@ -140,9 +154,11 @@ class _NearbyBeauticianSalonState extends State<NearbyBeauticianSalon> {
                   ),
                 ),
                 Text("Rating: ${salon['Rating_score']} Stars"),
-                Text("Services: ${salon['Services']}",
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis),
+                Text(
+                  "Services: ${salon['Services']}",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ],
             ),
           ),

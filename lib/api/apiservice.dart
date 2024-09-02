@@ -111,18 +111,56 @@ static String getDeleteAppointmentUrl(int appointmentId) {
     }
   }
 
-  // Method to fetch current location
+    static Future<List<Map<String, dynamic>>> getNearbySalons() async {
+    try {
+      final position = await getCurrentLocation();
+      
+      // Define the search radius (in kilometers)
+      const int initialRadius = 10;
+
+      // Search within the initial radius
+      List<Map<String, dynamic>> salons = await fetchSalonsWithinRadius(position.latitude, position.longitude, initialRadius);
+      
+      if (salons.isEmpty) {
+        // If no salons found within the initial radius, search with a larger radius
+        const int extendedRadius = 50; // Optional larger radius, if desired
+        salons = await fetchSalonsWithinRadius(position.latitude, position.longitude, extendedRadius);
+      }
+      
+      return salons;
+    } catch (error) {
+      throw Exception('Failed to load salons: $error');
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>> fetchSalonsWithinRadius(double latitude, double longitude, int radius) async {
+    final url = Uri.parse('${getSalonsUrl()}?lat=$latitude&lng=$longitude&radius=$radius');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      List<dynamic> salons = jsonDecode(response.body);
+
+      // Filter out salons that are beyond the specified radius
+      return salons.where((salon) {
+        double salonLat = salon['latitude'];
+        double salonLng = salon['longitude'];
+        double distance = Geolocator.distanceBetween(latitude, longitude, salonLat, salonLng) / 1000;
+        return distance <= radius;
+      }).cast<Map<String, dynamic>>().toList();
+    } else {
+      throw Exception('Failed to load salons: ${response.statusCode}');
+    }
+  }
+
   static Future<Position> getCurrentLocation() async {
     bool serviceEnabled;
     LocationPermission permission;
 
-    // Check if location services are enabled
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       return Future.error('Location services are disabled.');
     }
 
-    // Check location permission
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
@@ -135,23 +173,13 @@ static String getDeleteAppointmentUrl(int appointmentId) {
       return Future.error('Location permissions are permanently denied, we cannot request permissions.');
     }
 
-    // Permissions are granted, continue accessing the position of the device
     return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
   }
 
- static Future<List<Map<String, dynamic>>> getNearbySalons() async {
-    final position = await getCurrentLocation();
-    // Include the radius in the API request
-    final url = Uri.parse('${getSalonsUrl()}?lat=${position.latitude}&lng=${position.longitude}&radius=10');
-    final response = await http.get(url);
 
-    if (response.statusCode == 200) {
-      List<dynamic> salons = jsonDecode(response.body);
-      return salons.cast<Map<String, dynamic>>();
-    } else {
-      throw Exception('Failed to load salons: ${response.statusCode}');
-    }
-  }
+
+
+
   // New: Method to fetch reviews by beautician ID
   static Future<List<Map<String, dynamic>>> getReviewsByBeautician(int beauticianId) async {
     final url = Uri.parse(getReviewsByBeauticianUrl(beauticianId));
