@@ -59,6 +59,43 @@ static String getDeleteAppointmentUrl(int appointmentId) {
     return '$baseUrl/beauticians/$beauticianId';
   }
 
+ // New: URL to fetch reviews by beautician ID
+  static String getReviewsByBeauticianUrl(int beauticianId) {
+    return '$baseUrl/reviews/beautician/$beauticianId';
+  }
+
+   // New: Method to fetch all salon details
+  static String getSalonsUrl() {
+    return '$baseUrl/salons/';
+  }
+
+  static Future<List<Map<String, dynamic>>> getAllSalons() async {
+    final url = Uri.parse(getSalonsUrl());
+    final response = await getRequest(url.toString());
+
+    if (response.statusCode == 200) {
+      final List<dynamic> salons = jsonDecode(response.body);
+      return salons.cast<Map<String, dynamic>>();
+    } else {
+      throw Exception('Failed to load salons');
+    }
+  }
+
+
+  // New: Method to fetch reviews by beautician ID
+  static Future<List<Map<String, dynamic>>> getReviewsByBeautician(int beauticianId) async {
+    final url = Uri.parse(getReviewsByBeauticianUrl(beauticianId));
+    final response = await getRequest(url.toString());
+
+    if (response.statusCode == 200) {
+      final List<dynamic> reviews = jsonDecode(response.body);
+      return reviews.cast<Map<String, dynamic>>();
+    } else {
+      throw Exception('Failed to load reviews');
+    }
+  }
+
+
    static Future<Map<String, dynamic>> getBeauticianDetails(int beauticianId) async {
     final url = Uri.parse(getBeauticianDetailsUrl(beauticianId));
     final response = await getRequest(url.toString());
