@@ -2,12 +2,12 @@ import 'package:beautilly/api/apiservice.dart';
 import 'package:beautilly/data/service_data.dart';
 import 'package:beautilly/models/beauticians_model.dart';
 import 'package:beautilly/screens/beautician_pages/schedule_appointment.dart';
+import 'package:beautilly/screens/beautician_pages/staff_member_profile.dart'; // Import the profile page
 import 'package:beautilly/utils/GlobalUser.dart';
 import 'package:beautilly/utils/colors.dart';
 import 'package:beautilly/widget/side_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
 
 class FindService extends StatefulWidget {
   const FindService({super.key});
@@ -173,10 +173,7 @@ class _FindServiceState extends State<FindService> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ScheduleAppointment(
-              beauticianId: beautician.beauticianId,
-              salonId: beautician.salonId,
-            ),
+            builder: (context) => StaffMemberProfile(beauticianId: beautician.beauticianId),
           ),
         );
       },
@@ -210,7 +207,7 @@ class _FindServiceState extends State<FindService> {
                         borderRadius: BorderRadius.circular(50),
                       ),
                       child: const Icon(
-                        Icons.favorite_border,
+                        Icons.person,
                         color: bAccentRedColor,
                       ),
                     ),

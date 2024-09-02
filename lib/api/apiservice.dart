@@ -50,6 +50,45 @@ static String getDeleteAppointmentUrl(int appointmentId) {
     return '$baseUrl/appointments/$appointmentId';
   }
 
+ // Method to build the URL for fetching visuals by customer attributes
+  static String buildVisualsClusterUrl(String gender, String age, String incomeLevel) {
+    return '$baseUrl/visuals/visuals/most_frequent_cluster?gender=$gender&age=$age&income_level=$incomeLevel';
+  }
+
+  static String getBeauticianDetailsUrl(int beauticianId) {
+    return '$baseUrl/beauticians/$beauticianId';
+  }
+
+   static Future<Map<String, dynamic>> getBeauticianDetails(int beauticianId) async {
+    final url = Uri.parse(getBeauticianDetailsUrl(beauticianId));
+    final response = await getRequest(url.toString());
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body) as Map<String, dynamic>;
+    } else {
+      throw Exception('Failed to load beautician details');
+    }
+  }
+
+// Method to fetch visuals based on customer attributes
+  static Future<Map<String, dynamic>> fetchVisualsByCluster(
+    String gender, String age, String incomeLevel) async {
+    
+    final url = Uri.parse(buildVisualsClusterUrl(gender, age, incomeLevel));
+    final response = await getRequest(url.toString());
+
+    if (response.statusCode == 200) {
+      final List<dynamic> visuals = jsonDecode(response.body);
+      if (visuals.isNotEmpty) {
+        return visuals[0]; // Return the first visual if the list is not empty
+      } else {
+        throw Exception('No visuals found');
+      }
+    } else {
+      throw Exception('Failed to load visuals');
+    }
+  }
+ 
    // Method to submit an appointment
   static Future<void> postAppointment(Map<String, dynamic> appointmentData) async {
     final url = getAppointmentUrl();

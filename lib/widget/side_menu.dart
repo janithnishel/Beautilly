@@ -45,7 +45,7 @@ class SideMenu extends StatelessWidget {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => StaffMemberProfile()),
+                  MaterialPageRoute(builder: (context) => FindService()),
                 );
               },
             ),
