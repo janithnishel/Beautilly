@@ -22,7 +22,8 @@ class _SimilarGroupState extends State<SimilarGroup> {
 
   Future<void> _fetchVisuals() async {
     try {
-      Map<String, dynamic> fetchedVisuals = await ApiService.fetchVisualsByCluster(
+      Map<String, dynamic> fetchedVisuals =
+          await ApiService.fetchVisualsByCluster(
         GlobalState.selectedGender,
         GlobalState.selectedAgeGroup,
         GlobalState.selectedIncome,
@@ -73,7 +74,9 @@ class _SimilarGroupState extends State<SimilarGroup> {
         ),
       ),
       body: visuals == null
-          ? Center(child: CircularProgressIndicator()) // Show loading indicator while fetching data
+          ? Center(
+              child:
+                  CircularProgressIndicator()) // Show loading indicator while fetching data
           : SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -85,19 +88,20 @@ class _SimilarGroupState extends State<SimilarGroup> {
                       isHasMultipleWidget: false,
                     ),
                     SizedBox(height: 20),
-                    
+
                     // Demographics Section
                     Row(
                       children: [
                         Expanded(
                           child: Image.asset(
-                            'assets/image_22.png', // Replace with age range icon
+                            'assets/images/image_22.png', // Replace with age range icon
                             height: 50,
                           ),
                         ),
                         SizedBox(width: 20),
                         Text(
-                          GlobalState.selectedAgeGroup, // Display the selected age group
+                          GlobalState
+                              .selectedAgeGroup, // Display the selected age group
                           style: TextStyle(fontSize: 16, color: Colors.black),
                         ),
                       ],
@@ -107,13 +111,14 @@ class _SimilarGroupState extends State<SimilarGroup> {
                       children: [
                         Expanded(
                           child: Image.asset(
-                            'assets/image_23.png', // Replace with gender icon
+                            'assets/images/image_23.png', // Replace with gender icon
                             height: 50,
                           ),
                         ),
                         SizedBox(width: 20),
                         Text(
-                          GlobalState.selectedGender, // Display the selected gender
+                          GlobalState
+                              .selectedGender, // Display the selected gender
                           style: TextStyle(fontSize: 16, color: Colors.black),
                         ),
                       ],
@@ -123,13 +128,14 @@ class _SimilarGroupState extends State<SimilarGroup> {
                       children: [
                         Expanded(
                           child: Image.asset(
-                            'assets/image_24.png', // Replace with income level icon
+                            'assets/images/image_24.png', // Replace with income level icon
                             height: 50,
                           ),
                         ),
                         SizedBox(width: 20),
                         Text(
-                          GlobalState.selectedIncome, // Display the selected income level
+                          GlobalState
+                              .selectedIncome, // Display the selected income level
                           style: TextStyle(fontSize: 16, color: Colors.black),
                         ),
                       ],
@@ -147,14 +153,16 @@ class _SimilarGroupState extends State<SimilarGroup> {
                       children: [
                         Expanded(
                           child: Image.network(
-                            visuals!['Color']!, // Display the color image from the URL
+                            visuals![
+                                'Color']!, // Display the color image from the URL
                             fit: BoxFit.cover,
                           ),
                         ),
                         SizedBox(width: 20),
                         Expanded(
                           child: Image.network(
-                            visuals!['Decor']!, // Display the decor image from the URL
+                            visuals![
+                                'Decor']!, // Display the decor image from the URL
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -165,14 +173,16 @@ class _SimilarGroupState extends State<SimilarGroup> {
                       children: [
                         Expanded(
                           child: Image.network(
-                            visuals!['Lighting']!, // Display the lighting image from the URL
+                            visuals![
+                                'Lighting']!, // Display the lighting image from the URL
                             fit: BoxFit.cover,
                           ),
                         ),
                         SizedBox(width: 20),
                         Expanded(
                           child: Image.network(
-                            visuals!['Furniture']!, // Display the furniture image from the URL
+                            visuals![
+                                'Furniture']!, // Display the furniture image from the URL
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -183,14 +193,16 @@ class _SimilarGroupState extends State<SimilarGroup> {
                       children: [
                         Expanded(
                           child: Image.network(
-                            visuals!['WashingStation']!, // Display the washing station image from the URL
+                            visuals![
+                                'WashingStation']!, // Display the washing station image from the URL
                             fit: BoxFit.cover,
                           ),
                         ),
                         SizedBox(width: 20),
                         Expanded(
                           child: Image.network(
-                            visuals!['StylingStation']!, // Display the styling station image from the URL
+                            visuals![
+                                'StylingStation']!, // Display the styling station image from the URL
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -201,7 +213,8 @@ class _SimilarGroupState extends State<SimilarGroup> {
                       children: [
                         Expanded(
                           child: Image.network(
-                            visuals!['WaitingArea']!, // Display the waiting area image from the URL
+                            visuals![
+                                'WaitingArea']!, // Display the waiting area image from the URL
                             fit: BoxFit.cover,
                           ),
                         ),

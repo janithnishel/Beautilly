@@ -167,13 +167,16 @@ class _FindServiceState extends State<FindService> {
     }
   }
 
-  Widget _buildBeauticianCard(BeauticianModel beautician) {
+ Widget _buildBeauticianCard(BeauticianModel beautician) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => StaffMemberProfile(beauticianId: beautician.beauticianId),
+            builder: (context) => ScheduleAppointment(
+              beauticianId: beautician.beauticianId,
+              salonId: beautician.salonId, // Assuming you have a salonId field in BeauticianModel
+            ),
           ),
         );
       },
@@ -197,18 +200,29 @@ class _FindServiceState extends State<FindService> {
                       width: 200,
                     ),
                   ),
-                  Container(
-                    alignment: const Alignment(0.95, -0.95),
-                    child: Container(
-                      width: 30,
-                      height: 30,
-                      decoration: BoxDecoration(
-                        color: bAccentLightColor,
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                      child: const Icon(
-                        Icons.person,
-                        color: bAccentRedColor,
+                  Positioned(
+                    right: 10,
+                    top: 10,
+                    child: GestureDetector( // Wrap the icon with GestureDetector
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => StaffMemberProfile(beauticianId: beautician.beauticianId),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        width: 30,
+                        height: 30,
+                        decoration: BoxDecoration(
+                          color: bAccentLightColor,
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                        child: const Icon(
+                          Icons.person,
+                          color: bAccentRedColor,
+                        ),
                       ),
                     ),
                   ),
@@ -244,6 +258,7 @@ class _FindServiceState extends State<FindService> {
       ),
     );
   }
+
 
   Widget _buildService(int index) {
     return GestureDetector(
