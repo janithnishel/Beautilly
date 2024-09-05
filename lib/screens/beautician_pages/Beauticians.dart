@@ -91,7 +91,7 @@ class _BeauticiansState extends State<Beauticians> {
     return Container(
       margin: EdgeInsets.only(bottom: 10),
       width: MediaQuery.of(context).size.width,
-      height: 150,
+      height: 160,
       decoration: BoxDecoration(
         color: bWhite,
         borderRadius: BorderRadius.circular(10),

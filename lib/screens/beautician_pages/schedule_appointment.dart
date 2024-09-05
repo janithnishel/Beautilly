@@ -44,7 +44,8 @@ class _ScheduleAppointmentState extends State<ScheduleAppointment> {
       }
 
       // Fetch the list of appointments for the current customer
-      List<Map<String, dynamic>> fetchedAppointments = await ApiService.getAppointmentsByCustomer(customerId);
+      List<Map<String, dynamic>> fetchedAppointments =
+          await ApiService.getAppointmentsByCustomer(customerId);
 
       setState(() {
         appointments = fetchedAppointments;
@@ -179,7 +180,8 @@ class _ScheduleAppointmentState extends State<ScheduleAppointment> {
                 }
               },
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                 decoration: BoxDecoration(
                   color: bLowLightGrey,
                   borderRadius: BorderRadius.circular(6),
@@ -231,7 +233,8 @@ class _ScheduleAppointmentState extends State<ScheduleAppointment> {
                 }
               },
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                 decoration: BoxDecoration(
                   color: bLowLightGrey,
                   borderRadius: BorderRadius.circular(6),
@@ -260,9 +263,13 @@ class _ScheduleAppointmentState extends State<ScheduleAppointment> {
               child: CustomButton(
                 title: "Submit",
                 isHasMultipleWidget: false,
-                color: selectedDate != null && selectedTime != null ? bBlackColor : bLowLightGrey,
+                color: selectedDate != null && selectedTime != null
+                    ? bBlackColor
+                    : bLowLightGrey,
                 textColor: bWhite,
-                borderColor: selectedDate != null && selectedTime != null ? bBlackColor : bLowLightGrey,
+                borderColor: selectedDate != null && selectedTime != null
+                    ? bBlackColor
+                    : bLowLightGrey,
                 radius: 8,
               ),
             ),
@@ -308,7 +315,7 @@ class _ScheduleAppointmentState extends State<ScheduleAppointment> {
         blurRadius: 1,
         shadowOfset: const Offset(0, 2),
         shadowColor: bhightLightGrey,
-        height: 80, // Adjusted height
+        height: 100, // Adjusted height
         borderRadius: 5,
         color: bWhite,
         width: MediaQuery.of(context).size.width,

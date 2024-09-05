@@ -35,14 +35,16 @@ class _FindServiceState extends State<FindService> {
         throw Exception("Customer ID is null");
       }
 
-      Map<String, dynamic> preferences = await ApiService.getPreferences(customerId);
-      List<Map<String, dynamic>> recommendations = await ApiService.getRecommendation(preferences);
+      Map<String, dynamic> preferences =
+          await ApiService.getPreferences(customerId);
+      List<Map<String, dynamic>> recommendations =
+          await ApiService.getRecommendation(preferences);
 
       setState(() {
         recommendedBeauticians = recommendations
             .map((json) => BeauticianModel.fromJson(json))
             .take(3)
-            .toList(); 
+            .toList();
       });
     } catch (e) {
       print('Error fetching and recommending beauticians: $e');
@@ -63,7 +65,8 @@ class _FindServiceState extends State<FindService> {
     return SafeArea(
       child: Scaffold(
         drawer: SideMenu(),
-        body: SingleChildScrollView(  // Scrollable container for vertical scrolling
+        body: SingleChildScrollView(
+          // Scrollable container for vertical scrolling
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
             child: Column(
@@ -159,7 +162,7 @@ class _FindServiceState extends State<FindService> {
           ),
           const SizedBox(height: 20),
           SizedBox(
-            height: 300,
+            height: 350,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: recommendedBeauticians.length,
