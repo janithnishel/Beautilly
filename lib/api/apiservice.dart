@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:geolocator/geolocator.dart';
-
+//http://52.172.31.221:8000/
 class ApiService {
-  static const String baseUrl = 'http://10.0.2.2:8001';
-
+  static const String baseUrl = 'http://52.172.31.221:8000';
+//'http://10.0.2.2:8001';
   static String getPreferencesUrl(int customerId) {
     return '$baseUrl/preferences/$customerId';
   }
@@ -176,6 +176,21 @@ static String getDeleteAppointmentUrl(int appointmentId) {
     return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
   }
 
+static Future<List<Map<String, String>>> fetchAllVisuals() async {
+  final url = Uri.parse(getVisualsUrl());
+  final response = await getRequest(url.toString());
+
+  if (response.statusCode == 200) {
+    final List<dynamic> visuals = jsonDecode(response.body);
+
+    // Convert the dynamic list to a List<Map<String, String>>
+    return visuals.map((visual) {
+      return (visual as Map<String, dynamic>).map((key, value) => MapEntry(key as String, value.toString()));
+    }).toList();
+  } else {
+    throw Exception('Failed to load all visuals');
+  }
+}
 
 
 
@@ -206,23 +221,26 @@ static String getDeleteAppointmentUrl(int appointmentId) {
   }
 
 // Method to fetch visuals based on customer attributes
-  static Future<Map<String, dynamic>> fetchVisualsByCluster(
+static Future<List<Map<String, dynamic>>> fetchVisualsByCluster(
     String gender, String age, String incomeLevel) async {
-    
-    final url = Uri.parse(buildVisualsClusterUrl(gender, age, incomeLevel));
-    final response = await getRequest(url.toString());
+  
+  final url = Uri.parse(buildVisualsClusterUrl(gender, age, incomeLevel));
+  final response = await getRequest(url.toString());
 
-    if (response.statusCode == 200) {
-      final List<dynamic> visuals = jsonDecode(response.body);
-      if (visuals.isNotEmpty) {
-        return visuals[0]; // Return the first visual if the list is not empty
-      } else {
-        throw Exception('No visuals found');
-      }
+  if (response.statusCode == 200) {
+    final List<dynamic> visuals = jsonDecode(response.body);
+    
+    if (visuals.isNotEmpty) {
+      // Return the entire list of visuals instead of just the first one
+      return List<Map<String, dynamic>>.from(visuals);
     } else {
-      throw Exception('Failed to load visuals');
+      throw Exception('No visuals found');
     }
+  } else {
+    throw Exception('Failed to load visuals');
   }
+}
+
  
    // Method to submit an appointment
   static Future<void> postAppointment(Map<String, dynamic> appointmentData) async {

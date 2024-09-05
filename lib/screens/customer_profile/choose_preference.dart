@@ -43,7 +43,7 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
         throw Exception("Customer ID is null");
       }
 
-      final url = Uri.parse('http://10.0.2.2:8001/preferences/');
+      final url = Uri.parse('http://52.172.31.221:8000/preferences/');
       final response = await http.post(
         url,
         headers: {

@@ -12,7 +12,8 @@ class SimilarGroup extends StatefulWidget {
 }
 
 class _SimilarGroupState extends State<SimilarGroup> {
-  Map<String, String>? visuals;
+  List<Map<String, dynamic>> visualsList = [];
+  Set<String> printedDemographics = {}; // To keep track of unique demographic combinations
 
   @override
   void initState() {
@@ -22,26 +23,18 @@ class _SimilarGroupState extends State<SimilarGroup> {
 
   Future<void> _fetchVisuals() async {
     try {
-      Map<String, dynamic> fetchedVisuals =
-          await ApiService.fetchVisualsByCluster(
-        GlobalState.selectedGender,
-        GlobalState.selectedAgeGroup,
-        GlobalState.selectedIncome,
+      List<Map<String, dynamic>> fetchedVisuals = List<Map<String, dynamic>>.from(
+        await ApiService.fetchVisualsByCluster(
+          GlobalState.selectedGender,
+          GlobalState.selectedAgeGroup,
+          GlobalState.selectedIncome,
+        )
       );
 
       setState(() {
-        visuals = {
-          "Color": fetchedVisuals['Color'],
-          "Decor": fetchedVisuals['Decor'],
-          "Lighting": fetchedVisuals['Lighting'],
-          "Furniture": fetchedVisuals['Furniture'],
-          "WashingStation": fetchedVisuals['WashingStation'],
-          "StylingStation": fetchedVisuals['StylingStation'],
-          "WaitingArea": fetchedVisuals['WaitingArea'],
-        };
+        visualsList = fetchedVisuals;
       });
     } catch (e) {
-      // Handle the error, e.g., show a message
       print('Failed to fetch visuals: $e');
     }
   }
@@ -73,157 +66,88 @@ class _SimilarGroupState extends State<SimilarGroup> {
           ),
         ),
       ),
-      body: visuals == null
-          ? Center(
-              child:
-                  CircularProgressIndicator()) // Show loading indicator while fetching data
+      body: visualsList.isEmpty
+          ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CustomButton(
+                    const CustomButton(
                       title: "Demographics",
                       isHasMultipleWidget: false,
                     ),
-                    SizedBox(height: 20),
-
-                    // Demographics Section
-                    Row(
+                    const SizedBox(height: 20),
+                    ...visualsList.where((visual) {
+                      String demographicKey = '${visual['age']}_${visual['gender']}_${visual['income_level']}';
+                      return printedDemographics.add(demographicKey); // Ensures unique combination is printed only once
+                    }).map((visual) => Column(
                       children: [
-                        Expanded(
-                          child: Image.asset(
-                            'assets/images/image_22.png', // Replace with age range icon
-                            height: 50,
-                          ),
-                        ),
-                        SizedBox(width: 20),
-                        Text(
-                          GlobalState
-                              .selectedAgeGroup, // Display the selected age group
-                          style: TextStyle(fontSize: 16, color: Colors.black),
-                        ),
+                        _buildDemographicRow('assets/images/image_22.png', visual['age']!),
+                        const SizedBox(height: 20),
+                        _buildDemographicRow('assets/images/image_23.png', visual['gender']!),
+                        const SizedBox(height: 20),
+                        _buildDemographicRow('assets/images/image_24.png', visual['income_level']!),
+                        const SizedBox(height: 20),
                       ],
-                    ),
-                    SizedBox(height: 20),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Image.asset(
-                            'assets/images/image_23.png', // Replace with gender icon
-                            height: 50,
-                          ),
-                        ),
-                        SizedBox(width: 20),
-                        Text(
-                          GlobalState
-                              .selectedGender, // Display the selected gender
-                          style: TextStyle(fontSize: 16, color: Colors.black),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 20),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Image.asset(
-                            'assets/images/image_24.png', // Replace with income level icon
-                            height: 50,
-                          ),
-                        ),
-                        SizedBox(width: 20),
-                        Text(
-                          GlobalState
-                              .selectedIncome, // Display the selected income level
-                          style: TextStyle(fontSize: 16, color: Colors.black),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 20),
-
-                    CustomButton(
+                    )),
+                    const CustomButton(
                       title: "Preferences",
                       isHasMultipleWidget: false,
                     ),
-                    SizedBox(height: 20),
-
-                    // Preferences Section
-                    Row(
+                    const SizedBox(height: 20),
+                    // Display preferences for each visual
+                    ...visualsList.map((visual) => Column(
                       children: [
-                        Expanded(
-                          child: Image.network(
-                            visuals![
-                                'Color']!, // Display the color image from the URL
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        SizedBox(width: 20),
-                        Expanded(
-                          child: Image.network(
-                            visuals![
-                                'Decor']!, // Display the decor image from the URL
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                        _buildPreferenceRow(visual['Color']!),
+                        const SizedBox(height: 20),
+                        _buildPreferenceRow(visual['Decor']!),
+                        const SizedBox(height: 20),
+                        _buildPreferenceRow(visual['Lighting']!),
+                        const SizedBox(height: 20),
+                        _buildPreferenceRow(visual['Furniture']!),
+                        const SizedBox(height: 20),
+                        _buildPreferenceRow(visual['WashingStation']!),
+                        const SizedBox(height: 20),
+                        _buildPreferenceRow(visual['StylingStation']!),
+                        const SizedBox(height: 20),
+                        _buildPreferenceRow(visual['WaitingArea']!),
+                        const SizedBox(height: 20),
                       ],
-                    ),
-                    SizedBox(height: 20),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Image.network(
-                            visuals![
-                                'Lighting']!, // Display the lighting image from the URL
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        SizedBox(width: 20),
-                        Expanded(
-                          child: Image.network(
-                            visuals![
-                                'Furniture']!, // Display the furniture image from the URL
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 20),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Image.network(
-                            visuals![
-                                'WashingStation']!, // Display the washing station image from the URL
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        SizedBox(width: 20),
-                        Expanded(
-                          child: Image.network(
-                            visuals![
-                                'StylingStation']!, // Display the styling station image from the URL
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 20),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Image.network(
-                            visuals![
-                                'WaitingArea']!, // Display the waiting area image from the URL
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ],
-                    ),
+                    )),
                   ],
                 ),
               ),
             ),
+    );
+  }
+
+  Widget _buildDemographicRow(String assetPath, String text) {
+    return Row(
+      children: [
+        Expanded(
+          child: Image.asset(assetPath, height: 50),
+        ),
+        const SizedBox(width: 20),
+        Text(
+          text,
+          style: const TextStyle(fontSize: 16, color: Colors.black),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPreferenceRow(String imageUrl) {
+    return Row(
+      children: [
+        Expanded(
+          child: Image.network(
+            imageUrl,
+            fit: BoxFit.cover,
+          ),
+        ),
+      ],
     );
   }
 }
