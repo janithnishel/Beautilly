@@ -13,13 +13,13 @@ class FaceTreatmentImage extends StatefulWidget {
 }
 
 class _FaceTreatmentImageState extends State<FaceTreatmentImage> {
-  String message = '';
+  String message = 'No issues detected'; // Default message for normal skin
   double affectedPercentage = 0.0;
-  String treatmentIssue = '';
-  String treatmentName = '';
-  String treatmentFrequency = '';
-  int treatmentDurationWeeks = 0;
-  String treatmentSeverity = '';
+  String treatmentIssue = 'Normal Skin'; // Default issue for normal skin
+  String treatmentName = 'No treatment necessary'; // Default treatment name for normal skin
+  String treatmentFrequency = 'None'; // Default frequency for normal skin
+  int treatmentDurationWeeks = 0; // Default duration for normal skin
+  String treatmentSeverity = 'None'; // Default severity for normal skin
   bool isLoading = false;
   File? _selectedImage;
 
@@ -167,12 +167,24 @@ class _FaceTreatmentImageState extends State<FaceTreatmentImage> {
   }
 
   void updateUIWithResponse(Map<String, dynamic> response) {
-    message = response['message'];
-    affectedPercentage = response['affected_percentage'].toDouble();
-    treatmentIssue = response['treatment']['Issue'];
-    treatmentName = response['treatment']['Treatment_Name'];
-    treatmentFrequency = response['treatment']['Frequency'];
-    treatmentDurationWeeks = response['treatment']['Duration_Weeks'];
-    treatmentSeverity = response['treatment']['Severity'];
+    setState(() {
+      message = response['message'] ?? 'No issues detected';
+      affectedPercentage = response.containsKey('affected_percentage') ? response['affected_percentage'].toDouble() : 0.0;
+      
+      if (response.containsKey('treatment') && response['treatment'] != null) {
+        treatmentIssue = response['treatment']['Issue'] ?? 'Normal Skin';
+        treatmentName = response['treatment']['Treatment_Name'] ?? 'No treatment necessary';
+        treatmentFrequency = response['treatment']['Frequency'] ?? 'None';
+        treatmentDurationWeeks = response['treatment']['Duration_Weeks'] ?? 0;
+        treatmentSeverity = response['treatment']['Severity'] ?? 'None';
+      } else {
+        // Default to normal skin if treatment details are missing
+        treatmentIssue = 'Normal Skin';
+        treatmentName = 'No treatment necessary';
+        treatmentFrequency = 'None';
+        treatmentDurationWeeks = 0;
+        treatmentSeverity = 'None';
+      }
+    });
   }
 }

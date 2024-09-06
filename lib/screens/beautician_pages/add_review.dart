@@ -7,7 +7,10 @@ import 'package:beautilly/utils/colors.dart';
 import 'package:beautilly/widget/custom_box.dart';
 import 'package:beautilly/widget/custom_button.dart';
 import 'package:beautilly/widget/custom_textform_field.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'dart:io';
 
 class AddReview extends StatefulWidget {
   final int beauticianId;
@@ -24,6 +27,8 @@ class _AddReviewState extends State<AddReview> {
   PageController _control = PageController();
   int _pageCount = 4;
 
+  File? _selectedImage;
+
   @override
   void dispose() {
     _commentController.dispose();
@@ -32,11 +37,31 @@ class _AddReviewState extends State<AddReview> {
     super.dispose();
   }
 
+  Future<void> _pickImage() async {
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _selectedImage = File(pickedFile.path);
+      });
+    }
+  }
+
+  Future<String> _uploadImageToFirebase(File imageFile) async {
+    try {
+      final storageReference = FirebaseStorage.instance.ref().child("reviews/${DateTime.now().millisecondsSinceEpoch}.jpg");
+      final uploadTask = storageReference.putFile(imageFile);
+      await uploadTask.whenComplete(() {});
+      return await storageReference.getDownloadURL();
+    } catch (e) {
+      throw Exception("Error uploading image: $e");
+    }
+  }
+
   void _submitReview() async {
     String comment = _commentController.text;
     int rating = int.tryParse(_ratingController.text) ?? 0;
-    String image = "https://example.com/image.jpg"; // Placeholder for image URL
     int? customerId = GlobalUser.customerId; // Use GlobalUser to get the customer ID
+    String? imageUrl;
 
     if (customerId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -45,10 +70,22 @@ class _AddReviewState extends State<AddReview> {
       return;
     }
 
+    if (_selectedImage != null) {
+      // Upload image to Firebase and get the download URL
+      try {
+        imageUrl = await _uploadImageToFirebase(_selectedImage!);
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to upload image: $e')),
+        );
+        return;
+      }
+    }
+
     Map<String, dynamic> reviewData = {
       "Comment": comment,
       "Rating": rating,
-      "Image": image,
+      "Image": imageUrl ?? "https://example.com/default-image.jpg", // Use image URL or a default
       "Customer_ID": customerId,
       "Beautician_ID": widget.beauticianId,
     };
@@ -58,7 +95,6 @@ class _AddReviewState extends State<AddReview> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Review submitted successfully!')),
       );
-      // Optionally, you can clear the input fields after submission
       _commentController.clear();
       _ratingController.clear();
     } catch (e) {
@@ -117,62 +153,33 @@ class _AddReviewState extends State<AddReview> {
               SizedBox(
                 height: 10,
               ),
-              CustomBox(
-                widget: Expanded(
-                  child: Stack(
-                    children: [
-                      PageView(
-                        controller: _control,
-                        children: [
-                          for (int i = 1; i <= _pageCount; i++)
-                            Container(
-                              child: Center(
-                                child: Text(
-                                  "Upload Image",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                            )
-                        ],
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 15),
-                                child: SmoothPageIndicator(
-                                  controller: _control,
-                                  count: _pageCount,
-                                  effect: const ExpandingDotsEffect(
-                                    dotColor: Colors.grey,
-                                    activeDotColor: bWhite,
-                                    dotWidth: 4,
-                                    dotHeight: 4,
-                                    expansionFactor: 5.5,
-                                  ),
-                                ),
-                              ),
-                            ],
+              GestureDetector(
+                onTap: _pickImage,
+                child: CustomBox(
+                  widget: _selectedImage == null
+                      ? Center(
+                          child: Text(
+                            "Upload Image",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
-                        ],
-                      )
-                    ],
-                  ),
+                        )
+                      : Image.file(
+                          _selectedImage!,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                        ),
+                  isHaSBorder: false,
+                  color: bLowLightGrey,
+                  width: MediaQuery.of(context).size.width,
+                  height: 150,
+                  borderRadius: 6,
+                  blurRadius: 0,
+                  shadowColor: Colors.transparent,
+                  shadowOfset: Offset(0, 0),
                 ),
-                isHaSBorder: false,
-                color: bLowLightGrey,
-                width: MediaQuery.of(context).size.width,
-                height: 150,
-                borderRadius: 6,
-                blurRadius: 0,
-                shadowColor: Colors.transparent,
-                shadowOfset: Offset(0, 0),
               ),
               SizedBox(
                 height: 10,
