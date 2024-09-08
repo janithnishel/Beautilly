@@ -2,6 +2,7 @@ import 'package:beautilly/models/services_model.dart';
 import 'package:beautilly/screens/Admin/saloon_visual_home.dart';
 import 'package:beautilly/screens/face_pages/face_treatment/makeup_image.dart';
 import 'package:beautilly/screens/face_pages/makeup/makeup_image.dart';
+import 'package:beautilly/screens/hair_treatment/upload_image.dart';
 import 'package:flutter/material.dart';
 
 class ServiceData {
@@ -9,7 +10,7 @@ class ServiceData {
     ServicesModel(
       imageUrl: "assets/images/haircut.png",
       title: "Haircut",
-      destinationPage: MakeupImage(), // Corrected to 'destinationPage'
+      destinationPage: UploadIamge(), // Corrected to 'destinationPage'
     ),
     ServicesModel(
       imageUrl: "assets/images/nails.png",

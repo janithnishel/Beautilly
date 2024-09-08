@@ -11,7 +11,7 @@ class RecomendedColorData {
       case 'berry':
         return const Color(0XFF8B0000); // Berry color
       case 'plum':
-        return const Color(0XFF8E4585); // Plum color
+        return Color.fromARGB(255, 207, 93, 191); // Plum color
       case 'cocoa':
         return const Color(0XFF6F4E37); // Cocoa color
       case 'dark cocoa':
@@ -19,7 +19,7 @@ class RecomendedColorData {
       case 'burgundy':
         return const Color(0XFF800020); // Burgundy color
       case 'dark purple':
-        return const Color(0XFF301934); // Dark Purple color
+        return Color.fromARGB(255, 108, 43, 120); // Dark Purple color
       case 'walnut':
         return const Color(0XFF5C4033); // Walnut color
       case 'dark walnut':
@@ -35,9 +35,9 @@ class RecomendedColorData {
       case 'dark almond':
         return const Color(0XFF5A2E2E); // Dark Almond color
       case 'dark red':
-        return const Color(0XFF8B0000); // Dark Red color
+        return Color.fromARGB(255, 196, 4, 4); // Dark Red color
       case 'deep plum':
-        return const Color(0XFF5E2D79); // Deep Plum color
+        return Color.fromARGB(255, 139, 68, 178); // Deep Plum color
       case 'ivory':
         return const Color(0XFFFFFFF0); // Ivory color
       case 'light beige':

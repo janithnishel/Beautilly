@@ -74,6 +74,29 @@ static String getDeleteAppointmentUrl(int appointmentId) {
     return '$baseUrl/reviews/';
   }
 
+static String getHairProcessImageUrl() {
+  return '$baseUrl/hair/Process_image/';
+}
+
+static Future<Map<String, dynamic>> uploadHairImageForProcessing(File imageFile) async {
+  print('Uploading image for hair processing: ${imageFile.path}');
+  final url = Uri.parse(getHairProcessImageUrl());
+  final request = http.MultipartRequest('POST', url);
+
+  request.files.add(await http.MultipartFile.fromPath('file', imageFile.path));
+
+  final streamedResponse = await request.send();
+  final response = await http.Response.fromStream(streamedResponse);
+
+  print('Response status: ${response.statusCode}');
+  print('Response body: ${response.body}');
+
+  if (response.statusCode == 200) {
+    return jsonDecode(response.body) as Map<String, dynamic>;
+  } else {
+    throw Exception('Failed to process hair image');
+  }
+}
 
 
  // Method to post a review
