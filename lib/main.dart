@@ -1,3 +1,6 @@
+import 'package:beautilly/hair_treatment.dart/hair_type_prediction.dart';
+import 'package:beautilly/hair_treatment.dart/upload_image.dart';
+import 'package:beautilly/screens/Admin/target_audience.dart';
 import 'package:beautilly/screens/beautician_pages/schedule_appointment.dart';
 import 'package:beautilly/screens/beautician_pages/staff_member_profile.dart';
 import 'package:beautilly/screens/beautician_pages/staff_member_profile.dart';
@@ -16,7 +19,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "Beautilly",
       theme: ThemeData(fontFamily: "Poppins"),
-      home: StaffMemberProfile(),
+      home:UploadIamge(),
     );
   }
 }

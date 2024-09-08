@@ -27,12 +27,14 @@ class _TargetAudienceState extends State<TargetAudience> {
         child: SingleChildScrollView(
           child: Stack(
             children: [
-              Container(
-                width:MediaQuery.of(context).size.width,
-                height:MediaQuery.of(context).size.height,
-                child: Image.asset(
-                  "assets/images/targetAudience.png",
-                  fit: BoxFit.cover,
+              Positioned.fill(
+                child: Container(
+                  width:MediaQuery.of(context).size.width,
+                  height:MediaQuery.of(context).size.height,
+                  child: Image.asset(
+                    "assets/images/targetAudience.png",
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
               Padding(

@@ -67,7 +67,7 @@ class _FindServiceState extends State<FindService> {
                         ),
                       ),
                     ),
-                    
+
                   ],
                 ),
                 const SizedBox(
@@ -354,3 +354,4 @@ class _FindServiceState extends State<FindService> {
     );
   }
 }
+
