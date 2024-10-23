@@ -153,18 +153,14 @@ class _StaffMemberProfileState extends State<StaffMemberProfile> {
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return const Center(child: Text('No reviews found'));
         } else {
-          return SizedBox(
-            height: MediaQuery.of(context).size.height * 0.4,
-            child: ListView.builder(
-              itemCount: snapshot.data!.length,
-              shrinkWrap: true,
-              physics: const AlwaysScrollableScrollPhysics(),
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (context, index) {
-                final review = snapshot.data![index];
-                return _buildReviewCard(review);
-              },
-            ),
+          return ListView.builder(
+            itemCount: snapshot.data!.length,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              final review = snapshot.data![index];
+              return _buildReviewCard(review);
+            },
           );
         }
       },
@@ -173,8 +169,7 @@ class _StaffMemberProfileState extends State<StaffMemberProfile> {
 
   Widget _buildReviewCard(Map<String, dynamic> review) {
     return Container(
-      margin: const EdgeInsets.only(right: 16),
-      width: 300,
+      margin: const EdgeInsets.only(bottom: 16),
       child: Card(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -202,7 +197,7 @@ class _StaffMemberProfileState extends State<StaffMemberProfile> {
                   review['Image'],
                   fit: BoxFit.cover,
                   height: 150,
-                  width: 250,
+                  width: double.infinity,
                 ),
               ),
             ],

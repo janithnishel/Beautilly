@@ -18,7 +18,6 @@ class FindService extends StatefulWidget {
 
 class _FindServiceState extends State<FindService> {
   final serviceData = ServiceData().serviceDataList;
-
   List<BeauticianModel> recommendedBeauticians = [];
 
   @override
@@ -27,6 +26,7 @@ class _FindServiceState extends State<FindService> {
     _fetchAndRecommendBeauticians();
   }
 
+  // Function to fetch and recommend beauticians
   Future<void> _fetchAndRecommendBeauticians() async {
     try {
       int? customerId = GlobalUser.customerId;
@@ -65,27 +65,30 @@ class _FindServiceState extends State<FindService> {
     return SafeArea(
       child: Scaffold(
         drawer: SideMenu(),
-        body: SingleChildScrollView(
-          // Scrollable container for vertical scrolling
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildHeader(),
-                const SizedBox(height: 15),
-                const Text(
-                  "What do you want to do?",
-                  style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xff111111)),
-                ),
-                const SizedBox(height: 20),
-                _buildServiceGrid(),
-                const SizedBox(height: 40),
-                _buildBeauticianRecommendations(),
-              ],
+        body: RefreshIndicator(
+          onRefresh: _fetchAndRecommendBeauticians, // Pull to refresh trigger
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(), // Ensures pull-to-refresh works
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildHeader(),
+                  const SizedBox(height: 15),
+                  const Text(
+                    "What do you want to do?",
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xff111111)),
+                  ),
+                  const SizedBox(height: 20),
+                  _buildServiceGrid(),
+                  const SizedBox(height: 40),
+                  _buildBeauticianRecommendations(),
+                ],
+              ),
             ),
           ),
         ),
@@ -198,7 +201,6 @@ class _FindServiceState extends State<FindService> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image with profile icon overlay
             Stack(
               children: [
                 ClipRRect(
@@ -241,7 +243,6 @@ class _FindServiceState extends State<FindService> {
               ],
             ),
             const SizedBox(height: 10),
-
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -272,8 +273,6 @@ class _FindServiceState extends State<FindService> {
                   ),
                 ),
                 const SizedBox(height: 5),
-
-                // Rating Row
                 Row(
                   children: [
                     const Icon(Icons.star, color: bSecondaryColor, size: 15),

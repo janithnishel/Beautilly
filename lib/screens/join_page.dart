@@ -12,6 +12,126 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 
+// Admin Sign-In App Code
+class AdminSignInApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: AdminSignInScreen(),
+    );
+  }
+}
+
+class AdminSignInScreen extends StatefulWidget {
+  @override
+  _AdminSignInScreenState createState() => _AdminSignInScreenState();
+}
+
+class _AdminSignInScreenState extends State<AdminSignInScreen> {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  String errorMessage = '';
+
+  void _signIn() {
+    // Hardcoded credentials
+    String adminUsername = 'admin';
+    String adminPassword = 'password';
+
+    if (_usernameController.text == adminUsername &&
+        _passwordController.text == adminPassword) {
+      setState(() {
+        errorMessage = '';
+      });
+      // Navigate or perform successful login action
+      print('Login successful');
+      // Add your navigation or action here
+    } else {
+      setState(() {
+        errorMessage = 'Invalid username or password';
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: bPrimaryLightColor,
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Admin Sign In',
+                style: TextStyle(
+                  color: bPrimaryColor,
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 20),
+              TextField(
+                controller: _usernameController,
+                decoration: InputDecoration(
+                  labelText: 'Username',
+                  filled: true,
+                  fillColor: bWhite,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              TextField(
+                controller: _passwordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  filled: true,
+                  fillColor: bWhite,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _signIn,
+                style: ElevatedButton.styleFrom(
+                  primary: bPrimaryColor,
+                  padding: EdgeInsets.symmetric(horizontal: 100, vertical: 15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: Text(
+                  'Sign In',
+                  style: TextStyle(
+                    color: bWhite,
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+              SizedBox(height: 10),
+              if (errorMessage.isNotEmpty)
+                Text(
+                  errorMessage,
+                  style: TextStyle(
+                    color: bAccentRedColor,
+                    fontSize: 16,
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// Main JoinPage Code
 class JoinPage extends StatefulWidget {
   JoinPage({super.key});
 
@@ -32,7 +152,8 @@ class _JoinPageState extends State<JoinPage> {
         return null;
       }
 
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
       final OAuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
@@ -42,7 +163,7 @@ class _JoinPageState extends State<JoinPage> {
           await FirebaseAuth.instance.signInWithCredential(credential);
 
       final User? user = userCredential.user;
- if (user != null) {
+      if (user != null) {
         GlobalUser.firstName = user.displayName?.split(" ").first;
         GlobalUser.profileUrl = user.photoURL;
         GlobalUser.gender = "Unknown"; // Default value
@@ -53,7 +174,7 @@ class _JoinPageState extends State<JoinPage> {
           name: GlobalUser.firstName!,
           gender: GlobalUser.gender!,
           age: GlobalUser.age!,
-          incomeLevel: "unkown", // Include income level
+          incomeLevel: "unknown", // Include income level
           email: GlobalUser.email!,
           password: "Pa\$\$w0rd",
         );
@@ -76,7 +197,7 @@ class _JoinPageState extends State<JoinPage> {
     required String name,
     required String gender,
     required String age,
-    required String incomeLevel, // New parameter for income level
+    required String incomeLevel,
     required String email,
     required String password,
   }) async {
@@ -86,8 +207,8 @@ class _JoinPageState extends State<JoinPage> {
       body: jsonEncode({
         'Name': name,
         'Gender': gender,
-        'Age': age, // Age as a string
-        'IncomeLevel': incomeLevel, // Send income level
+        'Age': age,
+        'IncomeLevel': incomeLevel,
         'Email': email,
         'Password': password,
       }),
@@ -98,7 +219,8 @@ class _JoinPageState extends State<JoinPage> {
       return false;
     } else if (response.statusCode == 400) {
       final Map<String, dynamic> responseBody = jsonDecode(response.body);
-      if (responseBody['detail'] != null && responseBody['detail']['message'] == 'Email is already registered') {
+      if (responseBody['detail'] != null &&
+          responseBody['detail']['message'] == 'Email is already registered') {
         GlobalUser.customerId = responseBody['detail']['customer_id'];
         return true;
       }
@@ -121,9 +243,11 @@ class _JoinPageState extends State<JoinPage> {
 
       GlobalUser.styleOrientation = preferences['Style_Orientation'];
       GlobalUser.speedOfService = preferences['Speed_of_Service'];
-      GlobalUser.beauticianInteractionStyle = preferences['Beautician_Interaction_Style'];
-      GlobalUser.beauticianPersonalityType = preferences['Beautician_Personality_Type'];
-      GlobalUser.averageTime = preferences['Average_Time']; // Save the new Average_Time
+      GlobalUser.beauticianInteractionStyle =
+          preferences['Beautician_Interaction_Style'];
+      GlobalUser.beauticianPersonalityType =
+          preferences['Beautician_Personality_Type'];
+      GlobalUser.averageTime = preferences['Average_Time'];
 
       if (preferences.containsKey('Style_Orientation')) {
         Navigator.pushReplacement(
@@ -212,7 +336,6 @@ class _JoinPageState extends State<JoinPage> {
                       Icons.email,
                       color: bWhite,
                       size: 15,
-
                     ),
                   ),
                 ),
@@ -224,10 +347,10 @@ class _JoinPageState extends State<JoinPage> {
               ),
             Container(
               alignment: const Alignment(0, 0.85),
-              child: const Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     'Admin account?',
                     style: TextStyle(
                       color: bWhite,
@@ -235,16 +358,26 @@ class _JoinPageState extends State<JoinPage> {
                       fontWeight: FontWeight.w400,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 5,
                   ),
-                  
-                  Text(
-                    'Sign In',
-                    style: TextStyle(
-                      color: bSecondaryColor,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
+                  GestureDetector(
+                    onTap: () {
+                      // Navigate to AdminSignInApp
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AdminSignInApp(),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      'Sign In',
+                      style: TextStyle(
+                        color: bSecondaryColor,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
                 ],

@@ -1,3 +1,4 @@
+import 'package:beautilly/SalonForm.dart';
 import 'package:flutter/material.dart';
 
 const bPrimaryColor = Color(0xff156778);
@@ -12,7 +13,6 @@ const bDarkGrey = Color(0xff303030);
 final bhightLightGrey = const Color(0xff000000).withOpacity(0.1);
 final bLowLightGrey = const Color(0xff000000).withOpacity(0.05);
 final bGrey = const Color(0xff000000).withOpacity(0.5);
-
 
 class AdminSignInApp extends StatelessWidget {
   @override
@@ -44,9 +44,11 @@ class _AdminSignInScreenState extends State<AdminSignInScreen> {
       setState(() {
         errorMessage = '';
       });
-      // Navigate or perform successful login action
-      print('Login successful');
-      // Add your navigation or action here
+      // Navigate to SalonForm upon successful login
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => SalonForm()),
+      );
     } else {
       setState(() {
         errorMessage = 'Invalid username or password';
