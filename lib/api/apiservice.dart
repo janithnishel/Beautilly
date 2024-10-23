@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:geolocator/geolocator.dart';
 //http://52.172.31.221:8000/
 class ApiService {
-  static const String baseUrl = 'http://52.172.31.221:8000';
+  static const String baseUrl = 'http://10.0.2.2:8001';
 //'http://10.0.2.2:8001';
   static String getPreferencesUrl(int customerId) {
     return '$baseUrl/preferences/$customerId';

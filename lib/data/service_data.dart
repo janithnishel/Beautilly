@@ -12,11 +12,11 @@ class ServiceData {
       title: "Haircut",
       destinationPage: UploadIamge(), // Corrected to 'destinationPage'
     ),
-    ServicesModel(
-      imageUrl: "assets/images/nails.png",
-      title: "Nails",
-      destinationPage: MakeupImage(), // Corrected to 'destinationPage'
-    ),
+    // ServicesModel(
+    //   imageUrl: "assets/images/nails.png",
+    //   title: "Nails",
+    //   destinationPage: MakeupImage(), // Corrected to 'destinationPage'
+    // ),
     ServicesModel(
       imageUrl: "assets/images/facial.png",
       title: "Facial",
@@ -27,25 +27,22 @@ class ServiceData {
       title: "Coloring",
       destinationPage: SaloonVisualHome(), // Corrected to 'destinationPage'
     ),
-    ServicesModel(
-      imageUrl: "assets/images/spa.png",
-      title: "Spa",
-      destinationPage: MakeupImage(), // Corrected to 'destinationPage'
-    ),
-    ServicesModel(
-      imageUrl: "assets/images/waxing.png",
-      title: "Waxing",
-      destinationPage: MakeupImage(), // Corrected to 'destinationPage'
-    ),
+ 
+ 
+    // ServicesModel(
+    //   imageUrl: "assets/images/waxing.png",
+    //   title: "Waxing",
+    //   destinationPage: MakeupImage(), // Corrected to 'destinationPage'
+    // ),
     ServicesModel(
       imageUrl: "assets/images/makeup.png",
       title: "Makeup",
       destinationPage: MakeupImage(), // Corrected to 'destinationPage'
     ),
-    ServicesModel(
-      imageUrl: "assets/images/massage.png",
-      title: "Massage",
-      destinationPage: MakeupImage(), // Corrected to 'destinationPage'
-    ),
+    // ServicesModel(
+    //   imageUrl: "assets/images/massage.png",
+    //   title: "Massage",
+    //   destinationPage: MakeupImage(), // Corrected to 'destinationPage'
+    // ),
   ];
 }

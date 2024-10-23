@@ -212,54 +212,59 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Widget _buildBeauticianCard(Map<String, dynamic> beauticianData) {
-    return Container(
-      margin: const EdgeInsets.only(right: 16),
-      width: 200,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Image
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Image.network(
-              beauticianData['Image'] ?? '',
-              fit: BoxFit.cover,
-              height: 150,
-              width: 200,
+Widget _buildBeauticianCard(Map<String, dynamic> beauticianData) {
+  return Container(
+    margin: const EdgeInsets.only(right: 16),
+    width: 200,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Image
+        ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: Image.network(
+            beauticianData['Image'] ?? '',
+            fit: BoxFit.cover,
+            height: 150,
+            width: 200,
+          ),
+        ),
+        const SizedBox(height: 10),
+        // Name
+        Text(
+          beauticianData['Name'] ?? '',
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        ),
+        const SizedBox(height: 5),
+        // Position
+        Text(
+          "Position: ${beauticianData['Position'] ?? ''}",
+          style: const TextStyle(fontSize: 14, color: Colors.grey),
+        ),
+        const SizedBox(height: 5),
+        // Salon Name
+        Text(
+          "Salon: ${beauticianData['Salon_Name'] ?? ''}",
+          style: const TextStyle(fontSize: 14, color: Colors.grey),
+        ),
+        const SizedBox(height: 5),
+        // Score
+        Row(
+          children: [
+            const Icon(Icons.star, color: Colors.amber, size: 16),
+            const SizedBox(width: 4),
+            Text(
+              beauticianData['score']?.toString() ?? 'N/A',
+              style: const TextStyle(fontSize: 14),
             ),
-          ),
-          const SizedBox(height: 10),
-          // Name
-          Text(
-            beauticianData['Name'] ?? '',
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-          ),
-          // Gender
-          Text(
-            "Gender: ${beauticianData['Gender'] ?? ''}",
-            style: const TextStyle(fontSize: 14, color: Colors.grey),
-          ),
-          // Salon Name
-          Text(
-            "Salon: ${beauticianData['Salon_Name'] ?? ''}",
-            style: const TextStyle(fontSize: 14, color: Colors.grey),
-          ),
-          // Score
-          Row(
-            children: [
-              const Icon(Icons.star, color: Colors.amber, size: 16),
-              const SizedBox(width: 4),
-              Text(
-                beauticianData['score']?.toString() ?? 'N/A',
-                style: const TextStyle(fontSize: 14),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
+
 
   Widget _buildService(int index) {
     return Column(

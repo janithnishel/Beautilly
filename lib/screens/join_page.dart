@@ -228,7 +228,7 @@ class _JoinPageState extends State<JoinPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Already have an account?',
+                    'Admin account?',
                     style: TextStyle(
                       color: bWhite,
                       fontSize: 14,
@@ -238,6 +238,7 @@ class _JoinPageState extends State<JoinPage> {
                   SizedBox(
                     width: 5,
                   ),
+                  
                   Text(
                     'Sign In',
                     style: TextStyle(
