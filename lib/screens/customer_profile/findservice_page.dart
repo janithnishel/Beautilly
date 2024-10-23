@@ -2,7 +2,7 @@ import 'package:beautilly/api/apiservice.dart';
 import 'package:beautilly/data/service_data.dart';
 import 'package:beautilly/models/beauticians_model.dart';
 import 'package:beautilly/screens/beautician_pages/schedule_appointment.dart';
-import 'package:beautilly/screens/beautician_pages/staff_member_profile.dart'; // Import the profile page
+import 'package:beautilly/screens/beautician_pages/staff_member_profile.dart';
 import 'package:beautilly/utils/GlobalUser.dart';
 import 'package:beautilly/utils/colors.dart';
 import 'package:beautilly/widget/side_menu.dart';
@@ -19,11 +19,16 @@ class FindService extends StatefulWidget {
 class _FindServiceState extends State<FindService> {
   final serviceData = ServiceData().serviceDataList;
   List<BeauticianModel> recommendedBeauticians = [];
+  List<BeauticianModel> filteredBeauticians = [];
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _fetchAndRecommendBeauticians();
+
+    // Set up a listener to filter beauticians based on search input
+    _searchController.addListener(_filterBeauticians);
   }
 
   // Function to fetch and recommend beauticians
@@ -43,8 +48,8 @@ class _FindServiceState extends State<FindService> {
       setState(() {
         recommendedBeauticians = recommendations
             .map((json) => BeauticianModel.fromJson(json))
-            .take(3)
             .toList();
+        filteredBeauticians = recommendedBeauticians; // Show all by default
       });
     } catch (e) {
       print('Error fetching and recommending beauticians: $e');
@@ -60,6 +65,24 @@ class _FindServiceState extends State<FindService> {
     }
   }
 
+  // Function to filter beauticians based on search input
+  void _filterBeauticians() {
+    final query = _searchController.text.toLowerCase();
+
+    setState(() {
+      if (query.isEmpty) {
+        // Show all if the search is empty
+        filteredBeauticians = recommendedBeauticians;
+      } else {
+        // Otherwise filter the beauticians by name
+        filteredBeauticians = recommendedBeauticians
+            .where((beautician) =>
+                beautician.name.toLowerCase().contains(query))
+            .toList();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -68,7 +91,7 @@ class _FindServiceState extends State<FindService> {
         body: RefreshIndicator(
           onRefresh: _fetchAndRecommendBeauticians, // Pull to refresh trigger
           child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(), // Ensures pull-to-refresh works
+            physics: const AlwaysScrollableScrollPhysics(),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
               child: Column(
@@ -85,7 +108,9 @@ class _FindServiceState extends State<FindService> {
                   ),
                   const SizedBox(height: 20),
                   _buildServiceGrid(),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 20),
+                  _buildSearchBar(),
+                  const SizedBox(height: 20),
                   _buildBeauticianRecommendations(),
                 ],
               ),
@@ -129,7 +154,7 @@ class _FindServiceState extends State<FindService> {
 
   Widget _buildServiceGrid() {
     return SizedBox(
-      width: MediaQuery.of(context).size.width * 1,
+      width: MediaQuery.of(context).size.width,
       height: 205,
       child: GridView.builder(
         shrinkWrap: true,
@@ -149,9 +174,25 @@ class _FindServiceState extends State<FindService> {
     );
   }
 
+  Widget _buildSearchBar() {
+    return TextField(
+      controller: _searchController,
+      decoration: InputDecoration(
+        prefixIcon: Icon(Icons.search),
+        hintText: 'Search Beautician by name...',
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+      ),
+    );
+  }
+
   Widget _buildBeauticianRecommendations() {
     if (recommendedBeauticians.isEmpty) {
       return const Center(child: CircularProgressIndicator());
+    } else if (filteredBeauticians.isEmpty) {
+      return const Center(child: Text('No beauticians found'));
     } else {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -168,9 +209,9 @@ class _FindServiceState extends State<FindService> {
             height: 350,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: recommendedBeauticians.length,
+              itemCount: filteredBeauticians.length,
               itemBuilder: (context, index) {
-                return _buildBeauticianCard(recommendedBeauticians[index]);
+                return _buildBeauticianCard(filteredBeauticians[index]);
               },
             ),
           ),
