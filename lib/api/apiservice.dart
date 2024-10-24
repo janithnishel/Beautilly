@@ -31,6 +31,52 @@ class ApiService {
     return '$baseUrl/cluster/predict/';
   }
 
+  static Future<List<Map<String, dynamic>>> getAllSalons() async {
+    final url = '$baseUrl/salons/';
+    final response = await getRequest(url);
+
+    if (response.statusCode == 200) {
+      List<dynamic> salons = jsonDecode(response.body);
+      return salons.cast<Map<String, dynamic>>(); // Convert List<dynamic> to List<Map<String, dynamic>>
+    } else {
+      throw Exception('Failed to load salon details');
+    }
+  }
+
+  static Future<http.Response> postBeautician(Map<String, dynamic> beauticianData) async {
+    final url = Uri.parse('$baseUrl/beauticians/');
+    
+    try {
+      print('Sending beautician data: $beauticianData');
+
+      // Send the POST request with a timeout of 15 seconds
+      final response = await http
+          .post(
+            url,
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(beauticianData),
+          )
+          .timeout(
+            const Duration(seconds: 15),
+            onTimeout: () {
+              throw Exception('Request timed out');
+            },
+          );
+
+      // Check the response status code
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        print('Beautician posted successfully: ${response.body}');
+        return response;
+      } else {
+        print('Failed to post beautician: ${response.statusCode}');
+        print('Response body: ${response.body}');
+        throw Exception('Failed to post beautician: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error posting beautician: $e');
+      throw Exception('Error posting beautician: $e');
+    }
+  }
    // URL for the acne detection API
   static String getDetectAcneUrl() {
     return '$baseUrl/skin_deseases/detect_acne';

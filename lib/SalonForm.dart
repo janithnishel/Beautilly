@@ -1,4 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:beautilly/api/apiservice.dart';
 
 class SalonForm extends StatefulWidget {
   @override
@@ -12,37 +16,103 @@ class _SalonFormState extends State<SalonForm> {
   final TextEditingController _genderController = TextEditingController();
   final TextEditingController _positionController = TextEditingController();
   final TextEditingController _ratingScoreController = TextEditingController();
-  final TextEditingController _characteristicsController =
-      TextEditingController();
+  final TextEditingController _characteristicsController = TextEditingController();
   final TextEditingController _imageController = TextEditingController();
   final TextEditingController _salonIdController = TextEditingController();
 
-  void _submitForm() {
-    if (_formKey.currentState!.validate()) {
-      // Retrieve form values
-      final String name = _nameController.text;
-      final int age = int.parse(_ageController.text);
-      final String gender = _genderController.text;
-      final String position = _positionController.text;
-      final double ratingScore = double.parse(_ratingScoreController.text);
-      final String characteristics = _characteristicsController.text;
-      final String image = _imageController.text;
-      final int salonId = int.parse(_salonIdController.text);
+  File? _selectedImageFile;
+  String? _selectedSalonName;
+  List<Map<String, dynamic>> _salons = [];
+  bool isSubmitting = false;
 
-      // Create the JSON-like map
-      final Map<String, dynamic> formData = {
-        "Name": name,
-        "Age": age,
-        "Gender": gender,
-        "Position": position,
-        "Rating_Score": ratingScore,
-        "Characteristics": characteristics,
-        "Image": image,
-        "Salon_ID": salonId,
-      };
+  @override
+  void initState() {
+    super.initState();
+    _fetchSalons();
+  }
 
-      print('Form Data: $formData');
+  // Fetch all salons from the API
+  Future<void> _fetchSalons() async {
+    try {
+      final salons = await ApiService.getAllSalons();
+      setState(() {
+        _salons = salons;
+      });
+    } catch (e) {
+      print('Error fetching salons: $e');
     }
+  }
+
+  // Upload image to Firebase
+  Future<String> _uploadImageToFirebase(File imageFile) async {
+    try {
+      final storageReference = FirebaseStorage.instance.ref().child('beautician_images/${DateTime.now().millisecondsSinceEpoch}.jpg');
+      final uploadTask = storageReference.putFile(imageFile);
+      await uploadTask.whenComplete(() {});
+      return await storageReference.getDownloadURL();
+    } catch (e) {
+      throw Exception("Error uploading image: $e");
+    }
+  }
+
+  // Handle image picker
+  Future<void> _pickImage() async {
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _selectedImageFile = File(pickedFile.path);
+      });
+    }
+  }
+
+  // Submit form with beautician details
+  Future<void> _submitForm() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        isSubmitting = true;
+      });
+
+      try {
+        // Upload image and get URL
+        String imageUrl = _selectedImageFile != null ? await _uploadImageToFirebase(_selectedImageFile!) : _imageController.text;
+
+        // Retrieve form values
+        final String name = _nameController.text;
+        final int age = int.parse(_ageController.text);
+        final String gender = _genderController.text;
+        final String position = _positionController.text;
+        final double ratingScore = double.parse(_ratingScoreController.text);
+        final String characteristics = _characteristicsController.text;
+        final int salonId = int.parse(_salonIdController.text);
+
+        // Create the JSON-like map
+        final Map<String, dynamic> formData = {
+          "Name": name,
+          "Age": age,
+          "Gender": gender,
+          "Position": position,
+          "Rating_Score": ratingScore,
+          "Characteristics": characteristics,
+          "Image": imageUrl,
+          "Salon_ID": salonId,
+        };
+
+        // Post beautician details
+        final response = await ApiService.postBeautician(formData);
+        print('Beautician posted successfully: ${response.body}');
+      } catch (e) {
+        print('Error submitting form: $e');
+      } finally {
+        setState(() {
+          isSubmitting = false;
+        });
+      }
+    }
+  }
+
+  // Update form fields when salon is selected
+  void _updateFormWithSalonData(Map<String, dynamic> salonData) {
+    _salonIdController.text = salonData['Salon_ID'].toString();
   }
 
   @override
@@ -57,6 +127,29 @@ class _SalonFormState extends State<SalonForm> {
           key: _formKey,
           child: ListView(
             children: [
+              DropdownButtonFormField<String>(
+                decoration: InputDecoration(labelText: 'Select Salon'),
+                value: _selectedSalonName,
+                items: _salons.map((salon) {
+                  return DropdownMenuItem<String>(
+                    value: salon['Name'],
+                    child: Text(salon['Name']),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _selectedSalonName = value;
+                    final selectedSalon = _salons.firstWhere((salon) => salon['Name'] == value);
+                    _updateFormWithSalonData(selectedSalon);
+                  });
+                },
+                validator: (value) {
+                  if (value == null) {
+                    return 'Please select a salon';
+                  }
+                  return null;
+                },
+              ),
               TextFormField(
                 controller: _nameController,
                 decoration: InputDecoration(labelText: 'Name'),
@@ -120,31 +213,41 @@ class _SalonFormState extends State<SalonForm> {
                 },
               ),
               TextFormField(
-                controller: _imageController,
-                decoration: InputDecoration(labelText: 'Image URL'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter an image URL';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
                 controller: _salonIdController,
                 decoration: InputDecoration(labelText: 'Salon ID'),
                 keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter salon ID';
-                  }
-                  return null;
-                },
+                readOnly: true,
+              ),
+              SizedBox(height: 10),
+              GestureDetector(
+                onTap: _pickImage,
+                child: _selectedImageFile == null
+                    ? Column(
+                        children: [
+                          Image.asset(
+                            'assets/images/uploadImage.png',  // Add this icon for image upload
+                            height: 100,
+                            width: 100,
+                          ),
+                          Text(
+                            'Upload Image',
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ],
+                      )
+                    : Image.file(
+                        _selectedImageFile!,
+                        height: 150,
+                        width: 150,
+                      ),
               ),
               SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _submitForm,
-                child: Text('Submit'),
-              ),
+              isSubmitting
+                  ? Center(child: CircularProgressIndicator())
+                  : ElevatedButton(
+                      onPressed: _submitForm,
+                      child: Text('Submit'),
+                    ),
             ],
           ),
         ),
