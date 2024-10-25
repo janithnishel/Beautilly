@@ -66,22 +66,24 @@ class _FindServiceState extends State<FindService> {
   }
 
   // Function to filter beauticians based on search input
-  void _filterBeauticians() {
-    final query = _searchController.text.toLowerCase();
+void _filterBeauticians() {
+  final query = _searchController.text.toLowerCase();
 
-    setState(() {
-      if (query.isEmpty) {
-        // Show all if the search is empty
-        filteredBeauticians = recommendedBeauticians;
-      } else {
-        // Otherwise filter the beauticians by name
-        filteredBeauticians = recommendedBeauticians
-            .where((beautician) =>
-                beautician.name.toLowerCase().contains(query))
-            .toList();
-      }
-    });
-  }
+  setState(() {
+    if (query.isEmpty) {
+      // Show all if the search is empty
+      filteredBeauticians = recommendedBeauticians;
+    } else {
+      // Filter beauticians by name or position
+      filteredBeauticians = recommendedBeauticians.where((beautician) {
+        final nameMatch = beautician.name.toLowerCase().contains(query);
+        final positionMatch = beautician.position.toLowerCase().contains(query);
+        return nameMatch || positionMatch;
+      }).toList();
+    }
+  });
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -297,7 +299,7 @@ class _FindServiceState extends State<FindService> {
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  "Gender: ${beautician.gender}",
+                  "Position: ${beautician.position}",
                   style: TextStyle(
                     fontSize: 14,
                     color: bGrey,
@@ -319,7 +321,7 @@ class _FindServiceState extends State<FindService> {
                     const Icon(Icons.star, color: bSecondaryColor, size: 15),
                     const SizedBox(width: 5),
                     Text(
-                      beautician.score.toString(),
+                      beautician.average_score.toStringAsFixed(2), 
                       style: const TextStyle(
                           color: Color(0xff111111),
                           fontWeight: FontWeight.w600,

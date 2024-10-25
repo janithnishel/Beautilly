@@ -9,7 +9,7 @@ class BeauticianModel {
   final String imageUrl;
   final String salonName; // Field for Salon Name
   final int salonId; // Added field for Salon ID
-  final double score;
+  final double average_score;
 
   BeauticianModel({
     required this.beauticianId,
@@ -22,7 +22,7 @@ class BeauticianModel {
     required this.imageUrl,
     required this.salonName, // Constructor parameter for Salon Name
     required this.salonId, // Constructor parameter for Salon ID
-    required this.score,
+    required this.average_score,
   });
 
   factory BeauticianModel.fromJson(Map<String, dynamic> json) {
@@ -37,7 +37,7 @@ class BeauticianModel {
       imageUrl: json['Image'],
       salonName: json['Salon_Name'], // Field mapping for Salon Name
       salonId: json['Salon_ID'], // Field mapping for Salon ID
-      score: (json['score'] as num).toDouble(),
+      average_score: (json['average_score'] as num).toDouble(),
     );
   }
 }
