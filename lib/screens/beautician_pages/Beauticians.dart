@@ -188,21 +188,19 @@ class _BeauticiansState extends State<Beauticians> {
                     Row(
                       children: [
                         const Icon(
-                          Icons.star,
+                          Icons.man,
                           size: 16,
                           color: bSecondaryColor,
                         ),
                         const SizedBox(
                           width: 10,
                         ),
-                        Text(
-                          beauticiansList[index]['Rating_Score'].toString(),
+                          Text(
+                          beauticiansList[index]['Position'],
                           style: const TextStyle(
                             fontSize: 12,
-                            fontWeight: FontWeight.w700,
-                            color: Color(
-                              0xff111111,
-                            ),
+                            fontWeight: FontWeight.w400,
+                            color: bBlackColor,
                           ),
                         ),
                         const SizedBox(

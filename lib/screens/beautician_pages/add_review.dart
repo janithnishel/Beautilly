@@ -134,12 +134,12 @@ class _AddReviewState extends State<AddReview> {
               SizedBox(
                 height: 10,
               ),
-              CustomTextFormField(
-                controller: _ratingController,
-                suffix: null,
-                title: "Rating: ",
-                inputType: TextInputType.number,
-              ),
+              // CustomTextFormField(
+              //   controller: _ratingController,
+              //   suffix: null,
+              //   title: "Rating: ",
+              //   inputType: TextInputType.number,
+              // ),
               SizedBox(
                 height: 10,
               ),
