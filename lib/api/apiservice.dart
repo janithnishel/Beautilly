@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:geolocator/geolocator.dart';
 //http://52.172.31.221:8000/
 class ApiService {
-  static const String baseUrl = 'http://10.0.2.2:8001';
+  static const String baseUrl = 'http://52.172.31.221:8000';
 //'http://10.0.2.2:8001';
   static String getPreferencesUrl(int customerId) {
     return '$baseUrl/preferences/$customerId';
@@ -43,40 +44,69 @@ class ApiService {
     }
   }
 
-  static Future<http.Response> postBeautician(Map<String, dynamic> beauticianData) async {
+static Future<http.Response> postBeautician(Map<String, dynamic> beauticianData) async {
     final url = Uri.parse('$baseUrl/beauticians/');
-    
-    try {
-      print('Sending beautician data: $beauticianData');
+    int retryCount = 0;
+    const maxRetries = 3;
 
-      // Send the POST request with a timeout of 15 seconds
-      final response = await http
-          .post(
-            url,
-            headers: {'Content-Type': 'application/json'},
-            body: jsonEncode(beauticianData),
-          )
-          .timeout(
-            const Duration(seconds: 15),
-            onTimeout: () {
-              throw Exception('Request timed out');
-            },
+    while (retryCount < maxRetries) {
+      try {
+        print('Sending beautician data: $beauticianData');
+
+        // Send the POST request with a timeout of 15 seconds
+        final response = await http
+            .post(
+              url,
+              headers: {'Content-Type': 'application/json'},
+              body: jsonEncode(beauticianData),
+            )
+            .timeout(
+              const Duration(seconds: 15),
+              onTimeout: () {
+                throw Exception('Request timed out');
+              },
+            );
+
+        // Check the response status code
+        if (response.statusCode == 201 || response.statusCode == 200) {
+          print('Beautician posted successfully: ${response.body}');
+          Fluttertoast.showToast(
+            msg: 'Beautician details submitted successfully!',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
           );
+          return response;
+        } else {
+          print('Failed to post beautician: ${response.statusCode}');
+          print('Response body: ${response.body}');
+          throw Exception('Failed to post beautician: ${response.statusCode}');
+        }
+      } catch (e) {
+        retryCount++;
+        print('Error posting beautician, attempt $retryCount: $e');
 
-      // Check the response status code
-      if (response.statusCode == 201 || response.statusCode == 200) {
-        print('Beautician posted successfully: ${response.body}');
-        return response;
-      } else {
-        print('Failed to post beautician: ${response.statusCode}');
-        print('Response body: ${response.body}');
-        throw Exception('Failed to post beautician: ${response.statusCode}');
+        // If the maximum number of retries has been reached, show a toast message
+        if (retryCount >= maxRetries) {
+          Fluttertoast.showToast(
+            msg: 'Error submitting beautician details: $e',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+          );
+          throw Exception('Error posting beautician after $retryCount attempts: $e');
+        } else {
+          Fluttertoast.showToast(
+            msg: 'Retrying... ($retryCount/$maxRetries)',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+          );
+        }
       }
-    } catch (e) {
-      print('Error posting beautician: $e');
-      throw Exception('Error posting beautician: $e');
     }
+
+    throw Exception('Unexpected error during posting beautician.');
   }
+
+
    // URL for the acne detection API
   static String getDetectAcneUrl() {
     return '$baseUrl/skin_deseases/detect_acne';

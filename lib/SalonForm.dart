@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:beautilly/api/apiservice.dart';
+import 'package:fluttertoast/fluttertoast.dart'; // Import Fluttertoast for showing toast messages
 
 class SalonForm extends StatefulWidget {
   @override
@@ -46,7 +47,9 @@ class _SalonFormState extends State<SalonForm> {
   // Upload image to Firebase
   Future<String> _uploadImageToFirebase(File imageFile) async {
     try {
-      final storageReference = FirebaseStorage.instance.ref().child('beautician_images/${DateTime.now().millisecondsSinceEpoch}.jpg');
+      final storageReference = FirebaseStorage.instance
+          .ref()
+          .child('beautician_images/${DateTime.now().millisecondsSinceEpoch}.jpg');
       final uploadTask = storageReference.putFile(imageFile);
       await uploadTask.whenComplete(() {});
       return await storageReference.getDownloadURL();
@@ -74,7 +77,9 @@ class _SalonFormState extends State<SalonForm> {
 
       try {
         // Upload image and get URL
-        String imageUrl = _selectedImageFile != null ? await _uploadImageToFirebase(_selectedImageFile!) : _imageController.text;
+        String imageUrl = _selectedImageFile != null
+            ? await _uploadImageToFirebase(_selectedImageFile!)
+            : _imageController.text;
 
         // Retrieve form values
         final String name = _nameController.text;
@@ -100,8 +105,22 @@ class _SalonFormState extends State<SalonForm> {
         // Post beautician details
         final response = await ApiService.postBeautician(formData);
         print('Beautician posted successfully: ${response.body}');
+        
+        // Show success toast message
+        Fluttertoast.showToast(
+          msg: 'Beautician details submitted successfully!',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+        );
       } catch (e) {
         print('Error submitting form: $e');
+        
+        // Show error toast message
+        Fluttertoast.showToast(
+          msg: 'Error submitting beautician details: $e',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+        );
       } finally {
         setState(() {
           isSubmitting = false;
@@ -139,7 +158,8 @@ class _SalonFormState extends State<SalonForm> {
                 onChanged: (value) {
                   setState(() {
                     _selectedSalonName = value;
-                    final selectedSalon = _salons.firstWhere((salon) => salon['Name'] == value);
+                    final selectedSalon =
+                        _salons.firstWhere((salon) => salon['Name'] == value);
                     _updateFormWithSalonData(selectedSalon);
                   });
                 },
@@ -225,7 +245,7 @@ class _SalonFormState extends State<SalonForm> {
                     ? Column(
                         children: [
                           Image.asset(
-                            'assets/images/uploadImage.png',  // Add this icon for image upload
+                            'assets/images/uploadImage.png', // Add this icon for image upload
                             height: 100,
                             width: 100,
                           ),
