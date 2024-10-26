@@ -50,6 +50,7 @@ dependencies:
   intl: ^0.17.0  # Add this line for the intl package
   geolocator: ^9.0.2
   permission_handler: ^10.0.0
+  flutter_launcher_icons: ^0.11.0
 
 dev_dependencies:
   flutter_test:
@@ -110,6 +111,11 @@ flutter:
           weight: 200
         - asset: assets/fonts/Poppins-Thin.ttf
           weight: 100
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/app_icon.png" 
     
   
   # For details regarding fonts from package dependencies,

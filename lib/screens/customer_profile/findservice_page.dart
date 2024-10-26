@@ -321,7 +321,8 @@ void _filterBeauticians() {
                     const Icon(Icons.star, color: bSecondaryColor, size: 15),
                     const SizedBox(width: 5),
                     Text(
-                      beautician.average_score.toStringAsFixed(2), 
+                      beautician.average_score.toString(),
+
                       style: const TextStyle(
                           color: Color(0xff111111),
                           fontWeight: FontWeight.w600,

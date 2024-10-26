@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:beautilly/AdminSignInApp.dart';
+import 'package:beautilly/SalonForm.dart';
 import 'package:beautilly/api/apiservice.dart';
 import 'package:beautilly/data/onboarding_data.dart';
 import 'package:beautilly/screens/customer_profile/choose_preference.dart';
@@ -367,7 +369,7 @@ class _JoinPageState extends State<JoinPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => AdminSignInApp(),
+                          builder: (context) => AdminLoginPage(),
                         ),
                       );
                     },
